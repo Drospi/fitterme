@@ -13,6 +13,14 @@ export default function ProfileScreen() {
           <Ionicons style={globalStyles.title} name="settings" />
         </Link>
       </View>
+      <View style={{ marginTop: 30, gap: 20 }}>
+        <Link style={globalStyles.title} href="/routines">
+          Routine
+        </Link>
+        <Link style={globalStyles.title} href="/measures/measures">
+          Measure
+        </Link>
+      </View>
     </ScrollView>
   );
 }

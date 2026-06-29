@@ -9,7 +9,6 @@ type RoutineItemProps = {
   series: number;
   reps: number;
   kg: number;
-  fat: number;
   onDelete: () => void;
 };
 
@@ -19,7 +18,6 @@ export default function RoutineItem({
   series,
   reps,
   kg,
-  fat,
   onDelete,
 }: RoutineItemProps) {
   const handleLongPress = () => {
@@ -45,7 +43,7 @@ export default function RoutineItem({
     <TouchableOpacity style={styles.container} onLongPress={handleLongPress}>
       <Text style={styles.name}>{name}</Text>
       <Text style={styles.macros}>
-        {series} series • {reps} reps • {kg} kg • {fat}g F
+        {series} series • {reps} reps • {kg} kg
       </Text>
     </TouchableOpacity>
   );

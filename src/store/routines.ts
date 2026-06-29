@@ -6,7 +6,6 @@ export type Routine = {
   series: number;
   reps: number;
   kg: number;
-  fat: number;
   createdAt: string;
 };
 

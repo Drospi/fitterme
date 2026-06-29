@@ -21,6 +21,7 @@ export const globalStyles = StyleSheet.create({
     fontSize: 28,
     fontWeight: "bold",
     color: colors.text,
+    marginTop: 10,
   },
   sectionTitle: {
     fontSize: 18,

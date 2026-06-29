@@ -1,7 +1,7 @@
 import RoutineItem from "@/components/RoutineItem";
 import { clearAllRoutines, getRoutines, Routine } from "@/store/routines";
 import { globalStyles } from "@/styles/global";
-import { useFocusEffect } from "expo-router";
+import { Link, useFocusEffect } from "expo-router";
 import { useCallback, useState } from "react";
 import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 
@@ -44,12 +44,16 @@ export default function AllRoutinesScreen() {
               series={Routine.series}
               reps={Routine.reps}
               kg={Routine.kg}
-              fat={Routine.fat}
               onDelete={loadRoutines}
             />
           ))
         )}
       </View>
+      <Link href="/routines/add" push asChild>
+        <TouchableOpacity style={globalStyles.button}>
+          <Text style={globalStyles.buttonText}>Add Routine</Text>
+        </TouchableOpacity>
+      </Link>
     </ScrollView>
   );
 }

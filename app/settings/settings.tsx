@@ -1,12 +1,7 @@
+import SettingCard from "@/components/SettingCard";
 import { colors, globalStyles } from "@/styles/global";
 import React from "react";
-import {
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
-} from "react-native";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 
 export default function SettingsScreen() {
   return (
@@ -17,44 +12,22 @@ export default function SettingsScreen() {
       <ScrollView style={styles.container}>
         <View style={styles.section}>
           <Text style={styles.text}>Appearance</Text>
-          <TouchableOpacity>
-            <View style={styles.selection}>
-              <Text style={styles.textSelection}>Change Theme</Text>
-              <Text style={styles.textSelection}>Oscuro</Text>
-            </View>
-          </TouchableOpacity>
+          <SettingCard title="Theme" value="Light" />
         </View>
 
         <View style={styles.section}>
           <Text style={styles.text}>Temporizador</Text>
-          <TouchableOpacity>
-            <View style={styles.selection}>
-              <Text style={styles.textSelection}>Valor del Aumento</Text>
-              <Text style={styles.textSelection}>30 segundos</Text>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <View style={styles.selection}>
-              <Text style={styles.textSelection}>Change Theme</Text>
-              <Text style={styles.textSelection}>Oscuro</Text>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <View style={styles.selection}>
-              <Text style={styles.textSelection}>Change Theme</Text>
-              <Text style={styles.textSelection}>Oscuro</Text>
-            </View>
-          </TouchableOpacity>
+          <SettingCard title="Valor del Aumento" value="30 segundos" />
+
+          <SettingCard title="Valor del Aumento" value="30 segundos" />
+
+          <SettingCard title="Valor del Aumento" value="30 segundos" />
         </View>
 
         <View style={styles.section}>
           <Text style={styles.text}>Appearance</Text>
-          <TouchableOpacity>
-            <View style={styles.selection}>
-              <Text style={styles.textSelection}>Change Theme</Text>
-              <Text style={styles.textSelection}>Oscuro</Text>
-            </View>
-          </TouchableOpacity>
+
+          <SettingCard title="Valor del Aumento" value="30 segundos" />
         </View>
       </ScrollView>
     </ScrollView>

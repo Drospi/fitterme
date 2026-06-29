@@ -15,7 +15,6 @@ export default function HomeScreen() {
   const loadMeals = async () => {
     const data = await getMeals();
     setMeals(data);
-    console.log("Loaded meals:", data);
   };
 
   useFocusEffect(

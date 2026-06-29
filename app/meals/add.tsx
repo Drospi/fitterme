@@ -1,6 +1,7 @@
 import { addMeal } from "@/store/meals";
 import { colors, globalStyles } from "@/styles/global";
 import * as Haptics from "expo-haptics";
+import { useRouter } from "expo-router";
 import { useState } from "react";
 import {
   StyleSheet,
@@ -11,15 +12,15 @@ import {
 } from "react-native";
 
 export default function AddMealScreen() {
+  const route = useRouter();
   const [name, setName] = useState("");
   const [calories, setCalories] = useState("");
   const [protein, setProtein] = useState("");
   const [carbs, setCarbs] = useState("");
   const [fat, setFat] = useState("");
 
-  const handleAddMeal = () => {
-    console.log({ name, calories, protein, carbs, fat });
-    addMeal({
+  const handleAddMeal = async () => {
+    await addMeal({
       name,
       calories: parseInt(calories),
       protein: parseInt(protein),
@@ -27,6 +28,7 @@ export default function AddMealScreen() {
       fat: parseInt(fat),
     });
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    route.dismissAll();
   };
 
   return (
