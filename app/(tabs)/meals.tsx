@@ -1,9 +1,12 @@
 import MealItem from "@/components/MealItem";
+import { useTheme } from "@/context/ThemeContext";
 import { clearAllMeals, getMeals, Meal } from "@/store/meals";
-import { colors, globalStyles } from "@/styles/global";
+import { getGlobalStyles } from "@/styles/global";
 import { Link, useFocusEffect } from "expo-router";
 import { useCallback, useState } from "react";
 import { ScrollView, Text, TouchableOpacity, View } from "react-native";
+const { colors } = useTheme();
+const globalStyles = getGlobalStyles(colors);
 
 export default function AllMealsScreen() {
   const [meals, setMeals] = useState<Meal[]>([]);

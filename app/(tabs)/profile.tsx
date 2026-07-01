@@ -1,8 +1,11 @@
-import { globalStyles } from "@/styles/global";
+import { useTheme } from "@/context/ThemeContext";
+import { getGlobalStyles } from "@/styles/global";
 import { Ionicons } from "@expo/vector-icons";
 import { Link } from "expo-router";
 import React from "react";
 import { ScrollView, Text, View } from "react-native";
+const { colors } = useTheme();
+const globalStyles = getGlobalStyles(colors);
 
 export default function ProfileScreen() {
   return (

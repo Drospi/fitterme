@@ -13,6 +13,10 @@ export type Measure = {
   cuadriceps: number;
   gemelos: number;
   gluteos: number;
+  edad: number;
+  sexo: string;
+  peso: number;
+  altura: number;
   createdAt: string;
 };
 
@@ -37,6 +41,24 @@ export const addMeasure = async (
     JSON.stringify([newMeasure, ...Measures]),
   );
   return newMeasure;
+};
+
+export const updateMeasure = async (
+  id: string,
+  updatedMeasure: Omit<Measure, "id" | "createdAt">,
+): Promise<Measure> => {
+  const Measures = await getMeasures();
+  const updatedMeasures = Measures.map((Measure) => {
+    if (Measure.id === id) {
+      return {
+        ...Measure,
+        ...updatedMeasure,
+      };
+    }
+    return Measure;
+  });
+  await AsyncStorage.setItem(MEASURES_KEY, JSON.stringify(updatedMeasures));
+  return updatedMeasures.find((Measure) => Measure.id === id)!;
 };
 
 export const deleteMeasure = async (id: string): Promise<void> => {

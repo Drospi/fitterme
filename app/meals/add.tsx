@@ -1,5 +1,6 @@
+import { useTheme } from "@/context/ThemeContext";
 import { addMeal } from "@/store/meals";
-import { colors, globalStyles } from "@/styles/global";
+import { getGlobalStyles } from "@/styles/global";
 import * as Haptics from "expo-haptics";
 import { useRouter } from "expo-router";
 import { useState } from "react";
@@ -10,6 +11,8 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+const { colors } = useTheme();
+const globalStyles = getGlobalStyles(colors);
 
 export default function AddMealScreen() {
   const route = useRouter();

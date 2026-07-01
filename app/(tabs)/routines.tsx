@@ -1,9 +1,12 @@
 import RoutineItem from "@/components/RoutineItem";
+import { useTheme } from "@/context/ThemeContext";
 import { clearAllRoutines, getRoutines, Routine } from "@/store/routines";
-import { globalStyles } from "@/styles/global";
+import { getGlobalStyles } from "@/styles/global";
 import { Link, useFocusEffect } from "expo-router";
 import { useCallback, useState } from "react";
 import { ScrollView, Text, TouchableOpacity, View } from "react-native";
+const { colors } = useTheme();
+const globalStyles = getGlobalStyles(colors);
 
 export default function AllRoutinesScreen() {
   const [Routines, setRoutines] = useState<Routine[]>([]);

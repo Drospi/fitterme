@@ -1,13 +1,17 @@
 import CopyButton from "@/components/CopyButton";
 import HomeHeader from "@/components/HomeHeader";
 import MacroGrid from "@/components/MacroGrid";
+import MeasureStadistics from "@/components/MeasureStadistics";
 import RecentMeals from "@/components/RecentMeals";
 import ShareButton from "@/components/ShareButton";
+import { useTheme } from "@/context/ThemeContext";
 import { getMeals, Meal } from "@/store/meals";
-import { globalStyles } from "@/styles/global";
+import { getGlobalStyles } from "@/styles/global";
 import { useFocusEffect } from "expo-router";
 import { useCallback, useState } from "react";
 import { ScrollView, Text, View } from "react-native";
+const { colors } = useTheme();
+const globalStyles = getGlobalStyles(colors);
 
 export default function HomeScreen() {
   const [meals, setMeals] = useState<Meal[]>([]);
@@ -33,6 +37,7 @@ export default function HomeScreen() {
       <MacroGrid meals={meals} />
       <CopyButton meals={meals} />
       <RecentMeals meals={meals} onDelete={loadMeals} />
+      <MeasureStadistics />
     </ScrollView>
   );
 }

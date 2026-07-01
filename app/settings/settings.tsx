@@ -27,7 +27,7 @@ export default function SettingsScreen() {
       <ScrollView style={styles.container}>
         <View style={styles.section}>
           <Text style={styles.text}>Appearance</Text>
-          <SettingCard title="Theme" value="Light" />
+          <SettingCard link="/settings/theme" title="Theme" value="Light" />
         </View>
 
         <View style={styles.section}>
