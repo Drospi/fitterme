@@ -1,9 +1,24 @@
 import SettingCard from "@/components/SettingCard";
+import { getMeasures } from "@/store/measures";
 import { colors, globalStyles } from "@/styles/global";
-import React from "react";
+import { useFocusEffect } from "expo-router";
+import { useCallback, useState } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 
 export default function SettingsScreen() {
+  const [sexo, setSexo] = useState("masculino");
+
+  const loadMeasures = async () => {
+    const data = await getMeasures();
+    setSexo(data[0]?.sexo || "ninguno");
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      loadMeasures();
+    }, []),
+  );
+
   return (
     <ScrollView style={globalStyles.container}>
       <View style={globalStyles.header}>
@@ -17,7 +32,11 @@ export default function SettingsScreen() {
 
         <View style={styles.section}>
           <Text style={styles.text}>Temporizador</Text>
-          <SettingCard title="Valor del Aumento" value="30 segundos" />
+          <SettingCard
+            title="Valor del Aumento"
+            link={"/settings/timer"}
+            value="30 segundos"
+          />
 
           <SettingCard title="Valor del Aumento" value="30 segundos" />
 
@@ -28,6 +47,11 @@ export default function SettingsScreen() {
           <Text style={styles.text}>Appearance</Text>
 
           <SettingCard title="Valor del Aumento" value="30 segundos" />
+        </View>
+        <View style={styles.section}>
+          <Text style={styles.text}>Genero</Text>
+
+          <SettingCard title="Sexo" value={sexo} link="/settings/genre" />
         </View>
       </ScrollView>
     </ScrollView>
