@@ -10,10 +10,10 @@ import { getGlobalStyles } from "@/styles/global";
 import { useFocusEffect } from "expo-router";
 import { useCallback, useState } from "react";
 import { ScrollView, Text, View } from "react-native";
-const { colors } = useTheme();
-const globalStyles = getGlobalStyles(colors);
 
 export default function HomeScreen() {
+  const { colors } = useTheme();
+  const globalStyles = getGlobalStyles(colors);
   const [meals, setMeals] = useState<Meal[]>([]);
 
   const loadMeals = async () => {

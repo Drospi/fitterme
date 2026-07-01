@@ -1,11 +1,14 @@
 import SettingCard from "@/components/SettingCard";
+import { useTheme } from "@/context/ThemeContext";
 import { getMeasures } from "@/store/measures";
-import { colors, globalStyles } from "@/styles/global";
+import { getGlobalStyles } from "@/styles/global";
 import { useFocusEffect } from "expo-router";
 import { useCallback, useState } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 
 export default function SettingsScreen() {
+  const { colors } = useTheme();
+  const globalStyles = getGlobalStyles(colors);
   const [sexo, setSexo] = useState("masculino");
 
   const loadMeasures = async () => {
@@ -24,14 +27,17 @@ export default function SettingsScreen() {
       <View style={globalStyles.header}>
         <Text style={globalStyles.title}>Settings</Text>
       </View>
-      <ScrollView style={styles.container}>
+      <ScrollView
+        style={globalStyles.container}
+        contentContainerStyle={{ padding: 20 }}
+      >
         <View style={styles.section}>
-          <Text style={styles.text}>Appearance</Text>
+          <Text style={globalStyles.text}>Appearance</Text>
           <SettingCard link="/settings/theme" title="Theme" value="Light" />
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.text}>Temporizador</Text>
+          <Text style={globalStyles.text}>Temporizador</Text>
           <SettingCard
             title="Valor del Aumento"
             link={"/settings/timer"}
@@ -44,12 +50,12 @@ export default function SettingsScreen() {
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.text}>Appearance</Text>
+          <Text style={globalStyles.text}>Appearance</Text>
 
           <SettingCard title="Valor del Aumento" value="30 segundos" />
         </View>
         <View style={styles.section}>
-          <Text style={styles.text}>Genero</Text>
+          <Text style={globalStyles.text}>Genero</Text>
 
           <SettingCard title="Sexo" value={sexo} link="/settings/genre" />
         </View>
@@ -59,17 +65,6 @@ export default function SettingsScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
-    backgroundColor: globalStyles.container.backgroundColor,
-  },
-  text: {
-    fontSize: 16,
-    marginBottom: 8,
-    color: colors.text,
-    left: -8,
-  },
   selection: {
     fontSize: 14,
     flexDirection: "row",
@@ -78,10 +73,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     marginTop: 8,
   },
-  textSelection: {
-    fontSize: 14,
-    color: colors.textSecondary,
-  },
+
   section: {
     marginBottom: 24,
   },

@@ -5,10 +5,10 @@ import { getGlobalStyles } from "@/styles/global";
 import { Link, useFocusEffect } from "expo-router";
 import { useCallback, useState } from "react";
 import { ScrollView, Text, TouchableOpacity, View } from "react-native";
-const { colors } = useTheme();
-const globalStyles = getGlobalStyles(colors);
 
 export default function AllRoutinesScreen() {
+  const { colors } = useTheme();
+  const globalStyles = getGlobalStyles(colors);
   const [Routines, setRoutines] = useState<Routine[]>([]);
 
   const loadRoutines = async () => {

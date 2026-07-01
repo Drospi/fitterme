@@ -1,16 +1,20 @@
+import { useTheme } from "@/context/ThemeContext";
 import { addMeal } from "@/store/meals";
-import { colors, globalStyles } from "@/styles/global";
+import { getGlobalStyles } from "@/styles/global";
 import * as Haptics from "expo-haptics";
 import { useState } from "react";
 import {
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
 
 export default function AddMealScreen() {
+  const { colors } = useTheme();
+  const globalStyles = getGlobalStyles(colors);
+
   const [name, setName] = useState("");
   const [calories, setCalories] = useState("");
   const [protein, setProtein] = useState("");
@@ -34,7 +38,7 @@ export default function AddMealScreen() {
       <Text style={globalStyles.title}>Edit Meal</Text>
 
       <TextInput
-        style={styles.input}
+        style={globalStyles.input}
         placeholder="Meal name"
         placeholderTextColor={colors.textSecondary}
         value={name}
@@ -42,7 +46,7 @@ export default function AddMealScreen() {
       />
 
       <TextInput
-        style={styles.input}
+        style={globalStyles.input}
         placeholder="Calories"
         placeholderTextColor={colors.textSecondary}
         keyboardType="numeric"
@@ -52,7 +56,7 @@ export default function AddMealScreen() {
 
       <View style={styles.row}>
         <TextInput
-          style={[styles.input, styles.rowInput]}
+          style={[globalStyles.input, styles.rowInput]}
           placeholder="Protein (g)"
           placeholderTextColor={colors.textSecondary}
           keyboardType="numeric"
@@ -60,7 +64,7 @@ export default function AddMealScreen() {
           onChangeText={setProtein}
         />
         <TextInput
-          style={[styles.input, styles.rowInput]}
+          style={[globalStyles.input, styles.rowInput]}
           placeholder="Carbos (g)"
           placeholderTextColor={colors.textSecondary}
           keyboardType="numeric"
@@ -68,7 +72,7 @@ export default function AddMealScreen() {
           onChangeText={setCarbs}
         />
         <TextInput
-          style={[styles.input, styles.rowInput]}
+          style={[globalStyles.input, styles.rowInput]}
           placeholder="Fat (g)"
           placeholderTextColor={colors.textSecondary}
           keyboardType="numeric"
@@ -85,14 +89,6 @@ export default function AddMealScreen() {
 }
 
 const styles = StyleSheet.create({
-  input: {
-    backgroundColor: colors.surface,
-    color: colors.text,
-    padding: 16,
-    borderRadius: 10,
-    fontSize: 16,
-    marginTop: 16,
-  },
   row: {
     flexDirection: "row",
     gap: 10,

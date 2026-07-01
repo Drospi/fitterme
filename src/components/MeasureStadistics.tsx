@@ -1,11 +1,15 @@
+import { useTheme } from "@/context/ThemeContext";
 import { getMeasures } from "@/store/measures";
-import { colors, globalStyles } from "@/styles/global";
+import { getGlobalStyles } from "@/styles/global";
 import { useFocusEffect } from "expo-router";
 import { useCallback, useState } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 import FitnessAdvisor from "./FitnessAdvisor";
 
 export default function MeasuresStadistics() {
+  const { colors } = useTheme();
+  const globalStyles = getGlobalStyles(colors);
+
   const [grasa, setGrasa] = useState(0);
   const [masaMagra, setMasaMagra] = useState(0);
   const [measures, setMeasures] = useState({});
@@ -61,16 +65,29 @@ export default function MeasuresStadistics() {
       </View>
 
       {/* Componente visual de resultados */}
-      <View style={styles.resultCard}>
-        <Text style={styles.resultTitle}>Composición Corporal</Text>
+      <View style={globalStyles.card}>
+        <Text style={globalStyles.cardTitle}>Composición Corporal</Text>
         <View style={styles.row}>
-          <Text style={styles.label}>Grasa Corporal: {grasa}%</Text>
-          <Text style={styles.label}>Masa Magra: {masaMagra}%</Text>
+          <Text style={globalStyles.cardText}>Grasa Corporal: {grasa}%</Text>
+          <Text style={globalStyles.cardText}>Masa Magra: {masaMagra}%</Text>
         </View>
 
         {/* Barra visual simple */}
-        <View style={styles.progressBar}>
-          <View style={[styles.progressGrasa, { width: `${grasa}%` }]} />
+        <View
+          style={{
+            height: 12,
+            backgroundColor: colors.background,
+            borderRadius: 6,
+            overflow: "hidden",
+          }}
+        >
+          <View
+            style={{
+              height: "100%",
+              backgroundColor: colors.primary,
+              width: `${grasa}%`,
+            }}
+          />
         </View>
       </View>
       <FitnessAdvisor medidas={measures} />
@@ -79,32 +96,9 @@ export default function MeasuresStadistics() {
 }
 
 const styles = StyleSheet.create({
-  resultCard: {
-    padding: 20,
-    backgroundColor: colors.surface,
-    borderRadius: 15,
-    margin: 16,
-  },
-  resultTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginBottom: 10,
-    color: colors.text,
-  },
-  label: {
-    fontSize: 14,
-    color: colors.textSecondary,
-  },
   row: {
     flexDirection: "row",
     justifyContent: "space-between",
     marginBottom: 10,
   },
-  progressBar: {
-    height: 12,
-    backgroundColor: colors.background,
-    borderRadius: 6,
-    overflow: "hidden",
-  },
-  progressGrasa: { height: "100%", backgroundColor: colors.alert },
 });

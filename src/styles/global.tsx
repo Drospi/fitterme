@@ -45,4 +45,50 @@ export const getGlobalStyles = (colors: any) =>
       fontSize: 16,
       fontWeight: "bold",
     },
+    text: {
+      fontSize: 16,
+      color: colors.text,
+    },
+    textSecondary: {
+      fontSize: 16,
+      color: colors.textSecondary,
+    },
+    textPrimary: {
+      fontSize: 16,
+      color: colors.primary,
+    },
+    input: {
+      backgroundColor: colors.surface,
+      color: colors.text,
+      padding: 16,
+      borderRadius: 10,
+      fontSize: 16,
+      marginTop: 16,
+    },
+    inputError: {
+      backgroundColor: colors.surface,
+      color: colors.text,
+      padding: 16,
+      borderRadius: 10,
+      fontSize: 16,
+      marginTop: 16,
+      borderColor: colors.alert,
+      borderWidth: 1,
+    },
+    card: {
+      backgroundColor: colors.surface,
+      padding: 16,
+      borderRadius: 10,
+      marginBottom: 10,
+    },
+    cardTitle: {
+      fontSize: 16,
+      fontWeight: "bold",
+      color: colors.text,
+      marginBottom: 10,
+    },
+    cardText: {
+      fontSize: 14,
+      color: colors.textSecondary,
+    },
   });

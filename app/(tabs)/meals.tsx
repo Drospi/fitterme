@@ -5,10 +5,10 @@ import { getGlobalStyles } from "@/styles/global";
 import { Link, useFocusEffect } from "expo-router";
 import { useCallback, useState } from "react";
 import { ScrollView, Text, TouchableOpacity, View } from "react-native";
-const { colors } = useTheme();
-const globalStyles = getGlobalStyles(colors);
 
 export default function AllMealsScreen() {
+  const { colors } = useTheme();
+  const globalStyles = getGlobalStyles(colors);
   const [meals, setMeals] = useState<Meal[]>([]);
 
   const loadMeals = async () => {
@@ -66,17 +66,5 @@ const styles = {
   clearButton: {
     color: "red",
     fontSize: 16,
-  },
-  button: {
-    backgroundColor: colors.primary,
-    padding: 16,
-    borderRadius: 10,
-    alignItems: "center",
-    marginTop: 24,
-  },
-  buttonText: {
-    color: colors.background,
-    fontSize: 16,
-    fontWeight: "bold",
   },
 };

@@ -1,10 +1,11 @@
 import { useTheme } from "@/context/ThemeContext";
-import { globalStyles } from "@/styles/global";
+import { getGlobalStyles } from "@/styles/global";
 import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 type Props = {};
 
 export default function ThemeScreen() {
   const { colors, toggleTheme, isDark } = useTheme();
+  const globalStyles = getGlobalStyles(colors);
 
   return (
     <ScrollView
@@ -16,7 +17,7 @@ export default function ThemeScreen() {
       </View>
 
       <View style={{ marginTop: 40, alignItems: "center" }}>
-        <Text style={{ color: colors.text, fontSize: 18, marginBottom: 20 }}>
+        <Text style={[globalStyles.text, { fontSize: 18, marginBottom: 20 }]}>
           Modo actual: {isDark ? "Oscuro" : "Claro"}
         </Text>
 
@@ -30,7 +31,7 @@ export default function ThemeScreen() {
             alignItems: "center",
           }}
         >
-          <Text style={{ fontWeight: "bold", color: "#000" }}>
+          <Text style={[globalStyles.text, { fontWeight: "bold" }]}>
             Cambiar a {isDark ? "Claro" : "Oscuro"}
           </Text>
         </TouchableOpacity>

@@ -1,6 +1,8 @@
 import MeasureCard from "@/components/MeasureCard";
+import { useTheme } from "@/context/ThemeContext";
 import { addMeasure, getMeasures } from "@/store/measures";
-import { globalStyles } from "@/styles/global";
+import { getGlobalStyles } from "@/styles/global";
+
 import * as Haptics from "expo-haptics";
 import { useFocusEffect, useRouter } from "expo-router";
 import { useCallback, useState } from "react";
@@ -13,6 +15,9 @@ import {
 } from "react-native";
 
 export default function MeasuresScreen() {
+  const { colors } = useTheme();
+  const globalStyles = getGlobalStyles(colors);
+
   const [cuello, setCuello] = useState(0);
   const [pecho, setPecho] = useState(0);
   const [hombros, setHombros] = useState(0);

@@ -1,8 +1,8 @@
-import { colors, globalStyles } from "@/styles/global";
+import { useTheme } from "@/context/ThemeContext";
+import { getGlobalStyles } from "@/styles/global";
 import { Href, Link } from "expo-router";
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-
 type SettingCardProps = {
   title: string;
   value: string;
@@ -10,6 +10,9 @@ type SettingCardProps = {
 };
 
 const SettingCard = ({ title, value, link }: SettingCardProps) => {
+  const { colors } = useTheme();
+  const globalStyles = getGlobalStyles(colors);
+
   return (
     <Link
       href={{
@@ -20,8 +23,8 @@ const SettingCard = ({ title, value, link }: SettingCardProps) => {
     >
       <TouchableOpacity>
         <View style={styles.selection}>
-          <Text style={styles.textSelection}>{title}</Text>
-          <Text style={styles.textSelection}>{value}</Text>
+          <Text style={globalStyles.text}>{title}</Text>
+          <Text style={globalStyles.text}>{value}</Text>
         </View>
       </TouchableOpacity>
     </Link>
@@ -29,17 +32,6 @@ const SettingCard = ({ title, value, link }: SettingCardProps) => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
-    backgroundColor: globalStyles.container.backgroundColor,
-  },
-  text: {
-    fontSize: 16,
-    marginBottom: 8,
-    color: colors.text,
-    left: -8,
-  },
   selection: {
     fontSize: 14,
     flexDirection: "row",
@@ -48,10 +40,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     marginTop: 8,
   },
-  textSelection: {
-    fontSize: 14,
-    color: colors.textSecondary,
-  },
+
   section: {
     marginBottom: 24,
   },

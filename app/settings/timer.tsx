@@ -1,4 +1,5 @@
-import { globalStyles } from "@/styles/global";
+import { useTheme } from "@/context/ThemeContext";
+import { getGlobalStyles } from "@/styles/global";
 import { Link } from "expo-router";
 import React from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
@@ -6,6 +7,9 @@ import { ScrollView, StyleSheet, Text, View } from "react-native";
 type Props = {};
 
 export default function TimerScreen() {
+  const { colors } = useTheme();
+  const globalStyles = getGlobalStyles(colors);
+
   return (
     <ScrollView style={globalStyles.container}>
       <View style={globalStyles.header}>

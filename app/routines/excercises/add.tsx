@@ -1,17 +1,21 @@
+import { useTheme } from "@/context/ThemeContext";
 import { addExcercise } from "@/store/excercise";
-import { colors, globalStyles } from "@/styles/global";
+import { getGlobalStyles } from "@/styles/global";
 import * as Haptics from "expo-haptics";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import {
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
 
 export default function AddExcerciseScreen() {
+  const { colors } = useTheme();
+  const globalStyles = getGlobalStyles(colors);
+
   const route = useRouter();
   const [name, setName] = useState("");
   const [series, setSeries] = useState("");
@@ -34,7 +38,7 @@ export default function AddExcerciseScreen() {
       <Text style={globalStyles.title}>Add Excercise</Text>
 
       <TextInput
-        style={styles.input}
+        style={globalStyles.input}
         placeholder="Excercise name"
         placeholderTextColor={colors.textSecondary}
         value={name}
@@ -42,7 +46,7 @@ export default function AddExcerciseScreen() {
       />
 
       <TextInput
-        style={styles.input}
+        style={globalStyles.input}
         placeholder="Series"
         placeholderTextColor={colors.textSecondary}
         keyboardType="numeric"
@@ -52,7 +56,7 @@ export default function AddExcerciseScreen() {
 
       <View style={styles.row}>
         <TextInput
-          style={[styles.input, styles.rowInput]}
+          style={[globalStyles.input, styles.rowInput]}
           placeholder="Reps"
           placeholderTextColor={colors.textSecondary}
           keyboardType="numeric"
@@ -60,7 +64,7 @@ export default function AddExcerciseScreen() {
           onChangeText={setReps}
         />
         <TextInput
-          style={[styles.input, styles.rowInput]}
+          style={[globalStyles.input, styles.rowInput]}
           placeholder="Weight (kg)"
           placeholderTextColor={colors.textSecondary}
           keyboardType="numeric"
@@ -80,14 +84,6 @@ export default function AddExcerciseScreen() {
 }
 
 const styles = StyleSheet.create({
-  input: {
-    backgroundColor: colors.surface,
-    color: colors.text,
-    padding: 16,
-    borderRadius: 10,
-    fontSize: 16,
-    marginTop: 16,
-  },
   row: {
     flexDirection: "row",
     gap: 10,
