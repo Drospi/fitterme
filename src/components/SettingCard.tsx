@@ -11,7 +11,13 @@ type SettingCardProps = {
 
 const SettingCard = ({ title, value, link }: SettingCardProps) => {
   return (
-    <Link href={link || "/settings/settings"} asChild>
+    <Link
+      href={{
+        pathname: (link || "/settings/settings") as any,
+        params: { title: title, value: value },
+      }}
+      asChild
+    >
       <TouchableOpacity>
         <View style={styles.selection}>
           <Text style={styles.textSelection}>{title}</Text>
