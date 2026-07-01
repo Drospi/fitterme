@@ -7,7 +7,7 @@ import { useCallback, useState } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 
 export default function SettingsScreen() {
-  const { colors } = useTheme();
+  const { colors, isDark } = useTheme();
   const globalStyles = getGlobalStyles(colors);
   const [sexo, setSexo] = useState("masculino");
 
@@ -32,12 +32,20 @@ export default function SettingsScreen() {
         contentContainerStyle={{ padding: 20 }}
       >
         <View style={styles.section}>
-          <Text style={globalStyles.text}>Appearance</Text>
-          <SettingCard link="/settings/theme" title="Theme" value="Light" />
+          <Text style={[globalStyles.text, { marginBottom: 10, left: -20 }]}>
+            Appearance
+          </Text>
+          <SettingCard
+            link="/settings/theme"
+            title="Theme"
+            value={isDark ? "Oscuro" : "Claro"}
+          />
         </View>
 
         <View style={styles.section}>
-          <Text style={globalStyles.text}>Temporizador</Text>
+          <Text style={[globalStyles.text, { marginBottom: 10, left: -20 }]}>
+            Temporizador
+          </Text>
           <SettingCard
             title="Valor del Aumento"
             link={"/settings/timer"}
@@ -50,12 +58,16 @@ export default function SettingsScreen() {
         </View>
 
         <View style={styles.section}>
-          <Text style={globalStyles.text}>Appearance</Text>
+          <Text style={[globalStyles.text, { marginBottom: 10, left: -20 }]}>
+            Appearance
+          </Text>
 
           <SettingCard title="Valor del Aumento" value="30 segundos" />
         </View>
         <View style={styles.section}>
-          <Text style={globalStyles.text}>Genero</Text>
+          <Text style={[globalStyles.text, { marginBottom: 10, left: -20 }]}>
+            Genero
+          </Text>
 
           <SettingCard title="Sexo" value={sexo} link="/settings/genre" />
         </View>

@@ -1,4 +1,6 @@
+import { useTheme } from "@/context/ThemeContext";
 import { Meal } from "@/store/meals";
+import { getGlobalStyles } from "@/styles/global";
 import { StyleSheet, Text, View } from "react-native";
 import MealItem from "./MealItem";
 
@@ -8,11 +10,14 @@ type RecentMealsProps = {
 };
 
 export default function RecentMeals({ meals, onDelete }: RecentMealsProps) {
+  const { colors } = useTheme();
+  const globalStyles = getGlobalStyles(colors);
+
   return (
     <View style={{ marginTop: 30 }}>
-      <Text style={styles.sectionTitle}>Recent Meals</Text>
+      <Text style={globalStyles.title}>Recent Meals</Text>
       {meals.length === 0 ? (
-        <Text style={styles.empty}>No meals logged yet.</Text>
+        <Text style={globalStyles.textSecondary}>No meals logged yet.</Text>
       ) : (
         meals
           .slice(0, 5)

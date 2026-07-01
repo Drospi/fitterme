@@ -23,8 +23,8 @@ const SettingCard = ({ title, value, link }: SettingCardProps) => {
     >
       <TouchableOpacity>
         <View style={styles.selection}>
-          <Text style={globalStyles.text}>{title}</Text>
-          <Text style={globalStyles.text}>{value}</Text>
+          <Text style={globalStyles.textSecondary}>{title}</Text>
+          <Text style={globalStyles.textSecondary}>{value}</Text>
         </View>
       </TouchableOpacity>
     </Link>

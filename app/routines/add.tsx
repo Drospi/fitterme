@@ -118,7 +118,7 @@ export default function AddRoutineScreen() {
       </View>
 
       <TouchableOpacity style={globalStyles.button} onPress={handleAddRoutine}>
-        <Text style={globalStyles.buttonText}>Add Routine</Text>
+        <Text style={globalStyles.buttonText}>Save Routine</Text>
       </TouchableOpacity>
     </View>
   );

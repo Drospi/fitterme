@@ -1,5 +1,6 @@
+import { useTheme } from "@/context/ThemeContext";
+import { getGlobalStyles } from "@/styles/global";
 import { StyleSheet, Text, View } from "react-native";
-
 type MacroCardProps = {
   label: string;
   value: string;
@@ -13,18 +14,19 @@ export default function MacroCard({
   goal,
   color,
 }: MacroCardProps) {
+  const { colors } = useTheme();
+  const globalStyles = getGlobalStyles(colors);
   return (
-    <View style={[styles.card, { borderLeftColor: color }]}>
-      <Text style={styles.label}>{label}</Text>
-      <Text style={styles.value}>{value}</Text>
-      <Text style={styles.goal}>/ {goal}</Text>
+    <View style={[globalStyles.card, { borderLeftColor: color }, styles.card]}>
+      <Text style={globalStyles.cardTitle}>{label}</Text>
+      <Text style={globalStyles.cardText}> {value}</Text>
+      <Text style={globalStyles.cardText}>/ {goal}</Text>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: "#16213e",
     borderRadius: 12,
     padding: 16,
     width: "47%",

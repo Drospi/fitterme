@@ -6,6 +6,10 @@ export default function RootLayout() {
     <ThemeProvider>
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="(tabs)" />
+        <Stack.Screen
+          name="settings/settings"
+          options={{ title: "Settings" }}
+        />
       </Stack>
     </ThemeProvider>
   );

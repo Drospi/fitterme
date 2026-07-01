@@ -1,7 +1,8 @@
+import { useTheme } from "@/context/ThemeContext";
 import { deleteMeal } from "@/store/meals";
-import { colors } from "@/styles/global";
+import { getGlobalStyles } from "@/styles/global";
 import * as Haptics from "expo-haptics";
-import { Alert, StyleSheet, Text, TouchableOpacity } from "react-native";
+import { Alert, Text, TouchableOpacity } from "react-native";
 
 type MealItemProps = {
   id: string;
@@ -22,6 +23,8 @@ export default function MealItem({
   fat,
   onDelete,
 }: MealItemProps) {
+  const { colors } = useTheme();
+  const globalStyles = getGlobalStyles(colors);
   const handleLongPress = () => {
     Alert.alert("Delete Meal", `Are you sure you want to delete "${name}"?`, [
       { text: "Cancel", style: "cancel" },
@@ -38,30 +41,11 @@ export default function MealItem({
   };
 
   return (
-    <TouchableOpacity style={styles.container} onLongPress={handleLongPress}>
-      <Text style={styles.name}>{name}</Text>
-      <Text style={styles.macros}>
+    <TouchableOpacity style={globalStyles.card} onLongPress={handleLongPress}>
+      <Text style={globalStyles.cardTitle}>{name}</Text>
+      <Text style={globalStyles.cardText}>
         {calories} cal • {protein}g P • {carbs}g C • {fat}g F
       </Text>
     </TouchableOpacity>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: colors.surface,
-    borderRadius: 10,
-    padding: 16,
-    marginBottom: 10,
-  },
-  name: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: colors.text,
-  },
-  macros: {
-    fontSize: 13,
-    color: colors.textSecondary,
-    marginTop: 4,
-  },
-});

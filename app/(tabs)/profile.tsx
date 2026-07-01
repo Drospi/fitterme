@@ -12,7 +12,7 @@ export default function ProfileScreen() {
     <ScrollView style={globalStyles.container}>
       <View style={globalStyles.header}>
         <Text style={globalStyles.title}>Profile</Text>
-        <Link href="/settings/settings">
+        <Link href="/settings/settings" asChild>
           <Ionicons style={globalStyles.title} name="settings" />
         </Link>
       </View>

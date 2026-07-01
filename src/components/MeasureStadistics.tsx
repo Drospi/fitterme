@@ -59,7 +59,7 @@ export default function MeasuresStadistics() {
     }, []),
   );
   return (
-    <ScrollView style={globalStyles.container}>
+    <ScrollView>
       <View style={globalStyles.header}>
         <Text style={globalStyles.title}>Estadísticas</Text>
       </View>

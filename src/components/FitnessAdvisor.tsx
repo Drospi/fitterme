@@ -1,4 +1,5 @@
-import { colors } from "@/styles/global";
+import { useTheme } from "@/context/ThemeContext";
+import { getGlobalStyles } from "@/styles/global";
 import { Ionicons } from "@expo/vector-icons";
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
@@ -8,6 +9,9 @@ type AdvisorProps = {
 };
 
 const FitnessAdvisor = ({ medidas }: AdvisorProps) => {
+  const { colors } = useTheme();
+  const globalStyles = getGlobalStyles(colors);
+
   const getConsejos = () => {
     const consejos = [];
 
@@ -301,12 +305,12 @@ const FitnessAdvisor = ({ medidas }: AdvisorProps) => {
   const listaConsejos = getConsejos();
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Consejos de hoy</Text>
+    <View style={globalStyles.card}>
+      <Text style={globalStyles.cardTitle}>Consejos de hoy</Text>
       {listaConsejos.slice(0, 3).map((item, index) => (
-        <View key={index} style={styles.card}>
+        <View key={index} style={globalStyles.card}>
           <Ionicons name={item.icon as any} size={24} color={colors.text} />
-          <Text style={styles.text}>{item.msg}</Text>
+          <Text style={globalStyles.cardText}>{item.msg}</Text>
         </View>
       ))}
     </View>
@@ -315,25 +319,6 @@ const FitnessAdvisor = ({ medidas }: AdvisorProps) => {
 
 const styles = StyleSheet.create({
   container: { padding: 16 },
-  title: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginBottom: 10,
-    color: colors.text,
-  },
-  card: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: colors.surface,
-    padding: 15,
-    borderRadius: 12,
-    marginBottom: 10,
-    elevation: 3,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-  },
-  text: { marginLeft: 12, fontSize: 14, flex: 1, color: colors.textSecondary },
 });
 
 export default FitnessAdvisor;

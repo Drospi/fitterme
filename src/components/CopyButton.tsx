@@ -1,5 +1,6 @@
+import { useTheme } from "@/context/ThemeContext";
 import { Meal } from "@/store/meals";
-import { colors } from "@/styles/global";
+import { getGlobalStyles } from "@/styles/global";
 import { Ionicons } from "@expo/vector-icons";
 import * as Clipboard from "expo-clipboard";
 import * as Haptics from "expo-haptics";
@@ -10,6 +11,9 @@ type CopyButtonProps = {
 };
 
 export default function CopyButton({ meals }: CopyButtonProps) {
+  const { colors } = useTheme();
+  const globalStyles = getGlobalStyles(colors);
+
   const handleCopy = async () => {
     const totals = meals.reduce(
       (acc, meal) => ({
@@ -31,7 +35,7 @@ export default function CopyButton({ meals }: CopyButtonProps) {
   return (
     <TouchableOpacity style={styles.button} onPress={handleCopy}>
       <Ionicons name="copy-outline" size={18} color={colors.primary} />
-      <Text style={styles.text}>Copy Summary</Text>
+      <Text style={globalStyles.text}>Copy Summary</Text>
     </TouchableOpacity>
   );
 }
@@ -42,9 +46,5 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 6,
     marginTop: 16,
-  },
-  text: {
-    color: colors.primary,
-    fontSize: 14,
   },
 });
