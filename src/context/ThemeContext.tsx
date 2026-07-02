@@ -7,6 +7,7 @@ export const lightTheme = {
   primary: "#007AFF",
   text: "#000000",
   textSecondary: "#666666",
+  success: "#4CAF50",
 };
 export const darkTheme = {
   background: "#1a1a2e",
@@ -14,6 +15,7 @@ export const darkTheme = {
   primary: "#4fc3f7",
   text: "#ffffff",
   textSecondary: "#a0a0b0",
+  success: "#4CAF50",
 };
 
 const ThemeContext = createContext({

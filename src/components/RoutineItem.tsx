@@ -1,69 +1,59 @@
+import { useTheme } from "@/context/ThemeContext";
 import { deleteRoutine } from "@/store/routines";
-import { colors } from "@/styles/global";
+import { getGlobalStyles } from "@/styles/global";
 import * as Haptics from "expo-haptics";
-import { Alert, StyleSheet, Text, TouchableOpacity } from "react-native";
+import { useRouter } from "expo-router"; // Importamos useRouter
+import { Alert, Text, TouchableOpacity } from "react-native";
 
 type RoutineItemProps = {
   id: string;
   name: string;
-  series: number;
-  reps: number;
-  kg: number;
+  // Ajustamos los props: ahora recibirá un array de ejercicios o el objeto completo
+  // Si tu 'Routine' tiene varios ejercicios, es mejor mostrar un resumen.
+  exercisesCount: number;
   onDelete: () => void;
 };
 
 export default function RoutineItem({
   id,
   name,
-  series,
-  reps,
-  kg,
+  exercisesCount,
   onDelete,
 }: RoutineItemProps) {
+  const { colors } = useTheme();
+  const globalStyles = getGlobalStyles(colors);
+  const router = useRouter(); // Inicializamos el router
+
   const handleLongPress = () => {
     Alert.alert(
-      "Delete Routine",
-      `Are you sure you want to delete "${name}"?`,
+      "Eliminar Rutina",
+      `¿Estás seguro de que quieres eliminar "${name}"?`,
       [
-        { text: "Cancel", style: "cancel" },
+        { text: "Cancelar", style: "cancel" },
         {
-          text: "Delete",
+          text: "Eliminar",
           style: "destructive",
           onPress: async () => {
             await deleteRoutine(id);
             onDelete();
+            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
           },
         },
       ],
     );
-    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
   };
 
   return (
-    <TouchableOpacity style={styles.container} onLongPress={handleLongPress}>
-      <Text style={styles.name}>{name}</Text>
-      <Text style={styles.macros}>
-        {series} series • {reps} reps • {kg} kg
+    <TouchableOpacity
+      style={globalStyles.card}
+      onLongPress={handleLongPress}
+      // Navegación a detalles pasando el ID como parámetro
+      onPress={() => router.push(`/routines/details?id=${id}`)}
+    >
+      <Text style={globalStyles.title}>{name}</Text>
+      <Text style={globalStyles.textSecondary}>
+        {exercisesCount} ejercicios en esta rutina
       </Text>
     </TouchableOpacity>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: colors.surface,
-    borderRadius: 10,
-    padding: 16,
-    marginBottom: 10,
-  },
-  name: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: colors.text,
-  },
-  macros: {
-    fontSize: 13,
-    color: colors.textSecondary,
-    marginTop: 4,
-  },
-});

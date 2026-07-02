@@ -1,3 +1,4 @@
+import ExcerciseItem from "@/components/ExcerciseItem";
 import { useTheme } from "@/context/ThemeContext";
 import { addRoutine } from "@/store/routines";
 import { getGlobalStyles } from "@/styles/global";
@@ -6,7 +7,7 @@ import * as Haptics from "expo-haptics";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import {
-  StyleSheet,
+  ScrollView,
   Text,
   TextInput,
   TouchableOpacity,
@@ -16,121 +17,117 @@ import {
 export default function AddRoutineScreen() {
   const { colors } = useTheme();
   const globalStyles = getGlobalStyles(colors);
-
-  const router = useRouter();
   const route = useRouter();
+
   const [name, setName] = useState("");
-  const [series, setSeries] = useState("");
-  const [reps, setReps] = useState("");
-  const [kg, setKg] = useState("");
   const [isEditing, setIsEditing] = useState(false);
+  const [exercises, setExercises] = useState([
+    {
+      id: Date.now().toString(),
+      name: "",
+      series: [
+        {
+          id: Date.now().toString(),
+          series: 1,
+          reps: 0,
+          kg: 0,
+          isActive: false,
+        },
+      ],
+    },
+  ]);
+
+  const handleAddExercise = () => {
+    const newExercise = {
+      id: Date.now().toString(),
+      name: "",
+      series: [
+        {
+          id: Date.now().toString(),
+          series: 1,
+          reps: 0,
+          kg: 0,
+          isActive: false,
+        },
+      ],
+    };
+    setExercises((prev) => [...prev, newExercise]);
+  };
+
+  // Función para actualizar un ejercicio específico
+  const updateExercise = (id: string, updatedData: any) => {
+    setExercises((prev) =>
+      prev.map((ex) => (ex.id === id ? { ...ex, ...updatedData } : ex)),
+    );
+  };
+
+  const handleDeleteExercise = (id: string) => {
+    setExercises((prev) => prev.filter((ex) => ex.id !== id));
+  };
 
   const handleAddRoutine = async () => {
     await addRoutine({
       name,
-      series: parseInt(series) || 0,
-      reps: parseInt(reps) || 0,
-      kg: parseInt(kg) || 0,
+      exercises: exercises,
     });
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     route.dismissAll();
   };
 
-  const handleTerminar = () => {
-    // Lógica extra aquí (guardar, limpiar, etc.)
-    router.push("/routines");
-  };
-
   return (
-    <View style={globalStyles.container}>
+    <ScrollView
+      style={globalStyles.container}
+      contentContainerStyle={{ paddingBottom: 50 }}
+    >
       <View style={globalStyles.header}>
-        <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
-          <Ionicons
-            name="arrow-back"
-            onPress={() => route.back()}
-            size={24}
-            color={colors.text}
-          />
-          <Ionicons
-            name="timer-outline"
-            onPress={() => route.push("/settings/timer")}
-            size={24}
-            color={colors.text}
-          />
-        </View>
-        <Text style={globalStyles.text}>05:00</Text>
-        <TouchableOpacity onPress={handleTerminar}>
-          <Text style={globalStyles.textPrimary}>Terminar</Text>
+        <Ionicons
+          name="arrow-back"
+          onPress={() => route.back()}
+          size={24}
+          color={colors.text}
+        />
+        <Text style={globalStyles.text}>Crear Rutina</Text>
+        <TouchableOpacity onPress={handleAddRoutine}>
+          <Text style={globalStyles.textPrimary}>Guardar</Text>
         </TouchableOpacity>
       </View>
-      <View>
+
+      <View style={{ marginVertical: 20 }}>
         {isEditing ? (
           <TextInput
             style={globalStyles.title}
             value={name}
             onChangeText={setName}
-            onBlur={() => {
-              setName(name);
-              setIsEditing(false);
-            }}
-            autoFocus={true}
+            onBlur={() => setIsEditing(false)}
+            autoFocus
+            placeholder="Nombre de la rutina"
           />
         ) : (
           <TouchableOpacity onPress={() => setIsEditing(true)}>
-            <Text style={globalStyles.title}>{name || "Add Routine"}</Text>
+            <Text style={globalStyles.title}>
+              {name || "Nombre de la rutina"}
+            </Text>
           </TouchableOpacity>
         )}
       </View>
 
-      <TextInput
-        style={globalStyles.input}
-        placeholder="Routine name"
-        placeholderTextColor={colors.textSecondary}
-        value={name}
-        onChangeText={setName}
-      />
+      {exercises.map((exercise) => (
+        <ExcerciseItem
+          key={exercise.id}
+          id={exercise.id}
+          name={exercise.name}
+          series={exercise.series}
+          onChange={(newData) => updateExercise(exercise.id, newData)}
+          onDelete={() => handleDeleteExercise(exercise.id)}
+        />
+      ))}
 
-      <View style={styles.row}>
-        <TextInput
-          style={[globalStyles.input, styles.rowInput]}
-          placeholder="Series (s)"
-          placeholderTextColor={colors.textSecondary}
-          keyboardType="numeric"
-          value={series}
-          onChangeText={setSeries}
-        />
-        <TextInput
-          style={[globalStyles.input, styles.rowInput]}
-          placeholder="Reps (r)"
-          placeholderTextColor={colors.textSecondary}
-          keyboardType="numeric"
-          value={reps}
-          onChangeText={setReps}
-        />
-        <TextInput
-          style={[globalStyles.input, styles.rowInput]}
-          placeholder="Weight (kg)"
-          placeholderTextColor={colors.textSecondary}
-          keyboardType="numeric"
-          value={kg}
-          onChangeText={setKg}
-        />
-      </View>
-
-      <TouchableOpacity style={globalStyles.button} onPress={handleAddRoutine}>
-        <Text style={globalStyles.buttonText}>Save Routine</Text>
+      <TouchableOpacity
+        style={{ width: "100%", alignItems: "center", marginTop: 20 }}
+        onPress={handleAddExercise}
+      >
+        <Text style={globalStyles.textPrimary}>+ Agregar Ejercicio</Text>
       </TouchableOpacity>
-    </View>
+    </ScrollView>
   );
 }
-
-const styles = StyleSheet.create({
-  row: {
-    flexDirection: "row",
-    gap: 10,
-  },
-  rowInput: {
-    flex: 1,
-    width: 50,
-  },
-});

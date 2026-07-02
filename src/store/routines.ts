@@ -3,9 +3,12 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 export type Routine = {
   id: string;
   name: string;
-  series: number;
-  reps: number;
-  kg: number;
+  exercises: Array<{
+    id: string;
+    name: string;
+    series: Array<{ id: string; series: number; reps: number; kg: number }>;
+  }>;
+
   createdAt: string;
 };
 
