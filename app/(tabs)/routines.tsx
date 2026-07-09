@@ -30,11 +30,16 @@ export default function AllRoutinesScreen() {
   return (
     <ScrollView style={globalStyles.container}>
       <View style={globalStyles.header}>
-        <Text style={globalStyles.title}>All Routines</Text>
+        <Text style={globalStyles.title}>Mis Routines</Text>
         <TouchableOpacity onPress={handleClearAll}>
           <Text style={styles.clearButton}>Clear All</Text>
         </TouchableOpacity>
       </View>
+      <Link href="/routines/add" push asChild>
+        <TouchableOpacity style={globalStyles.button}>
+          <Text style={globalStyles.buttonText}>Add Routine</Text>
+        </TouchableOpacity>
+      </Link>
       <View style={{ marginTop: 30 }}>
         {Routines.length === 0 ? (
           <Text style={globalStyles.empty}>No Routines logged yet.</Text>
@@ -50,11 +55,6 @@ export default function AllRoutinesScreen() {
           ))
         )}
       </View>
-      <Link href="/routines/add" push asChild>
-        <TouchableOpacity style={globalStyles.button}>
-          <Text style={globalStyles.buttonText}>Add Routine</Text>
-        </TouchableOpacity>
-      </Link>
     </ScrollView>
   );
 }

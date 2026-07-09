@@ -61,6 +61,17 @@ export default function RoutineDetails() {
     return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
   };
 
+  const handleUpdateRoutine = () => {
+    const updatedRoutine = { ...routine };
+    updatedRoutine.name = routine.name.trim();
+    updatedRoutine.exercises = routine.exercises.map((ex: any) => ({
+      ...ex,
+      name: ex.name.trim(),
+    }));
+    setRoutine(updatedRoutine);
+    router.back();
+  };
+
   if (!routine) return <Text>Cargando...</Text>;
 
   return (
@@ -108,7 +119,10 @@ export default function RoutineDetails() {
         />
       ))}
 
-      <TouchableOpacity style={globalStyles.button}>
+      <TouchableOpacity
+        onPress={() => handleUpdateRoutine()}
+        style={globalStyles.button}
+      >
         <Text style={globalStyles.buttonText}>Guardar Cambios</Text>
       </TouchableOpacity>
     </ScrollView>

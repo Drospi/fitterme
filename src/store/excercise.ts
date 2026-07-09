@@ -6,6 +6,8 @@ export type Excercise = {
   series: number;
   reps: number;
   kg: number;
+  muscle: string;
+  equipment: string;
   createdAt: string;
 };
 

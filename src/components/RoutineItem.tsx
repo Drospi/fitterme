@@ -3,7 +3,7 @@ import { deleteRoutine } from "@/store/routines";
 import { getGlobalStyles } from "@/styles/global";
 import * as Haptics from "expo-haptics";
 import { useRouter } from "expo-router"; // Importamos useRouter
-import { Alert, Text, TouchableOpacity } from "react-native";
+import { Alert, Text, TouchableOpacity, View } from "react-native";
 
 type RoutineItemProps = {
   id: string;
@@ -53,10 +53,30 @@ export default function RoutineItem({
       onLongPress={handleLongPress}
       onPress={() => router.push(`/routines/details?id=${id}`)}
     >
-      <Text style={globalStyles.cardTitle}>{name}</Text>
+      <Text style={[globalStyles.cardTitle, { fontSize: 24 }]}>{name}</Text>
       <Text style={globalStyles.cardText}>
-        {exercises.map((e) => e.name).join(", ")}
+        {exercises.length} ejercicios • {exercises.length * 15} min
+        estimados{" "}
       </Text>
+      <View style={{ marginTop: 10, display: "flex", flexDirection: "row" }}>
+        {exercises.map((ex) => (
+          <Text
+            key={ex.id}
+            style={{
+              color: colors.text,
+              backgroundColor: colors.background,
+              borderColor: colors.primary,
+              padding: 5,
+              paddingHorizontal: 15,
+              borderRadius: 5,
+              marginBottom: 5,
+              marginRight: 5,
+            }}
+          >
+            {ex.name}
+          </Text>
+        ))}
+      </View>
     </TouchableOpacity>
   );
 }
