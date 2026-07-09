@@ -1,4 +1,3 @@
-import HomeHeader from "@/components/HomeHeader";
 import MacroGrid from "@/components/MacroGrid";
 import MeasureStadistics from "@/components/MeasureStadistics";
 import ShareButton from "@/components/ShareButton";
@@ -35,7 +34,7 @@ export default function HomeScreen() {
         <Text style={globalStyles.title}>FitterMe</Text>
         <ShareButton meals={meals} />
       </View>
-      <HomeHeader />
+
       <MacroGrid meals={meals} goalCalories={2000} />
       <MeasureStadistics />
     </ScrollView>
