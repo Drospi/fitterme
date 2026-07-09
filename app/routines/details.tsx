@@ -6,11 +6,11 @@ import { Ionicons } from "@expo/vector-icons";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import {
-    ScrollView,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  ScrollView,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
 
 export default function RoutineDetails() {
@@ -21,7 +21,7 @@ export default function RoutineDetails() {
 
   const [routine, setRoutine] = useState<any>(null);
   const [isEditing, setIsEditing] = useState(false);
-  const [timer, setTimer] = useState(0); // Segundos
+  const [timer, setTimer] = useState(0);
 
   useEffect(() => {
     loadRoutine();
@@ -33,7 +33,21 @@ export default function RoutineDetails() {
     setRoutine(found);
   };
 
-  // Lógica del contador
+  const handleDeleteExercise = (id: string) => {
+    setRoutine((prev: any) => ({
+      ...prev,
+      exercises: prev.exercises.filter((ex: any) => ex.id !== id),
+    }));
+  };
+
+  const handleUpdateExercise = (id: string, updatedData: any) => {
+    setRoutine((prev: any) => ({
+      ...prev,
+      exercises: prev.exercises.map((ex: any) =>
+        ex.id === id ? { ...ex, ...updatedData } : ex,
+      ),
+    }));
+  };
   useEffect(() => {
     const interval = setInterval(() => {
       setTimer((prev) => prev + 1);
@@ -89,13 +103,8 @@ export default function RoutineDetails() {
           id={ex.id}
           name={ex.name}
           series={ex.series}
-          onDelete={() => {}} // Lógica de eliminar ejercicio
-          onChange={(newData) => {
-            const newExercises = routine.exercises.map((e: any) =>
-              e.id === ex.id ? { ...e, ...newData } : e,
-            );
-            setRoutine({ ...routine, exercises: newExercises });
-          }}
+          onDelete={() => handleDeleteExercise(ex.id)}
+          onChange={(updatedData) => handleUpdateExercise(ex.id, updatedData)}
         />
       ))}
 

@@ -44,9 +44,7 @@ export default function AllRoutinesScreen() {
               key={Routine.id}
               id={Routine.id}
               name={Routine.name}
-              series={Routine.series}
-              reps={Routine.reps}
-              kg={Routine.kg}
+              exercises={Routine.exercises}
               onDelete={loadRoutines}
             />
           ))

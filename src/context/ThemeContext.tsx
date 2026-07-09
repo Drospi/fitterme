@@ -5,17 +5,25 @@ export const lightTheme = {
   background: "#ffffff",
   surface: "#f0f0f0",
   primary: "#007AFF",
+  secondary: "#0066ff",
   text: "#000000",
   textSecondary: "#666666",
+  textWhite: "#ffffff",
   success: "#4CAF50",
+  neutral: "#f5f5f5",
+  delete: "#FFB4AB",
 };
 export const darkTheme = {
   background: "#1a1a2e",
   surface: "#2a2a4a",
-  primary: "#4fc3f7",
+  secondary: "#0066ff",
+  primary: "#CCFF00",
   text: "#ffffff",
+  textWhite: "#ffffff",
   textSecondary: "#a0a0b0",
   success: "#4CAF50",
+  neutral: "#121212",
+  delete: "#FFB4AB",
 };
 
 const ThemeContext = createContext({

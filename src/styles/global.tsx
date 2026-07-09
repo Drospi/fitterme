@@ -91,4 +91,9 @@ export const getGlobalStyles = (colors: any) =>
       fontSize: 14,
       color: colors.textSecondary,
     },
+    icon: {
+      width: 40,
+      height: 40,
+      marginRight: 10,
+    },
   });

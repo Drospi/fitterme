@@ -1,15 +1,13 @@
-import CopyButton from "@/components/CopyButton";
 import HomeHeader from "@/components/HomeHeader";
 import MacroGrid from "@/components/MacroGrid";
 import MeasureStadistics from "@/components/MeasureStadistics";
-import RecentMeals from "@/components/RecentMeals";
 import ShareButton from "@/components/ShareButton";
 import { useTheme } from "@/context/ThemeContext";
 import { getMeals, Meal } from "@/store/meals";
 import { getGlobalStyles } from "@/styles/global";
 import { useFocusEffect } from "expo-router";
 import { useCallback, useState } from "react";
-import { ScrollView, Text, View } from "react-native";
+import { Image, ScrollView, Text, View } from "react-native";
 
 export default function HomeScreen() {
   const { colors } = useTheme();
@@ -30,13 +28,15 @@ export default function HomeScreen() {
   return (
     <ScrollView style={globalStyles.container}>
       <View style={globalStyles.header}>
-        <Text style={globalStyles.title}>MacroZone</Text>
+        <Image
+          style={globalStyles.icon}
+          source={require("@/assets/images/profile.jpeg")}
+        />
+        <Text style={globalStyles.title}>FitterMe</Text>
         <ShareButton meals={meals} />
       </View>
       <HomeHeader />
-      <MacroGrid meals={meals} />
-      <CopyButton meals={meals} />
-      <RecentMeals meals={meals} onDelete={loadMeals} />
+      <MacroGrid meals={meals} goalCalories={2000} />
       <MeasureStadistics />
     </ScrollView>
   );

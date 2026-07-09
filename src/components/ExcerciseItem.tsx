@@ -63,7 +63,7 @@ export default function ExcerciseItem({
   };
 
   return (
-    <View style={styles.container}>
+    <View>
       <View
         style={{
           flexDirection: "row",
@@ -95,7 +95,8 @@ export default function ExcerciseItem({
       </View>
 
       <View style={styles.row}>
-        <Text style={globalStyles.text}>Set</Text>
+        <Text style={[globalStyles.text, styles.colSerie]}>Set</Text>
+        <Text style={[globalStyles.text, styles.colAnterior]}>Mejor</Text>
         <Text style={globalStyles.text}>KG</Text>
         <Text style={globalStyles.text}>Reps</Text>
         <Ionicons
@@ -108,7 +109,6 @@ export default function ExcerciseItem({
       {series.map((serie) => (
         <SerieItem
           key={serie.id}
-          // Asegúrate de que SerieItem acepte estas props
           id={serie.id}
           series={serie.series}
           reps={serie.reps}
@@ -129,17 +129,20 @@ export default function ExcerciseItem({
 }
 
 const styles = StyleSheet.create({
-  container: {
-    marginBottom: 20,
-    padding: 10,
-    backgroundColor: "rgba(0,0,0,0.05)", // Opcional: para diferenciar el bloque
-    borderRadius: 8,
-  },
   row: {
     flexDirection: "row",
     alignItems: "center",
     marginVertical: 10,
     justifyContent: "space-between",
     paddingHorizontal: 10,
+  },
+  colSerie: { width: 40, textAlign: "center" },
+  colAnterior: { width: 80, textAlign: "center" },
+
+  colCheck: {
+    width: 20,
+    height: 20,
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
