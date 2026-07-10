@@ -9,7 +9,7 @@ import { ScrollView, Text, TextInput, TouchableOpacity } from "react-native";
 type Props = {
   next: () => void;
   data: { name: string; category: string };
-  updateData: (name: string, category: string) => void;
+  updateData: (newData: Partial<{ name: string; category: string }>) => void;
 };
 
 export default function Step1({ next, data, updateData }: Props) {
@@ -19,7 +19,7 @@ export default function Step1({ next, data, updateData }: Props) {
   const [name, setName] = useState(data ? data.name : "");
 
   const handleSelect = () => {
-    updateData(name, category);
+    updateData({ name: name, category: category });
     next();
   };
 

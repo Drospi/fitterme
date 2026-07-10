@@ -23,11 +23,18 @@ const CreateRoutineScreen = () => {
       {step === 1 && (
         <Step1
           next={() => setStep(2)}
-          data={routineData as any}
+          data={routineData}
           updateData={handleUpdate}
         />
       )}
-      {step === 2 && <Step2 next={() => setStep(3)} back={() => setStep(1)} />}
+      {step === 2 && (
+        <Step2
+          next={() => setStep(3)}
+          back={() => setStep(1)}
+          data={routineData}
+          updateData={handleUpdate}
+        />
+      )}
       {step === 3 && <Step3 back={() => setStep(2)} />}
     </View>
   );
