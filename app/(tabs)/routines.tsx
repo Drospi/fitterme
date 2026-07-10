@@ -35,9 +35,9 @@ export default function AllRoutinesScreen() {
           <Text style={styles.clearButton}>Clear All</Text>
         </TouchableOpacity>
       </View>
-      <Link href="/routines/add" push asChild>
+      <Link href="/routines/CreateRoutineScreen" push asChild>
         <TouchableOpacity style={globalStyles.button}>
-          <Text style={globalStyles.buttonText}>Add Routine</Text>
+          <Text style={globalStyles.buttonText}>Crear Routine</Text>
         </TouchableOpacity>
       </Link>
       <View style={{ marginTop: 30 }}>

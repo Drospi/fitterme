@@ -81,6 +81,12 @@ export const getGlobalStyles = (colors: any) =>
       borderRadius: 10,
       marginBottom: 10,
     },
+    activeCard: {
+      backgroundColor: colors.primary + "33",
+      padding: 16,
+      borderRadius: 10,
+      marginBottom: 10,
+    },
     cardTitle: {
       fontSize: 16,
       fontWeight: "bold",
