@@ -28,7 +28,7 @@ export default function Step1({ next, data, updateData }: Props) {
       <Ionicons
         name="arrow-back"
         size={32}
-        onPress={router.back}
+        onPress={() => router.dismiss}
         color={colors.text}
       />
       <Text style={globalStyles.title}>Paso 1: Información Básica</Text>

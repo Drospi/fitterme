@@ -1,0 +1,712 @@
+[
+  {
+    "id": 1,
+    "nombre": "Press Militar con Mancuernas",
+    "musculo": "hombros",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Mancuernas",
+    "urlimage": "https://example.com/press_militar.jpg"
+  },
+  {
+    "id": 2,
+    "nombre": "Elevaciones Laterales",
+    "musculo": "hombros",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Mancuernas"
+  },
+  {
+    "id": 3,
+    "nombre": "Press de Banca Plano",
+    "musculo": "pecho",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Barra"
+  },
+  {
+    "id": 4,
+    "nombre": "Aperturas con Mancuernas",
+    "musculo": "pecho",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Mancuernas",
+    "urlimage": "https://example.com/aperturas.jpg"
+  },
+  {
+    "id": 5,
+    "nombre": "Curl de Bíceps con Barra",
+    "musculo": "biceps",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Barra"
+  },
+  {
+    "id": 6,
+    "nombre": "Curl Martillo",
+    "musculo": "biceps",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Mancuernas",
+    "urlimage": "https://example.com/curl_martillo.jpg"
+  },
+  {
+    "id": 7,
+    "nombre": "Curl Inverso",
+    "musculo": "antebrazo",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Barra"
+  },
+  {
+    "id": 8,
+    "nombre": "Flexión de Muñeca con Barra",
+    "musculo": "antebrazo",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Barra"
+  },
+  {
+    "id": 9,
+    "nombre": "Plancha Abdominal",
+    "musculo": "cintura",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Peso corporal"
+  },
+  {
+    "id": 10,
+    "nombre": "Russian Twists",
+    "musculo": "cintura",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Disco",
+    "urlimage": "https://example.com/russian_twists.jpg"
+  },
+  {
+    "id": 11,
+    "nombre": "Peso Muerto Rumano",
+    "musculo": "cadera",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Barra"
+  },
+  {
+    "id": 12,
+    "nombre": "Hip Thrust",
+    "musculo": "cadera",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Barra",
+    "urlimage": "https://example.com/hip_thrust.jpg"
+  },
+  {
+    "id": 13,
+    "nombre": "Sentadilla con Barra",
+    "musculo": "cuadriceps",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Barra"
+  },
+  {
+    "id": 14,
+    "nombre": "Extensiones de Pierna",
+    "musculo": "cuadriceps",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Máquina"
+  },
+  {
+    "id": 15,
+    "nombre": "Elevación de Talones de Pie",
+    "musculo": "gemelos",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Máquina"
+  },
+  {
+    "id": 16,
+    "nombre": "Elevación de Talones Sentado",
+    "musculo": "gemelos",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Máquina"
+  },
+  {
+    "id": 17,
+    "nombre": "Sentadilla Búlgara",
+    "musculo": "gluteos",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Mancuernas"
+  },
+  {
+    "id": 18,
+    "nombre": "Patada de Glúteo en Polea",
+    "musculo": "gluteos",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Polea",
+    "urlimage": "https://example.com/patada_gluteo.jpg"
+  },
+  {
+    "id": 19,
+    "nombre": "Press Arnold",
+    "musculo": "hombros",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Mancuernas"
+  },
+  {
+    "id": 20,
+    "nombre": "Cruces en Polea",
+    "musculo": "pecho",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Polea"
+  },
+  {
+    "id": 21,
+    "nombre": "Curl Concentrado",
+    "musculo": "biceps",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Mancuerna"
+  },
+  {
+    "id": 22,
+    "nombre": "Extensiones de muñeca con mancuerna",
+    "musculo": "antebrazo",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Mancuerna"
+  },
+  {
+    "id": 23,
+    "nombre": "Vacío abdominal",
+    "musculo": "cintura",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Peso corporal"
+  },
+  {
+    "id": 24,
+    "nombre": "Puente de glúteo a una pierna",
+    "musculo": "cadera",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Peso corporal"
+  },
+  {
+    "id": 25,
+    "nombre": "Zancadas (Lunges)",
+    "musculo": "cuadriceps",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Mancuernas"
+  },
+  {
+    "id": 26,
+    "nombre": "Saltos al cajón",
+    "musculo": "gemelos",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Cajón"
+  },
+  {
+    "id": 27,
+    "nombre": "Abducción de cadera",
+    "musculo": "gluteos",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Máquina"
+  },
+  {
+    "id": 28,
+    "nombre": "Elevaciones frontales",
+    "musculo": "hombros",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Mancuernas"
+  },
+  {
+    "id": 29,
+    "nombre": "Press Inclinado con mancuernas",
+    "musculo": "pecho",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Mancuernas"
+  },
+  {
+    "id": 30,
+    "nombre": "Curl Predicador",
+    "musculo": "biceps",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Barra EZ"
+  },
+  {
+    "id": 31,
+    "nombre": "Press Militar Pesado",
+    "musculo": "hombros",
+    "objetivo": "Fuerza",
+    "equipamiento": "Barra",
+    "urlimage": "https://example.com/press_militar_fuerza.jpg"
+  },
+  {
+    "id": 32,
+    "nombre": "Push Press",
+    "musculo": "hombros",
+    "objetivo": "Fuerza",
+    "equipamiento": "Barra"
+  },
+  {
+    "id": 33,
+    "nombre": "Press de Banca con Pausa",
+    "musculo": "pecho",
+    "objetivo": "Fuerza",
+    "equipamiento": "Barra"
+  },
+  {
+    "id": 34,
+    "nombre": "Press con Agarre Cerrado",
+    "musculo": "pecho",
+    "objetivo": "Fuerza",
+    "equipamiento": "Barra",
+    "urlimage": "https://example.com/press_cerrado.jpg"
+  },
+  {
+    "id": 35,
+    "nombre": "Curl con Barra Pesado",
+    "musculo": "biceps",
+    "objetivo": "Fuerza",
+    "equipamiento": "Barra"
+  },
+  {
+    "id": 36,
+    "nombre": "Curl de Bíceps con Fat Gripz",
+    "musculo": "biceps",
+    "objetivo": "Fuerza",
+    "equipamiento": "Mancuernas"
+  },
+  {
+    "id": 37,
+    "nombre": "Curl de Muñeca con Barra Pesado",
+    "musculo": "antebrazo",
+    "objetivo": "Fuerza",
+    "equipamiento": "Barra"
+  },
+  {
+    "id": 38,
+    "nombre": "Sujeción de Platos/Discos",
+    "musculo": "antebrazo",
+    "objetivo": "Fuerza",
+    "equipamiento": "Discos"
+  },
+  {
+    "id": 39,
+    "nombre": "Plancha con peso sobre espalda",
+    "musculo": "cintura",
+    "objetivo": "Fuerza",
+    "equipamiento": "Disco"
+  },
+  {
+    "id": 40,
+    "nombre": "Paseo del Granjero",
+    "musculo": "cintura",
+    "objetivo": "Fuerza",
+    "equipamiento": "Mancuernas Pesadas"
+  },
+  {
+    "id": 41,
+    "nombre": "Peso Muerto Convencional",
+    "musculo": "cadera",
+    "objetivo": "Fuerza",
+    "equipamiento": "Barra"
+  },
+  {
+    "id": 42,
+    "nombre": "Hip Thrust Pesado",
+    "musculo": "cadera",
+    "objetivo": "Fuerza",
+    "equipamiento": "Barra"
+  },
+  {
+    "id": 43,
+    "nombre": "Sentadilla Trasera (Low Bar)",
+    "musculo": "cuadriceps",
+    "objetivo": "Fuerza",
+    "equipamiento": "Barra"
+  },
+  {
+    "id": 44,
+    "nombre": "Sentadilla Frontal",
+    "musculo": "cuadriceps",
+    "objetivo": "Fuerza",
+    "equipamiento": "Barra"
+  },
+  {
+    "id": 45,
+    "nombre": "Elevación de Talones de pie con peso",
+    "musculo": "gemelos",
+    "objetivo": "Fuerza",
+    "equipamiento": "Barra"
+  },
+  {
+    "id": 46,
+    "nombre": "Donkey Calf Raise con peso",
+    "musculo": "gemelos",
+    "objetivo": "Fuerza",
+    "equipamiento": "Máquina"
+  },
+  {
+    "id": 47,
+    "nombre": "Sentadilla Búlgara con carga máxima",
+    "musculo": "gluteos",
+    "objetivo": "Fuerza",
+    "equipamiento": "Mancuernas"
+  },
+  {
+    "id": 48,
+    "nombre": "Sumo Deadlift",
+    "musculo": "gluteos",
+    "objetivo": "Fuerza",
+    "equipamiento": "Barra"
+  },
+  {
+    "id": 49,
+    "nombre": "Press Z con barra",
+    "musculo": "hombros",
+    "objetivo": "Fuerza",
+    "equipamiento": "Barra"
+  },
+  {
+    "id": 50,
+    "nombre": "Dips (Fondos) con lastre",
+    "musculo": "pecho",
+    "objetivo": "Fuerza",
+    "equipamiento": "Cinturón de lastre"
+  },
+  {
+    "id": 51,
+    "nombre": "Curl de Bíceps estilo Pendlay",
+    "musculo": "biceps",
+    "objetivo": "Fuerza",
+    "equipamiento": "Barra"
+  },
+  {
+    "id": 52,
+    "nombre": "Extensiones de muñeca con barra",
+    "musculo": "antebrazo",
+    "objetivo": "Fuerza",
+    "equipamiento": "Barra"
+  },
+  {
+    "id": 53,
+    "nombre": "Sentadilla Zercher",
+    "musculo": "cintura",
+    "objetivo": "Fuerza",
+    "equipamiento": "Barra"
+  },
+  {
+    "id": 54,
+    "nombre": "Peso Muerto con Piernas Rígidas",
+    "musculo": "cadera",
+    "objetivo": "Fuerza",
+    "equipamiento": "Barra"
+  },
+  {
+    "id": 55,
+    "nombre": "Zancadas pesadas con barra",
+    "musculo": "cuadriceps",
+    "objetivo": "Fuerza",
+    "equipamiento": "Barra"
+  },
+  {
+    "id": 56,
+    "nombre": "Saltos al cajón con lastre",
+    "musculo": "gemelos",
+    "objetivo": "Fuerza",
+    "equipamiento": "Chaleco lastrado"
+  },
+  {
+    "id": 57,
+    "nombre": "Puente de glúteo con barra (Max)",
+    "musculo": "gluteos",
+    "objetivo": "Fuerza",
+    "equipamiento": "Barra"
+  },
+  {
+    "id": 58,
+    "nombre": "Press de hombro tras nuca",
+    "musculo": "hombros",
+    "objetivo": "Fuerza",
+    "equipamiento": "Barra"
+  },
+  {
+    "id": 59,
+    "nombre": "Press de banca con agarre ancho",
+    "musculo": "pecho",
+    "objetivo": "Fuerza",
+    "equipamiento": "Barra"
+  },
+  {
+    "id": 60,
+    "nombre": "Curl martillo pesado",
+    "musculo": "biceps",
+    "objetivo": "Fuerza",
+    "equipamiento": "Mancuernas"
+  },
+  {
+    "id": 61,
+    "nombre": "Press Militar con poco peso y altas repeticiones",
+    "musculo": "hombros",
+    "objetivo": "Resistencia",
+    "equipamiento": "Mancuernas",
+    "urlimage": "https://example.com/press_militar_resistencia.jpg"
+  },
+  {
+    "id": 62,
+    "nombre": "Elevaciones laterales rápidas",
+    "musculo": "hombros",
+    "objetivo": "Resistencia",
+    "equipamiento": "Mancuernas"
+  },
+  {
+    "id": 63,
+    "nombre": "Flexiones de pecho (Push-ups)",
+    "musculo": "pecho",
+    "objetivo": "Resistencia",
+    "equipamiento": "Peso corporal"
+  },
+  {
+    "id": 64,
+    "nombre": "Press de banca con banda elástica",
+    "musculo": "pecho",
+    "objetivo": "Resistencia",
+    "equipamiento": "Bandas"
+  },
+  {
+    "id": 65,
+    "nombre": "Curl de bíceps con banda elástica",
+    "musculo": "biceps",
+    "objetivo": "Resistencia",
+    "equipamiento": "Bandas"
+  },
+  {
+    "id": 66,
+    "nombre": "Curl de bíceps 21s",
+    "musculo": "biceps",
+    "objetivo": "Resistencia",
+    "equipamiento": "Barra"
+  },
+  {
+    "id": 67,
+    "nombre": "Curl de antebrazo con poco peso (infinitas reps)",
+    "musculo": "antebrazo",
+    "objetivo": "Resistencia",
+    "equipamiento": "Mancuerna"
+  },
+  {
+    "id": 68,
+    "nombre": "Sujeción de mancuernas (crono)",
+    "musculo": "antebrazo",
+    "objetivo": "Resistencia",
+    "equipamiento": "Mancuernas"
+  },
+  {
+    "id": 69,
+    "nombre": "Plancha abdominal (mantención)",
+    "musculo": "cintura",
+    "objetivo": "Resistencia",
+    "equipamiento": "Peso corporal"
+  },
+  {
+    "id": 70,
+    "nombre": "Mountain Climbers",
+    "musculo": "cintura",
+    "objetivo": "Resistencia",
+    "equipamiento": "Peso corporal"
+  },
+  {
+    "id": 71,
+    "nombre": "Sentadilla al aire (Air squats)",
+    "musculo": "cadera",
+    "objetivo": "Resistencia",
+    "equipamiento": "Peso corporal"
+  },
+  {
+    "id": 72,
+    "nombre": "Puente de glúteo sin peso (altas repeticiones)",
+    "musculo": "cadera",
+    "objetivo": "Resistencia",
+    "equipamiento": "Peso corporal"
+  },
+  {
+    "id": 73,
+    "nombre": "Zancadas con desplazamiento",
+    "musculo": "cuadriceps",
+    "objetivo": "Resistencia",
+    "equipamiento": "Peso corporal"
+  },
+  {
+    "id": 74,
+    "nombre": "Step-ups (subida al cajón)",
+    "musculo": "cuadriceps",
+    "objetivo": "Resistencia",
+    "equipamiento": "Cajón"
+  },
+  {
+    "id": 75,
+    "nombre": "Elevación de talones de pie (cuerpo)",
+    "musculo": "gemelos",
+    "objetivo": "Resistencia",
+    "equipamiento": "Peso corporal"
+  },
+  {
+    "id": 76,
+    "nombre": "Saltos a la comba (cuerda)",
+    "musculo": "gemelos",
+    "objetivo": "Resistencia",
+    "equipamiento": "Cuerda"
+  },
+  {
+    "id": 77,
+    "nombre": "Hip thrust a una pierna (sin peso)",
+    "musculo": "gluteos",
+    "objetivo": "Resistencia",
+    "equipamiento": "Peso corporal"
+  },
+  {
+    "id": 78,
+    "nombre": "Patada de glúteo sin peso (altas reps)",
+    "musculo": "gluteos",
+    "objetivo": "Resistencia",
+    "equipamiento": "Peso corporal"
+  },
+  {
+    "id": 79,
+    "nombre": "Press militar con banda elástica",
+    "musculo": "hombros",
+    "objetivo": "Resistencia",
+    "equipamiento": "Bandas"
+  },
+  {
+    "id": 80,
+    "nombre": "Flexiones diamante",
+    "musculo": "pecho",
+    "objetivo": "Resistencia",
+    "equipamiento": "Peso corporal"
+  },
+  {
+    "id": 81,
+    "nombre": "Curl de bíceps alterno continuo",
+    "musculo": "biceps",
+    "objetivo": "Resistencia",
+    "equipamiento": "Mancuernas"
+  },
+  {
+    "id": 82,
+    "nombre": "Extensiones de muñeca continuas",
+    "musculo": "antebrazo",
+    "objetivo": "Resistencia",
+    "equipamiento": "Mancuerna"
+  },
+  {
+    "id": 83,
+    "nombre": "Bicycle Crunches",
+    "musculo": "cintura",
+    "objetivo": "Resistencia",
+    "equipamiento": "Peso corporal"
+  },
+  {
+    "id": 84,
+    "nombre": "Swing con Kettlebell (ligero)",
+    "musculo": "cadera",
+    "objetivo": "Resistencia",
+    "equipamiento": "Kettlebell"
+  },
+  {
+    "id": 85,
+    "nombre": "Sentadilla con salto (Jump squats)",
+    "musculo": "cuadriceps",
+    "objetivo": "Resistencia",
+    "equipamiento": "Peso corporal"
+  },
+  {
+    "id": 86,
+    "nombre": "Correr (carrera continua)",
+    "musculo": "gemelos",
+    "objetivo": "Resistencia",
+    "equipamiento": "Ninguno"
+  },
+  {
+    "id": 87,
+    "nombre": "Abducción de cadera lateral (banda)",
+    "musculo": "gluteos",
+    "objetivo": "Resistencia",
+    "equipamiento": "Bandas"
+  },
+  {
+    "id": 88,
+    "nombre": "Elevación frontal alternada (rápida)",
+    "musculo": "hombros",
+    "objetivo": "Resistencia",
+    "equipamiento": "Mancuernas"
+  },
+  {
+    "id": 89,
+    "nombre": "Flexiones con manos elevadas",
+    "musculo": "pecho",
+    "objetivo": "Resistencia",
+    "equipamiento": "Peso corporal"
+  },
+  {
+    "id": 90,
+    "nombre": "Curl de bíceps tipo martillo rápido",
+    "musculo": "biceps",
+    "objetivo": "Resistencia",
+    "equipamiento": "Mancuernas"
+  },
+  {
+    "id": 91,
+    "nombre": "Dominadas (Pull-ups)",
+    "musculo": "espalda",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Barra fija",
+    "urlimage": "https://example.com/dominadas.jpg"
+  },
+  {
+    "id": 92,
+    "nombre": "Remo con Barra",
+    "musculo": "espalda",
+    "objetivo": "Fuerza",
+    "equipamiento": "Barra"
+  },
+  {
+    "id": 93,
+    "nombre": "Jalón al Pecho",
+    "musculo": "espalda",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Máquina"
+  },
+  {
+    "id": 94,
+    "nombre": "Remo en Polea Baja",
+    "musculo": "espalda",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Polea"
+  },
+  {
+    "id": 95,
+    "nombre": "Remo con Mancuerna a una mano",
+    "musculo": "espalda",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Mancuerna"
+  },
+  {
+    "id": 96,
+    "nombre": "Peso Muerto con Barra",
+    "musculo": "espalda",
+    "objetivo": "Fuerza",
+    "equipamiento": "Barra"
+  },
+  {
+    "id": 97,
+    "nombre": "Remo Invertido",
+    "musculo": "espalda",
+    "objetivo": "Resistencia",
+    "equipamiento": "Barra fija"
+  },
+  {
+    "id": 98,
+    "nombre": "Face Pulls",
+    "musculo": "espalda",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Polea"
+  },
+  {
+    "id": 99,
+    "nombre": "Superman (lumbar)",
+    "musculo": "espalda",
+    "objetivo": "Resistencia",
+    "equipamiento": "Peso corporal"
+  },
+  {
+    "id": 100,
+    "nombre": "Remo con Banda Elástica",
+    "musculo": "espalda",
+    "objetivo": "Resistencia",
+    "equipamiento": "Bandas"
+  }
+]

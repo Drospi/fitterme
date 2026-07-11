@@ -1,3 +1,4 @@
+import { Routine, addRoutine } from "@/store/routines";
 import { getGlobalStyles } from "@/styles/global";
 import { useTheme } from "@react-navigation/native";
 import { useState } from "react";
@@ -13,10 +14,43 @@ const CreateRoutineScreen = () => {
   const [routineData, setRoutineData] = useState({
     name: "",
     category: "",
-    exercises: [],
+    exercises: [] as Array<{
+      id: number;
+      nombre: string;
+      musculo: string;
+      objetivo: string;
+      equipamiento: string;
+      urlimage?: string;
+      series?: number;
+      reps?: number;
+      peso?: number;
+    }>,
   });
   const handleUpdate = (newData: any) => {
     setRoutineData((prev) => ({ ...prev, ...newData }));
+  };
+
+  const handleSaveRoutine = () => {
+    const routineToSave: Routine = {
+      ...routineData,
+      id: Date.now().toString(), // Generamos un ID si no existe
+      createdAt: new Date().toISOString(),
+      exercises: routineData.exercises.map((ex) => ({
+        ...ex,
+        // Convertimos a número, asegurando que sea 0 si está vacío
+        series: ex.series ? Number(ex.series) : 0,
+        reps: ex.reps ? Number(ex.reps) : 0,
+        peso: ex.peso ? Number(ex.peso) : 0,
+      })),
+    };
+
+    addRoutine(routineToSave);
+    setStep(1);
+    setRoutineData({
+      name: "",
+      category: "",
+      exercises: [],
+    });
   };
   return (
     <View style={{ flex: 1, backgroundColor: "#000" }}>
@@ -35,7 +69,14 @@ const CreateRoutineScreen = () => {
           updateData={handleUpdate}
         />
       )}
-      {step === 3 && <Step3 back={() => setStep(2)} />}
+      {step === 3 && (
+        <Step3
+          back={() => setStep(2)}
+          data={routineData}
+          updateData={handleUpdate}
+          saveRoutine={handleSaveRoutine}
+        />
+      )}
     </View>
   );
 };

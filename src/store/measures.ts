@@ -13,6 +13,7 @@ export type Measure = {
   cuadriceps: number;
   gemelos: number;
   gluteos: number;
+  espalda: number;
   edad: number;
   sexo: string;
   peso: number;

@@ -49,6 +49,7 @@ export default function MeasuresScreen() {
         cuadriceps,
         gemelos,
         gluteos,
+        espalda: 0,
         edad,
         sexo,
         peso,

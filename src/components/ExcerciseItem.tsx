@@ -1,147 +1,82 @@
 import { useTheme } from "@/context/ThemeContext";
 import { getGlobalStyles } from "@/styles/global";
 import { Ionicons } from "@expo/vector-icons";
-import { useState } from "react";
-import {
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from "react-native";
-import SerieItem from "./SerieItem";
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
-type Serie = {
-  id: string;
-  series: number;
-  reps: number;
-  kg: number;
-  isActive: boolean;
+type ExerciseType = {
+  id: number;
+  nombre: string;
+  musculo: string;
+  objetivo: string;
+  equipamiento: string;
+  urlimage?: string;
+  series?: number;
+  reps?: number;
+  peso?: number;
 };
 
 type ExcerciseItemProps = {
-  id: string;
-  name: string;
-  series: Serie[];
-  onDelete: () => void;
-  // Añadimos esta función para notificar al padre sobre cambios
-  onChange: (updatedData: { name: string; series: Serie[] }) => void;
+  excerciseInfo: ExerciseType;
+  onCheck: () => void;
+  isCheckedFather: boolean;
 };
 
 export default function ExcerciseItem({
-  id,
-  name,
-  series,
-  onDelete,
-  onChange,
+  excerciseInfo,
+  onCheck,
+  isCheckedFather,
 }: ExcerciseItemProps) {
-  const [isEditing, setIsEditing] = useState(false);
   const { colors } = useTheme();
   const globalStyles = getGlobalStyles(colors);
 
-  const handleAddSerie = () => {
-    const newSerie: Serie = {
-      id: Date.now().toString(),
-      series: series.length + 1,
-      reps: 0,
-      kg: 0,
-      isActive: false,
-    };
-    onChange({ name, series: [...series, newSerie] });
-  };
-
-  const handleUpdateSerie = (
-    serieId: string,
-    updatedSerie: { reps: number; kg: number; isActive: boolean },
-  ) => {
-    const updatedSeriesArray = series.map((s) =>
-      s.id === serieId ? { ...s, ...updatedSerie } : s,
-    );
-
-    // Notificamos al padre (AddRoutineScreen) que algo cambió en este ejercicio
-    onChange({ name, series: updatedSeriesArray });
-  };
-
   return (
-    <View>
-      <View
-        style={{
+    <TouchableOpacity
+      style={[
+        globalStyles.card,
+        {
           flexDirection: "row",
           justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        {isEditing ? (
-          <TextInput
-            style={[globalStyles.title, { flex: 1 }]}
-            value={name}
-            onChangeText={(newName) => onChange({ name: newName, series })}
-            onBlur={() => setIsEditing(false)}
-            autoFocus={true}
+          backgroundColor: isCheckedFather
+            ? colors.primary + 33
+            : colors.surface,
+        },
+      ]}
+    >
+      <View style={{ flexDirection: "row", gap: 20 }}>
+        <Image
+          source={require("@/assets/images/excercises/example.jpeg")}
+          style={{ width: 60, height: 60, borderRadius: 10 }}
+        />
+        <View>
+          <Text style={globalStyles.cardTitle}>{excerciseInfo.nombre}</Text>
+          <Text style={globalStyles.cardText}>
+            {excerciseInfo.musculo} • {excerciseInfo.equipamiento}
+          </Text>
+        </View>
+      </View>
+      <View style={styles.colCheck}>
+        {isCheckedFather ? (
+          <Ionicons
+            name="checkmark-circle"
+            size={32}
+            color={colors.primary}
+            onPress={() => onCheck()}
           />
         ) : (
-          <TouchableOpacity onPress={() => setIsEditing(true)}>
-            <Text style={globalStyles.title}>
-              {name || "Nombre del ejercicio"}
-            </Text>
-          </TouchableOpacity>
+          <Ionicons
+            name="add-circle-outline"
+            size={32}
+            color={colors.textSecondary}
+            onPress={() => onCheck()}
+          />
         )}
-        <Ionicons
-          name="trash-outline"
-          size={20}
-          color="red"
-          onPress={onDelete}
-        />
       </View>
-
-      <View style={styles.row}>
-        <Text style={[globalStyles.text, styles.colSerie]}>Set</Text>
-        <Text style={[globalStyles.text, styles.colAnterior]}>Mejor</Text>
-        <Text style={globalStyles.text}>KG</Text>
-        <Text style={globalStyles.text}>Reps</Text>
-        <Ionicons
-          name="checkbox-sharp"
-          size={20}
-          color={colors.textSecondary}
-        />
-      </View>
-
-      {series.map((serie) => (
-        <SerieItem
-          key={serie.id}
-          id={serie.id}
-          series={serie.series}
-          reps={serie.reps}
-          kg={serie.kg}
-          isActive={serie.isActive}
-          onChange={(updatedSerie) => handleUpdateSerie(serie.id, updatedSerie)}
-        />
-      ))}
-
-      <TouchableOpacity
-        style={{ width: "100%", alignItems: "center", marginTop: 10 }}
-        onPress={handleAddSerie}
-      >
-        <Text style={globalStyles.textPrimary}>+ Agregar Serie</Text>
-      </TouchableOpacity>
-    </View>
+    </TouchableOpacity>
   );
 }
 
 const styles = StyleSheet.create({
-  row: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginVertical: 10,
-    justifyContent: "space-between",
-    paddingHorizontal: 10,
-  },
-  colSerie: { width: 40, textAlign: "center" },
-  colAnterior: { width: 80, textAlign: "center" },
-
   colCheck: {
-    width: 20,
-    height: 20,
     alignItems: "center",
     justifyContent: "center",
   },

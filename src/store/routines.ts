@@ -5,9 +5,15 @@ export type Routine = {
   name: string;
   category: string;
   exercises: Array<{
-    id: string;
-    name: string;
-    series: Array<{ id: string; series: number; reps: number; kg: number }>;
+    id: number;
+    nombre: string;
+    musculo: string;
+    objetivo: string;
+    equipamiento: string;
+    urlimage?: string;
+    series?: number;
+    reps?: number;
+    peso?: number;
   }>;
 
   createdAt: string;

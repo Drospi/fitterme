@@ -8,11 +8,17 @@ import { Alert, Text, TouchableOpacity, View } from "react-native";
 type RoutineItemProps = {
   id: string;
   name: string;
-  // Cambiamos el tipo para que coincida con tu tipo Routine
+  category: string;
   exercises: Array<{
-    id: string;
-    name: string;
-    series: Array<{ id: string; series: number; reps: number; kg: number }>;
+    id: number;
+    nombre: string;
+    musculo: string;
+    objetivo: string;
+    equipamiento: string;
+    urlimage?: string;
+    series?: number;
+    reps?: number;
+    peso?: number;
   }>;
   onDelete: () => void;
 };
@@ -26,6 +32,11 @@ export default function RoutineItem({
   const { colors } = useTheme();
   const globalStyles = getGlobalStyles(colors);
   const router = useRouter();
+  const allMuscles = exercises.map((ex) => ex.musculo);
+
+  // 2. Usamos 'new Set()' para eliminar los duplicados y convertimos de nuevo a array
+  const uniqueMuscles = [...new Set(allMuscles)];
+
   console.log("Exercises in RoutineItem:", exercises);
 
   const handleLongPress = () => {
@@ -59,9 +70,9 @@ export default function RoutineItem({
         estimados{" "}
       </Text>
       <View style={{ marginTop: 10, display: "flex", flexDirection: "row" }}>
-        {exercises.map((ex) => (
+        {uniqueMuscles.map((musculo, index) => (
           <Text
-            key={ex.id}
+            key={index}
             style={{
               color: colors.text,
               backgroundColor: colors.background,
@@ -73,7 +84,7 @@ export default function RoutineItem({
               marginRight: 5,
             }}
           >
-            {ex.name}
+            {musculo.charAt(0).toUpperCase() + musculo.slice(1)}
           </Text>
         ))}
       </View>
