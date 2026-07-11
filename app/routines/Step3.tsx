@@ -62,7 +62,7 @@ export default function Step3({ back, data, updateData, saveRoutine }: Props) {
   ) => {
     const updated = [...exercises];
     const numValue = value === "" ? 0 : Number(value);
-    updated[index] = { ...updated[index], [field]: value };
+    updated[index] = { ...updated[index], [field]: numValue };
     setExercises(updated);
   };
 
@@ -156,9 +156,9 @@ export default function Step3({ back, data, updateData, saveRoutine }: Props) {
                 placeholderTextColor="#666"
                 keyboardType="numeric"
                 value={
-                  exercises[index].series === 0
-                    ? ""
-                    : exercises[index].series?.toString()
+                  exercises[index].series
+                    ? exercises[index].series.toString()
+                    : ""
                 }
                 onChangeText={(val) => handleInputChange(index, "series", val)}
                 style={styles.input}
@@ -178,9 +178,7 @@ export default function Step3({ back, data, updateData, saveRoutine }: Props) {
                 placeholderTextColor="#666"
                 keyboardType="numeric"
                 value={
-                  exercises[index].reps === 0
-                    ? ""
-                    : exercises[index].reps?.toString()
+                  exercises[index].reps ? exercises[index].reps?.toString() : ""
                 }
                 onChangeText={(val) => handleInputChange(index, "reps", val)}
                 style={styles.input}
@@ -200,9 +198,7 @@ export default function Step3({ back, data, updateData, saveRoutine }: Props) {
                 placeholderTextColor="#666"
                 keyboardType="numeric"
                 value={
-                  exercises[index].peso === 0
-                    ? ""
-                    : exercises[index].peso?.toString()
+                  exercises[index].peso ? exercises[index].peso?.toString() : ""
                 }
                 onChangeText={(val) => handleInputChange(index, "peso", val)}
                 style={styles.input}

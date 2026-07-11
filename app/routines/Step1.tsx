@@ -1,9 +1,8 @@
-// Step1.tsx
 import { useTheme } from "@/context/ThemeContext";
 import { getGlobalStyles } from "@/styles/global";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ScrollView, Text, TextInput, TouchableOpacity } from "react-native";
 
 type Props = {
@@ -18,6 +17,11 @@ export default function Step1({ next, data, updateData }: Props) {
   const [category, setCategory] = useState(data ? data.category : "");
   const [name, setName] = useState(data ? data.name : "");
 
+  useEffect(() => {
+    setName(data.name);
+    setCategory(data.category);
+  }, [data]);
+
   const handleSelect = () => {
     updateData({ name: name, category: category });
     next();
@@ -28,7 +32,7 @@ export default function Step1({ next, data, updateData }: Props) {
       <Ionicons
         name="arrow-back"
         size={32}
-        onPress={() => router.dismiss}
+        onPress={() => router.back()}
         color={colors.text}
       />
       <Text style={globalStyles.title}>Paso 1: Información Básica</Text>

@@ -26,6 +26,27 @@ export const getRoutines = async (): Promise<Routine[]> => {
   return data ? JSON.parse(data) : [];
 };
 
+export const getRoutineById = async (id: string) => {
+  const routines = await getRoutines();
+  const foundRoutine = routines.find((r) => r.id === id);
+
+  if (!foundRoutine) {
+    return {
+      id: "",
+      name: "",
+      category: "",
+      exercises: [],
+      createdAt: "",
+    };
+  }
+  return {
+    id: foundRoutine.id,
+    name: foundRoutine.name,
+    category: foundRoutine.category,
+    exercises: foundRoutine.exercises,
+  };
+};
+
 export const addRoutine = async (
   Routine: Omit<Routine, "id" | "createdAt">,
 ): Promise<Routine> => {
@@ -40,6 +61,31 @@ export const addRoutine = async (
     JSON.stringify([newRoutine, ...Routines]),
   );
   return newRoutine;
+};
+
+export const updateRoutine = async (
+  id: string,
+  updatedData: Omit<Routine, "id" | "createdAt">,
+): Promise<Routine> => {
+  const Routines = await getRoutines();
+
+  const index = Routines.findIndex((r) => r.id === id);
+
+  if (index === -1) {
+    throw new Error(`Rutina con ID ${id} no encontrada`);
+  }
+
+  const updatedRoutine: Routine = {
+    ...Routines[index],
+    ...updatedData,
+  };
+
+  const newRoutinesList = [...Routines];
+  newRoutinesList[index] = updatedRoutine;
+
+  await AsyncStorage.setItem(ROUTINES_KEY, JSON.stringify(newRoutinesList));
+
+  return updatedRoutine;
 };
 
 export const deleteRoutine = async (id: string): Promise<void> => {

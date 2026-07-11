@@ -38,9 +38,9 @@ const CreateRoutineScreen = () => {
       exercises: routineData.exercises.map((ex) => ({
         ...ex,
         // Convertimos a número, asegurando que sea 0 si está vacío
-        series: ex.series ? Number(ex.series) : 0,
-        reps: ex.reps ? Number(ex.reps) : 0,
-        peso: ex.peso ? Number(ex.peso) : 0,
+        series: ex.series ? Number(ex.series) : 4,
+        reps: ex.reps ? Number(ex.reps) : 10,
+        peso: ex.peso ? Number(ex.peso) : 10,
       })),
     };
 
