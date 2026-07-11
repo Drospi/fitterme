@@ -88,7 +88,7 @@ export default function MeasuresStadistics() {
             <Text
               style={{ fontWeight: "bold", fontSize: 20, color: colors.text }}
             >
-              {masaMagra} kg
+              {masaMagra.toFixed(2)} kg
             </Text>
           </View>
         </View>

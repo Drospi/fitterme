@@ -55,8 +55,8 @@ export default function MeasuresScreen() {
         peso,
         altura,
       });
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       route.dismissAll();
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     } catch (error) {
       alert("Error al guardar");
     }

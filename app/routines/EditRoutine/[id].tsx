@@ -1,6 +1,4 @@
 import { getRoutineById, Routine, updateRoutine } from "@/store/routines";
-import { getGlobalStyles } from "@/styles/global";
-import { useTheme } from "@react-navigation/native";
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import { useCallback, useState } from "react";
 import { View } from "react-native";
@@ -9,8 +7,6 @@ import Step2 from "../Step2";
 import Step3 from "../Step3";
 
 const EditRoutineScreen = () => {
-  const { colors } = useTheme();
-  const styles = getGlobalStyles(colors);
   const router = useRouter();
   const { id } = useLocalSearchParams<{ id: string }>();
   const [step, setStep] = useState(1);
@@ -30,8 +26,6 @@ const EditRoutineScreen = () => {
       peso?: number;
     }>,
   });
-
-  const [loading, setLoading] = useState(true);
 
   const loadRoutine = async () => {
     const data = await getRoutineById(id);

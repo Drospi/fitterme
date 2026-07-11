@@ -64,6 +64,7 @@ export default function Step3({ back, data, updateData, saveRoutine }: Props) {
     const numValue = value === "" ? 0 : Number(value);
     updated[index] = { ...updated[index], [field]: numValue };
     setExercises(updated);
+    updateData({ exercises: updated });
   };
 
   const moveExercise = (index: number, direction: "up" | "down") => {

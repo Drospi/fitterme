@@ -17,7 +17,7 @@ type RoutineItemProps = {
     objetivo: string;
     equipamiento: string;
     urlimage?: string;
-    series?: number;
+    series: number;
     reps?: number;
     peso?: number;
   }>;
@@ -91,9 +91,12 @@ export default function RoutineItem({
       >
         <View>
           <Text style={globalStyles.cardText}>
-            {exercises.length} ejercicios • {exercises.length * 15} min,{" "}
-            {exercises[1].reps}
-            estimados{" "}
+            {exercises.length} ejercicios •{" "}
+            {exercises.reduce((total, exercise) => total + exercise.series, 0) *
+              3}{" "}
+            min •{" "}
+            {exercises.reduce((total, exercise) => total + exercise.series, 0)}{" "}
+            series
           </Text>
           <View
             style={{ marginTop: 10, display: "flex", flexDirection: "row" }}
@@ -117,7 +120,17 @@ export default function RoutineItem({
             ))}
           </View>
         </View>
-        <Ionicons name="play-circle" size={48} color={colors.primary} />
+        <Ionicons
+          name="play-circle"
+          onPress={() =>
+            router.push({
+              pathname: "/routines/PlayRoutine/[id]",
+              params: { id: id },
+            })
+          }
+          size={48}
+          color={colors.primary}
+        />
       </View>
     </TouchableOpacity>
   );
