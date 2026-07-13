@@ -11,8 +11,8 @@ export type Routine = {
     objetivo: string;
     equipamiento: string;
     urlimage?: string;
-    series?: number;
-    reps?: number;
+    series: number;
+    reps: number;
     peso?: number;
   }>;
 
