@@ -7,11 +7,16 @@ import { Text, View } from "react-native";
 type HistoryItemProps = {
   dateDay: string;
   date: string;
-  kcal: number;
+  tonelaje: number;
   timeTrains: number;
 };
 
-const HistoryItem = ({ dateDay, date, kcal, timeTrains }: HistoryItemProps) => {
+const HistoryItem = ({
+  dateDay,
+  date,
+  tonelaje,
+  timeTrains,
+}: HistoryItemProps) => {
   const { colors } = useTheme();
   const globalStyles = getGlobalStyles(colors);
   return (
@@ -29,16 +34,16 @@ const HistoryItem = ({ dateDay, date, kcal, timeTrains }: HistoryItemProps) => {
       <View style={{ flexDirection: "row", gap: 20 }}>
         <View style={{ justifyContent: "space-between", gap: 10, flex: 1 }}>
           <View style={{ flexDirection: "row", gap: 10 }}>
-            <Ionicons name="fast-food" size={16} color={colors.primary} />
-            <Text style={globalStyles.cardText}>Registro de Comida</Text>
+            <Ionicons name="barbell" size={16} color={colors.primary} />
+            <Text style={globalStyles.cardText}>Registro de Tonelaje</Text>
           </View>
           <Text style={globalStyles.cardText}>
             <Text
               style={{ fontWeight: "bold", color: colors.text, fontSize: 36 }}
             >
-              {kcal}{" "}
+              {tonelaje}{" "}
             </Text>{" "}
-            kcal
+            kg
           </Text>
         </View>
 

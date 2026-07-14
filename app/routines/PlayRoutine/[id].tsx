@@ -1,5 +1,11 @@
 import ExerciseItem from "@/components/ExcerciseItem";
 import { useTheme } from "@/context/ThemeContext";
+import {
+  addExerciseLog,
+  ExerciseSet,
+  getPersonalBest,
+} from "@/store/historyExcercise";
+import { addRoutineSession } from "@/store/historyRoutine";
 import { getRoutineById } from "@/store/routines";
 import { getGlobalStyles } from "@/styles/global";
 import Ionicons from "@expo/vector-icons/Ionicons";
@@ -8,6 +14,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Text, TextInput, TouchableOpacity, View } from "react-native";
 import ExcerciseCompleted from "./ExcerciseCompleted";
 import RoutineCompleted from "./RoutineCompleted";
+
 const PlayRoutineScreen = () => {
   const { colors } = useTheme();
   const globalStyles = getGlobalStyles(colors);
@@ -28,11 +35,25 @@ const PlayRoutineScreen = () => {
       peso?: number;
     }>,
   });
+
+  const [seriesCompletadas, setSeriesCompletadas] = useState<ExerciseSet[]>([]);
+  const [personalBest, setPersonalBest] = useState<{
+    peso: number;
+    reps: number;
+  } | null>(null);
+
   const [serieActual, setSerieActual] = useState(0);
   const [ejercicioActual, setEjercicioActual] = useState(0);
 
   const [mejorRepEjercicio, setMejorRepEjercicio] = useState(0);
   const [mejorPesoEjercicio, setMejorPesoEjercicio] = useState(0);
+
+  const [performedSets, setPerformedSets] = useState<
+    Record<number, Array<{ reps: number; peso: number }>>
+  >({});
+
+  const [totalTonelaje, setTotalTonelaje] = useState(0);
+  const [totalSeries, setTotalSeries] = useState(0);
 
   const [timer, setTimer] = useState(1);
   const [isActiveTimer, setIsActiveTimer] = useState(true);
@@ -57,6 +78,22 @@ const PlayRoutineScreen = () => {
 
     return () => clearInterval(interval);
   }, [isActiveTimer, timer]);
+
+  useEffect(() => {
+    const loadPR = async () => {
+      const ejercicio = routineData.exercises[ejercicioActual];
+      if (ejercicio) {
+        setRepActual(ejercicio.reps ?? 0);
+        setPesoActual(ejercicio.peso ?? 0);
+
+        // Consultar el mejor histórico
+        const pb = await getPersonalBest(ejercicio.id);
+        setPersonalBest(pb);
+      }
+    };
+
+    loadPR();
+  }, [routineData, ejercicioActual]);
 
   useFocusEffect(
     useCallback(() => {
@@ -100,7 +137,12 @@ const PlayRoutineScreen = () => {
     });
   };
 
-  const handleNextExercise = () => {
+  const handleNextExercise = async () => {
+    const currentExerciseId = routineData.exercises[ejercicioActual].id;
+    if (seriesCompletadas.length > 0) {
+      await addExerciseLog(currentExerciseId, seriesCompletadas);
+    }
+
     if (ejercicioActual < routineData.exercises.length - 1) {
       setEjercicioActual((prev) => prev + 1);
       setSerieActual(0);
@@ -109,11 +151,38 @@ const PlayRoutineScreen = () => {
     } else {
       setIsActiveTimer(false);
       setIsRoutineCompleted(true);
+      handleFinishRoutine();
     }
   };
 
+  const handleFinishRoutine = async () => {
+    const sessionData = {
+      name: routineData.name,
+      duration: timer, // Tu contador de tiempo
+      totalVolume: totalTonelaje,
+      exercises: routineData.exercises.map((ex) => ({
+        exerciseName: ex.nombre,
+        sets: performedSets[ex.id] || [],
+      })),
+    };
+
+    await addRoutineSession(sessionData);
+  };
+
   const handleCompleteSerie = () => {
+    setSeriesCompletadas((prev) => [
+      ...prev,
+      { reps: repActual, peso: pesoActual },
+    ]);
+    const currentExercise = routineData.exercises[ejercicioActual];
+    const newSet = { reps: repActual, peso: pesoActual };
+    setPerformedSets((prev) => ({
+      ...prev,
+      [currentExercise.id]: [...(prev[currentExercise.id] || []), newSet],
+    }));
     setSerieActual((prev) => prev + 1);
+    setTotalTonelaje((prev) => prev + (pesoActual ?? 0));
+    setTotalSeries((prev) => prev + 1);
 
     if (repActual > mejorRepEjercicio || pesoActual > mejorPesoEjercicio) {
       setMejorRepEjercicio(repActual);
@@ -122,7 +191,14 @@ const PlayRoutineScreen = () => {
   };
 
   if (isRoutineCompleted) {
-    return <RoutineCompleted data={routineData} timer={timer} />;
+    return (
+      <RoutineCompleted
+        data={routineData}
+        timer={timer}
+        tonelaje={totalTonelaje}
+        series={totalSeries}
+      />
+    );
   }
 
   if (serieActual >= routineData.exercises[ejercicioActual].series) {
@@ -331,10 +407,6 @@ const PlayRoutineScreen = () => {
                 color={colors.primary}
               />
 
-              {/*             IMPORTANTE Arreglar las series se actualizan con el ejercicio y la serie pero para cada serie debe tener su propia cantidad de repeticiones
-
- */}
-
               <TextInput
                 placeholder="4"
                 placeholderTextColor="#666"
@@ -362,7 +434,12 @@ const PlayRoutineScreen = () => {
             </View>
           </View>
         </View>
-        <Text style={globalStyles.cardText}>Mejor serie: 75kg x 11 reps</Text>
+        <Text style={globalStyles.cardText}>
+          Mejor serie:{" "}
+          {personalBest
+            ? `${personalBest.peso}kg x ${personalBest.reps} reps`
+            : "Sin registro previo"}
+        </Text>
         <TouchableOpacity
           style={globalStyles.button}
           onPress={() => handleCompleteSerie()}

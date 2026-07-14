@@ -50,6 +50,7 @@ export default function AllRoutinesScreen() {
               id={Routine.id}
               name={Routine.name}
               exercises={Routine.exercises}
+              category={Routine.category}
               onDelete={loadRoutines}
             />
           ))

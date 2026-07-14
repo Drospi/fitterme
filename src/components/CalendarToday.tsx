@@ -7,7 +7,7 @@ export default function CalendarToday() {
   const { colors } = useTheme();
   const globalStyles = getGlobalStyles(colors);
 
-  const currentDate = new Date().toLocaleDateString("en-US", {
+  const currentDate = new Date().toLocaleDateString("es-ES", {
     weekday: "long",
     month: "long",
     day: "numeric",

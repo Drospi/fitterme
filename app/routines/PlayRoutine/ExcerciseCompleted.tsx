@@ -148,7 +148,9 @@ const ExcerciseCompleted = ({
           onPress={next}
         >
           <Text style={globalStyles.buttonText}>
-            Pasar al siguiente ejercicio{" "}
+            {excercise < data.exercises.length - 1
+              ? "Pasar al siguiente ejercicio"
+              : "Terminar Rutina"}
           </Text>
           <Ionicons name="arrow-forward" size={24} color={colors.neutral} />
         </TouchableOpacity>

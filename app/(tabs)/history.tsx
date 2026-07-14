@@ -1,13 +1,29 @@
 import CalendarToday from "@/components/CalendarToday";
 import HistoryItem from "@/components/HistoryItem";
 import { useTheme } from "@/context/ThemeContext";
+import { RoutineSession, getRoutineSessions } from "@/store/historyRoutine";
 import { getGlobalStyles } from "@/styles/global";
-import React from "react";
+import { useFocusEffect } from "expo-router";
+import { useCallback, useState } from "react";
 import { ScrollView, Text, View } from "react-native";
 
 export default function HistoryScreen() {
   const { colors } = useTheme();
   const globalStyles = getGlobalStyles(colors);
+
+  const [sessions, setSessions] = useState<RoutineSession[]>([]);
+
+  const loadSessions = async () => {
+    const data = await getRoutineSessions();
+    setSessions(data);
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      loadSessions();
+    }, []),
+  );
+
   return (
     <ScrollView style={globalStyles.container}>
       <View
@@ -23,26 +39,23 @@ export default function HistoryScreen() {
         <CalendarToday />
       </View>
       <View style={{ marginTop: 30, gap: 20 }}>
-        <HistoryItem
-          dateDay="Lunes"
-          date="01/01/2023"
-          kcal={1000}
-          timeTrains={65}
-        />
-
-        <HistoryItem
-          dateDay="Lunes"
-          date="01/01/2023"
-          kcal={1000}
-          timeTrains={65}
-        />
-
-        <HistoryItem
-          dateDay="Lunes"
-          date="01/01/2023"
-          kcal={1000}
-          timeTrains={65}
-        />
+        {sessions.length === 0 ? (
+          <Text style={globalStyles.text}>
+            No hay registros todavia, ¡comienza a entrenar!
+          </Text>
+        ) : (
+          sessions.map((session) => (
+            <HistoryItem
+              key={session.id}
+              dateDay={new Date(session.date).toLocaleDateString("es-ES", {
+                weekday: "long",
+              })}
+              date={new Date(session.date).toLocaleDateString("es-ES")}
+              tonelaje={session.totalVolume}
+              timeTrains={Math.floor(session.duration / 60)}
+            />
+          ))
+        )}
       </View>
     </ScrollView>
   );
