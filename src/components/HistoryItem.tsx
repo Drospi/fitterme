@@ -1,14 +1,16 @@
 import { useTheme } from "@/context/ThemeContext";
 import { getGlobalStyles } from "@/styles/global";
 import { Ionicons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 import React from "react";
-import { Text, View } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
 
 type HistoryItemProps = {
   dateDay: string;
   date: string;
   tonelaje: number;
   timeTrains: number;
+  id: string;
 };
 
 const HistoryItem = ({
@@ -16,11 +18,22 @@ const HistoryItem = ({
   date,
   tonelaje,
   timeTrains,
+  id,
 }: HistoryItemProps) => {
   const { colors } = useTheme();
   const globalStyles = getGlobalStyles(colors);
+
+  const router = useRouter();
   return (
-    <View style={[globalStyles.card, { gap: 10 }]}>
+    <TouchableOpacity
+      onPress={() =>
+        router.push({
+          pathname: "/routines/DetailsRoutine/[id]",
+          params: { id: id },
+        })
+      }
+      style={[globalStyles.card, { gap: 10 }]}
+    >
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
         <Text style={{ fontWeight: "bold", fontSize: 20, color: colors.text }}>
           {dateDay}
@@ -62,7 +75,7 @@ const HistoryItem = ({
           </Text>
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 

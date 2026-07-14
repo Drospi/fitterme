@@ -36,3 +36,11 @@ export const getRoutineSessions = async (): Promise<RoutineSession[]> => {
   const data = await AsyncStorage.getItem(HISTORY_ROUTINES_KEY);
   return data ? JSON.parse(data) : [];
 };
+
+export const getRoutineSession = async (
+  id: string,
+): Promise<RoutineSession> => {
+  const data = await AsyncStorage.getItem(HISTORY_ROUTINES_KEY);
+  const sessions = data ? JSON.parse(data) : [];
+  return sessions.find((session: RoutineSession) => session.id === id);
+};

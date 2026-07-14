@@ -1,3 +1,4 @@
+import exerciseData from "@/data/exercises.json";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export type Excercise = {
@@ -42,4 +43,15 @@ export const deleteExcercise = async (id: string): Promise<void> => {
 
 export const clearAllExcercises = async (): Promise<void> => {
   await AsyncStorage.removeItem(EXCERCISES_KEY);
+};
+
+export const getExerciseIdByExerciseName = async (
+  name: string,
+): Promise<number | null> => {
+  const normalizedName = name.trim().toLowerCase();
+  const exercise = exerciseData.find(
+    (ex) => ex.nombre.trim().toLowerCase() === normalizedName,
+  );
+  // Devolvemos el ID original (number) o null si no existe
+  return exercise ? exercise.id : null;
 };

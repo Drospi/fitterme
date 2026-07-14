@@ -53,6 +53,7 @@ export default function HistoryScreen() {
               date={new Date(session.date).toLocaleDateString("es-ES")}
               tonelaje={session.totalVolume}
               timeTrains={Math.floor(session.duration / 60)}
+              id={session.id}
             />
           ))
         )}

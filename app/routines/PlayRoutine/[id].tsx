@@ -1,5 +1,6 @@
 import ExerciseItem from "@/components/ExcerciseItem";
 import { useTheme } from "@/context/ThemeContext";
+import { getExerciseIdByExerciseName } from "@/store/excercise";
 import {
   addExerciseLog,
   ExerciseSet,
@@ -138,10 +139,26 @@ const PlayRoutineScreen = () => {
   };
 
   const handleNextExercise = async () => {
-    const currentExerciseId = routineData.exercises[ejercicioActual].id;
     if (seriesCompletadas.length > 0) {
-      await addExerciseLog(currentExerciseId, seriesCompletadas);
+      console.log(
+        "Intentando guardar:",
+        routineData.exercises[ejercicioActual].nombre,
+      );
+      console.log("Series a guardar:", seriesCompletadas);
+      const currentExerciseName = routineData.exercises[ejercicioActual].nombre;
+      const currentExerciseId =
+        await getExerciseIdByExerciseName(currentExerciseName);
+      if (currentExerciseId !== null) {
+        await addExerciseLog(currentExerciseId, seriesCompletadas);
+      } else {
+        console.error(
+          "No se encontró ID para el ejercicio:",
+          currentExerciseName,
+        );
+      }
     }
+
+    setSeriesCompletadas([]);
 
     if (ejercicioActual < routineData.exercises.length - 1) {
       setEjercicioActual((prev) => prev + 1);
@@ -181,7 +198,7 @@ const PlayRoutineScreen = () => {
       [currentExercise.id]: [...(prev[currentExercise.id] || []), newSet],
     }));
     setSerieActual((prev) => prev + 1);
-    setTotalTonelaje((prev) => prev + (pesoActual ?? 0));
+    setTotalTonelaje((prev) => prev + pesoActual * repActual);
     setTotalSeries((prev) => prev + 1);
 
     if (repActual > mejorRepEjercicio || pesoActual > mejorPesoEjercicio) {

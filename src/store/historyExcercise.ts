@@ -17,42 +17,72 @@ export type ExerciseHistory = {
 
 const HISTORY_KEY = "exercise_history";
 
-// Obtener todo el historial
 export const getExerciseHistory = async (): Promise<ExerciseHistory[]> => {
   const data = await AsyncStorage.getItem(HISTORY_KEY);
   return data ? JSON.parse(data) : [];
 };
 
-// Añadir el registro de un ejercicio al terminar sus series
+export const getHistoryByExerciseId = async (
+  id: number,
+): Promise<ExerciseHistory[]> => {
+  const history = await getExerciseHistory();
+  return history.filter((log) => log.exerciseId === id);
+};
+
 export const addExerciseLog = async (
   exerciseId: number,
   sets: ExerciseSet[],
 ): Promise<ExerciseHistory> => {
   const history = await getExerciseHistory();
 
-  const totalVolume = sets.reduce((acc, set) => acc + set.peso * set.reps, 0);
+  // 1. Calculamos métricas de la sesión actual
+  const currentTotalVolume = sets.reduce(
+    (acc, set) => acc + set.peso * set.reps,
+    0,
+  );
 
-  const bestSet = sets.reduce(
+  const currentBestSet = sets.reduce(
     (best, current) => {
-      if (current.peso > best.peso) return current;
-      if (current.peso === best.peso && current.reps > best.reps)
-        return current;
-      return best;
+      return current.peso > best.peso ||
+        (current.peso === best.peso && current.reps > best.reps)
+        ? current
+        : best;
     },
     { peso: 0, reps: 0 },
   );
+
+  // 2. Buscamos el histórico anterior del ejercicio para comparar
+  const previousLogs = history.filter((h) => h.exerciseId === exerciseId);
+  const historicBest = previousLogs.reduce(
+    (best, log) => {
+      return log.bestWeight > best.peso ||
+        (log.bestWeight === best.peso && log.bestReps > best.reps)
+        ? { peso: log.bestWeight, reps: log.bestReps }
+        : best;
+    },
+    { peso: 0, reps: 0 },
+  );
+
+  // 3. Determinamos el nuevo récord comparando el actual vs el histórico
+  const isNewBest =
+    currentBestSet.peso > historicBest.peso ||
+    (currentBestSet.peso === historicBest.peso &&
+      currentBestSet.reps > historicBest.reps);
 
   const newLog: ExerciseHistory = {
     id: Date.now().toString(),
     exerciseId,
     date: new Date().toISOString(),
     sets,
-    totalVolume,
-    bestWeight: bestSet.peso,
-    bestReps: bestSet.reps,
+    totalVolume: currentTotalVolume,
+    bestWeight: isNewBest ? currentBestSet.peso : historicBest.peso,
+    bestReps: isNewBest ? currentBestSet.reps : historicBest.reps,
   };
 
   await AsyncStorage.setItem(HISTORY_KEY, JSON.stringify([newLog, ...history]));
+  const saved = await AsyncStorage.getItem(HISTORY_KEY);
+  console.log("¿Se guardó en el Storage?", saved !== null);
+  console.log("Historial guardado:", saved);
   return newLog;
 };
 
@@ -97,6 +127,5 @@ export const clearAllHistory = async (): Promise<void> => {
 // Agrega esto a store/historyExercise.ts
 export const getGroupedHistory = async () => {
   const history = await getExerciseHistory();
-  // Agrupa por fecha (si quieres agruparlos) o simplemente retorna todo
   return history;
 };
