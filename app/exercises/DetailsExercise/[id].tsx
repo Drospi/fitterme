@@ -138,7 +138,9 @@ const DetailsExerciseScreen = () => {
               { fontSize: 40, color: colors.primary, fontWeight: "bold" },
             ]}
           >
-            {history[0]?.bestWeight}{" "}
+            {history.reduce((max, h) => {
+              return Math.max(max, h.bestWeight);
+            }, 0)}{" "}
             <Text style={globalStyles.textSecondary}>kg</Text>
           </Text>
           <View
@@ -239,7 +241,9 @@ const DetailsExerciseScreen = () => {
               { fontSize: 32, color: colors.primary, fontWeight: "bold" },
             ]}
           >
-            {history[0]?.bestWeight}{" "}
+            {history.reduce((max, h) => {
+              return Math.max(max, h.bestWeight);
+            }, 0)}{" "}
             <Text style={globalStyles.textSecondary}>kg</Text>
           </Text>
         </View>
@@ -253,7 +257,9 @@ const DetailsExerciseScreen = () => {
               { fontSize: 32, color: colors.text, fontWeight: "bold" },
             ]}
           >
-            {history[0]?.bestReps}{" "}
+            {history.reduce((max, h) => {
+              return Math.max(max, h.bestReps);
+            }, 0)}{" "}
             <Text style={globalStyles.textSecondary}>reps</Text>
           </Text>
         </View>
@@ -271,7 +277,7 @@ const DetailsExerciseScreen = () => {
               { fontSize: 32, color: colors.text, fontWeight: "bold" },
             ]}
           >
-            {history[0]?.sets.reduce((acc, set) => acc + set.reps, 0)}{" "}
+            {history.reduce((total, log) => total + log.sets.length, 0)}{" "}
             <Text style={globalStyles.textSecondary}>series</Text>
           </Text>
         </View>

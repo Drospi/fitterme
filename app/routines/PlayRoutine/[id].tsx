@@ -87,7 +87,6 @@ const PlayRoutineScreen = () => {
         setRepActual(ejercicio.reps ?? 0);
         setPesoActual(ejercicio.peso ?? 0);
 
-        // Consultar el mejor histórico
         const pb = await getPersonalBest(ejercicio.id);
         setPersonalBest(pb);
       }
