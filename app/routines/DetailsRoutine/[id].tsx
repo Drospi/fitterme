@@ -27,9 +27,17 @@ const DetailsRoutineScreen = () => {
 
   return (
     <ScrollView style={[globalStyles.container, { padding: 15 }]}>
-      <Text style={[globalStyles.title, { marginBottom: 20 }]}>
-        {session.name}
-      </Text>
+      <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+        <Ionicons
+          name="arrow-back"
+          size={32}
+          onPress={() => router.back()}
+          color={colors.text}
+        />
+        <Text style={[globalStyles.title, { marginBottom: 20 }]}>
+          {session.name}
+        </Text>
+      </View>
 
       {/* Stats superiores */}
       <View style={{ flexDirection: "row", gap: 10, marginBottom: 20 }}>
