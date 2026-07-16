@@ -52,6 +52,5 @@ export const getExerciseIdByExerciseName = async (
   const exercise = exerciseData.find(
     (ex) => ex.nombre.trim().toLowerCase() === normalizedName,
   );
-  // Devolvemos el ID original (number) o null si no existe
   return exercise ? exercise.id : null;
 };

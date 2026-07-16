@@ -1,4 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import exercisesData from "../data/exercises.json"; // Ajusta la ruta según sea necesario
 
 export type ExerciseSet = {
   reps: number;
@@ -27,6 +28,20 @@ export const getHistoryByExerciseId = async (
 ): Promise<ExerciseHistory[]> => {
   const history = await getExerciseHistory();
   return history.filter((log) => log.exerciseId === id);
+};
+
+export const getHistoryByMuscle = async (
+  muscle: string,
+): Promise<ExerciseHistory[]> => {
+  const exercisesIdByMuscle = (exercisesData as any[])
+    .filter(
+      (exercise) => exercise.musculo.toLowerCase() === muscle.toLowerCase(),
+    )
+    .map((exercise) => exercise.id);
+
+  const history = await getExerciseHistory();
+
+  return history.filter((log) => exercisesIdByMuscle.includes(log.exerciseId));
 };
 
 export const addExerciseLog = async (

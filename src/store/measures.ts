@@ -28,6 +28,18 @@ export const getMeasures = async (): Promise<Measure[]> => {
   return data ? JSON.parse(data) : [];
 };
 
+export const getHistoryForBodyPart = async (
+  bodyPart: keyof Measure,
+): Promise<{ date: string; value: number }[]> => {
+  const data = await AsyncStorage.getItem(MEASURES_KEY);
+  const measures: Measure[] = data ? JSON.parse(data) : [];
+
+  return measures.map((m) => ({
+    date: m.createdAt,
+    value: m[bodyPart] as number,
+  }));
+};
+
 export const addMeasure = async (
   Measure: Omit<Measure, "id" | "createdAt">,
 ): Promise<Measure> => {
