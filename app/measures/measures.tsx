@@ -25,6 +25,7 @@ export default function MeasuresScreen() {
   const [antebrazo, setAntebrazo] = useState(0);
   const [cintura, setCintura] = useState(0);
   const [cadera, setCadera] = useState(0);
+  const [espalda, setEspalda] = useState(0);
   const [cuadriceps, setCuadriceps] = useState(0);
   const [gemelos, setGemelos] = useState(0);
   const [gluteos, setGluteos] = useState(0);
@@ -49,7 +50,7 @@ export default function MeasuresScreen() {
         cuadriceps,
         gemelos,
         gluteos,
-        espalda: 0,
+        espalda,
         edad,
         sexo,
         peso,
@@ -94,11 +95,22 @@ export default function MeasuresScreen() {
         <Text style={globalStyles.title}>All Measures</Text>
       </View>
       <ScrollView style={{ gap: 20 }}>
-        <MeasureCard measure={edad} setMeasure={setEdad} name="Edad" />
-        <MeasureCard measure={peso} setMeasure={setPeso} name="Peso" />
+        <MeasureCard
+          measure={edad}
+          setMeasure={setEdad}
+          name="Edad"
+          measureType="años"
+        />
+        <MeasureCard
+          measure={peso}
+          setMeasure={setPeso}
+          name="Peso"
+          measureType="kg"
+        />
         <MeasureCard measure={altura} setMeasure={setAltura} name="Altura" />
         <MeasureCard measure={cuello} setMeasure={setCuello} name="Cuello" />
         <MeasureCard measure={pecho} setMeasure={setPecho} name="Pecho" />
+        <MeasureCard measure={espalda} setMeasure={setEspalda} name="Espalda" />
         <MeasureCard measure={hombros} setMeasure={setHombros} name="Hombros" />
         <MeasureCard measure={biceps} setMeasure={setBiceps} name="Biceps" />
         <MeasureCard

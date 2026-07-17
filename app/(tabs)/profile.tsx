@@ -3,13 +3,15 @@ import { useTheme } from "@/context/ThemeContext";
 import { Measure, getMeasures } from "@/store/measures";
 import { getGlobalStyles } from "@/styles/global";
 import { Ionicons } from "@expo/vector-icons";
-import { Link, useFocusEffect } from "expo-router";
+import { Link, useFocusEffect, useRouter } from "expo-router";
 import { useCallback, useState } from "react";
 import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 
 export default function ProfileScreen() {
   const { colors } = useTheme();
   const globalStyles = getGlobalStyles(colors);
+
+  const router = useRouter();
 
   const [measures, setMeasures] = useState<Measure[]>([]);
 
@@ -33,96 +35,121 @@ export default function ProfileScreen() {
         </Link>
       </View>
       <View style={{ marginTop: 30 }}>
-        <View
-          style={[
-            globalStyles.card,
-            {
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-            },
-          ]}
-        >
+        {measures.length === 0 ? (
+          <View style={[globalStyles.card, { alignItems: "center" }]}>
+            <Ionicons name="person" size={40} color={colors.primary} />
+            <Text style={globalStyles.cardText}>
+              No hay informacion del perfil, desea agregarla?
+            </Text>
+            <TouchableOpacity
+              style={globalStyles.button}
+              onPress={() => router.push("/measures/PersonalData")}
+            >
+              <Text style={globalStyles.buttonText}>Agregar Información</Text>
+            </TouchableOpacity>
+          </View>
+        ) : (
           <View>
-            <Text style={globalStyles.cardText}>Peso Actual</Text>
-            <Text style={globalStyles.cardText}>
-              <Text
-                style={{
-                  fontWeight: "bold",
-                  color: colors.primary,
-                  fontSize: 20,
-                }}
-              >
-                {measures[0]?.peso || "No data"}
-              </Text>{" "}
-              kg
-            </Text>
-          </View>
-          <Ionicons name="scale-outline" size={40} color={colors.primary} />
-        </View>
-        <View style={{ flexDirection: "row", gap: 10 }}>
-          <View style={[globalStyles.card, { flex: 1 }]}>
-            <Text style={globalStyles.cardText}>Edad</Text>
-            <Text style={globalStyles.cardText}>
-              <Text
-                style={{
-                  fontWeight: "bold",
-                  color: colors.text,
-                  fontSize: 20,
-                }}
-              >
-                {measures[0]?.edad || "No data"}
-              </Text>{" "}
-              años
-            </Text>
-          </View>
-          <View style={[globalStyles.card, { flex: 1 }]}>
-            <Text style={globalStyles.cardText}>Altura Actual</Text>
-            <Text style={globalStyles.cardText}>
-              <Text
-                style={{
-                  fontWeight: "bold",
-                  color: colors.text,
-                  fontSize: 20,
-                }}
-              >
-                {measures[0]?.altura || "No data"}
-              </Text>{" "}
-              cm
-            </Text>
-          </View>
-        </View>
-        <View
-          style={[
-            globalStyles.card,
-            {
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-            },
-          ]}
-        >
-          <View>
-            <Text style={globalStyles.cardText}>Genero</Text>
+            <View
+              style={[
+                globalStyles.card,
+                {
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                },
+              ]}
+            >
+              <View>
+                <Text style={globalStyles.cardText}>Peso Actual</Text>
+                <Text style={globalStyles.cardText}>
+                  <Text
+                    style={{
+                      fontWeight: "bold",
+                      color: colors.primary,
+                      fontSize: 20,
+                    }}
+                  >
+                    {measures[0]?.peso || "No data"}
+                  </Text>{" "}
+                  kg
+                </Text>
+              </View>
+              <Ionicons name="scale-outline" size={40} color={colors.primary} />
+            </View>
+            <View style={{ flexDirection: "row", gap: 10 }}>
+              <View style={[globalStyles.card, { flex: 1 }]}>
+                <Text style={globalStyles.cardText}>Edad</Text>
+                <Text style={globalStyles.cardText}>
+                  <Text
+                    style={{
+                      fontWeight: "bold",
+                      color: colors.text,
+                      fontSize: 20,
+                    }}
+                  >
+                    {measures[0]?.edad || "No data"}
+                  </Text>{" "}
+                  años
+                </Text>
+              </View>
+              <View style={[globalStyles.card, { flex: 1 }]}>
+                <Text style={globalStyles.cardText}>Altura Actual</Text>
+                <Text style={globalStyles.cardText}>
+                  <Text
+                    style={{
+                      fontWeight: "bold",
+                      color: colors.text,
+                      fontSize: 20,
+                    }}
+                  >
+                    {measures[0]?.altura || "No data"}
+                  </Text>{" "}
+                  cm
+                </Text>
+              </View>
+            </View>
+            <View
+              style={[
+                globalStyles.card,
+                {
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                },
+              ]}
+            >
+              <View>
+                <Text style={globalStyles.cardText}>Genero</Text>
 
-            <Text style={globalStyles.cardText}>
-              <Text
-                style={{
-                  fontWeight: "bold",
-                  color: colors.text,
-                  fontSize: 20,
-                }}
-              >
-                {measures[0]?.sexo || "No data"}
-              </Text>
-            </Text>
+                <Text style={globalStyles.cardText}>
+                  <Text
+                    style={{
+                      fontWeight: "bold",
+                      color: colors.text,
+                      fontSize: 20,
+                    }}
+                  >
+                    {measures[0]?.sexo || "No data"}
+                  </Text>
+                </Text>
+              </View>
+              {measures[0]?.sexo === "Masculino" ? (
+                <Ionicons
+                  name="male-outline"
+                  size={40}
+                  color={colors.secondary}
+                />
+              ) : (
+                <Ionicons
+                  name="female-outline"
+                  size={40}
+                  color={colors.delete}
+                />
+              )}
+            </View>
           </View>
-          {measures[0]?.sexo === "Masculino" ? (
-            <Ionicons name="male-outline" size={40} color={colors.secondary} />
-          ) : (
-            <Ionicons name="female-outline" size={40} color={colors.delete} />
-          )}
-        </View>
+        )}
         <Link style={globalStyles.title} href="/measures/measures">
           Medidas Corporales
         </Link>
@@ -174,13 +201,26 @@ export default function ProfileScreen() {
           <MeasureItem name="Altura" measure={measures[0]?.altura} link="" />
         ) : null}
       </View>
-      <Link href="/measures/measures">
+      {measures.length === 0 ? (
+        <View>
+          <Text style={globalStyles.textSecondary}>
+            No existen medidas todavia...
+          </Text>
+          <TouchableOpacity
+            style={[globalStyles.button, { width: "100%", marginBottom: 20 }]}
+            onPress={() => router.push("/measures/measures")}
+          >
+            <Text style={globalStyles.buttonText}>Registrar Medidas</Text>
+          </TouchableOpacity>
+        </View>
+      ) : (
         <TouchableOpacity
           style={[globalStyles.button, { width: "100%", marginBottom: 20 }]}
+          onPress={() => router.push("/measures/measures")}
         >
           <Text style={globalStyles.buttonText}>Actualizar Medidas</Text>
         </TouchableOpacity>
-      </Link>
+      )}
     </ScrollView>
   );
 }

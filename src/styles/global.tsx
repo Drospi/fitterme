@@ -8,7 +8,7 @@ export const getGlobalStyles = (colors: any) =>
     container: {
       flex: 1,
       backgroundColor: colors.background,
-      paddingTop: 20,
+      paddingTop: 60,
       paddingHorizontal: 20,
     },
     title: {
