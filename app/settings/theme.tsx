@@ -31,7 +31,12 @@ export default function ThemeScreen() {
             alignItems: "center",
           }}
         >
-          <Text style={[globalStyles.text, { fontWeight: "bold" }]}>
+          <Text
+            style={[
+              globalStyles.text,
+              { fontWeight: "bold", color: colors.neutral },
+            ]}
+          >
             Cambiar a {isDark ? "Claro" : "Oscuro"}
           </Text>
         </TouchableOpacity>

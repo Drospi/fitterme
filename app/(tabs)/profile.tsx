@@ -194,12 +194,6 @@ export default function ProfileScreen() {
         {measures[0]?.gluteos ? (
           <MeasureItem name="Gluteos" measure={measures[0]?.gluteos} link="" />
         ) : null}
-        {measures[0]?.peso ? (
-          <MeasureItem name="Peso" measure={measures[0]?.peso} link="" />
-        ) : null}
-        {measures[0]?.altura ? (
-          <MeasureItem name="Altura" measure={measures[0]?.altura} link="" />
-        ) : null}
       </View>
       {measures.length === 0 ? (
         <View>

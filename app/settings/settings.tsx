@@ -1,92 +1,212 @@
-import SettingCard from "@/components/SettingCard";
 import { useTheme } from "@/context/ThemeContext";
-import { getMeasures } from "@/store/measures";
 import { getGlobalStyles } from "@/styles/global";
-import { useFocusEffect } from "expo-router";
-import { useCallback, useState } from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { Href, useRouter } from "expo-router";
+import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 
 export default function SettingsScreen() {
-  const { colors, isDark } = useTheme();
+  const { colors } = useTheme();
   const globalStyles = getGlobalStyles(colors);
-  const [sexo, setSexo] = useState("masculino");
 
-  const loadMeasures = async () => {
-    const data = await getMeasures();
-    setSexo(data[0]?.sexo || "ninguno");
-  };
-
-  useFocusEffect(
-    useCallback(() => {
-      loadMeasures();
-    }, []),
-  );
+  const router = useRouter();
 
   return (
-    <ScrollView style={globalStyles.container}>
+    <View style={globalStyles.container}>
       <View style={globalStyles.header}>
-        <Text style={globalStyles.title}>Settings</Text>
+        <Ionicons
+          onPress={() => router.back()}
+          name="arrow-back"
+          size={24}
+          color={colors.text}
+        />
+        <Text style={globalStyles.title}>Ajustes</Text>
+        <Ionicons name="settings" size={24} color={colors.text} />
       </View>
-      <ScrollView
-        style={globalStyles.container}
-        contentContainerStyle={{ padding: 20 }}
-      >
-        <View style={styles.section}>
-          <Text style={[globalStyles.text, { marginBottom: 10, left: -20 }]}>
-            Appearance
+      <ScrollView>
+        <View style={{ marginVertical: 20 }}>
+          <Text
+            style={{ fontWeight: "bold", fontSize: 20, color: colors.primary }}
+          >
+            ENTRENAMIENTO
           </Text>
-          <SettingCard
-            link="/settings/theme"
-            title="Theme"
-            value={isDark ? "Oscuro" : "Claro"}
-          />
+          <View style={[globalStyles.card, { marginTop: 10 }]}>
+            <View
+              style={{ flexDirection: "row", justifyContent: "space-between" }}
+            >
+              <View style={{ flexDirection: "row", gap: 10 }}>
+                <Ionicons name="timer-outline" size={24} color={colors.text} />
+                <Text style={globalStyles.text}>
+                  Tiempo de descanso por defecto
+                </Text>
+              </View>
+              <Text
+                style={{
+                  fontWeight: "bold",
+                  fontSize: 20,
+                  color: colors.primary,
+                }}
+              >
+                90s
+              </Text>
+            </View>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginTop: 20,
+              }}
+            >
+              <View style={{ flexDirection: "row", gap: 10 }}>
+                <Ionicons
+                  name="briefcase-outline"
+                  size={24}
+                  color={colors.text}
+                />
+                <Text style={globalStyles.text}>Unidades de peso</Text>
+              </View>
+              <View style={{ flexDirection: "row", gap: 10 }}>
+                <View
+                  style={{
+                    marginRight: 10,
+                    borderRadius: 5,
+                    padding: 5,
+                    paddingHorizontal: 10,
+                    backgroundColor: colors.primary,
+                  }}
+                >
+                  <Text
+                    style={{
+                      fontWeight: "bold",
+                      fontSize: 20,
+                      color: colors.background,
+                    }}
+                  >
+                    Kg
+                  </Text>
+                </View>
+                <View
+                  style={{
+                    marginRight: 10,
+                    borderRadius: 5,
+                    padding: 5,
+                    paddingHorizontal: 10,
+                    backgroundColor: colors.surface,
+                  }}
+                >
+                  <Text
+                    style={{
+                      fontWeight: "bold",
+                      fontSize: 20,
+                      color: colors.primary,
+                    }}
+                  >
+                    Lb
+                  </Text>
+                </View>
+              </View>
+            </View>
+          </View>
         </View>
 
-        <View style={styles.section}>
-          <Text style={[globalStyles.text, { marginBottom: 10, left: -20 }]}>
-            Temporizador
+        <View style={{ marginBottom: 20 }}>
+          <Text
+            style={{ fontWeight: "bold", fontSize: 20, color: colors.primary }}
+          >
+            CUENTA Y DATOS
           </Text>
-          <SettingCard
-            title="Valor del Aumento"
-            link={"/settings/timer"}
-            value="30 segundos"
-          />
-
-          <SettingCard title="Valor del Aumento" value="30 segundos" />
-
-          <SettingCard title="Valor del Aumento" value="30 segundos" />
+          <View style={[globalStyles.card, { paddingTop: 0, marginTop: 10 }]}>
+            {[
+              {
+                icon: "person-outline",
+                value: "Editar Perfil",
+                link: "../measures/PersonalData",
+              },
+              {
+                icon: "accessibility-outline",
+                value: "Actualizar Medidas",
+                link: "../measures/measures",
+              },
+              {
+                icon: "analytics-outline",
+                value: "Fijar Metas",
+                link: "../measures/goals",
+              },
+            ].map((item, index) => (
+              <View key={index} style={{ marginTop: 20 }}>
+                <TouchableOpacity
+                  style={{
+                    flexDirection: "row",
+                    gap: 10,
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}
+                  onPress={() => router.push(item.link as Href)}
+                >
+                  <View style={{ flexDirection: "row", gap: 10 }}>
+                    <Ionicons name={item.icon} size={24} color={colors.text} />
+                    <Text style={globalStyles.text}>{item.value}</Text>
+                  </View>
+                  <Ionicons
+                    name="chevron-forward"
+                    size={24}
+                    color={colors.text}
+                  />
+                </TouchableOpacity>
+              </View>
+            ))}
+          </View>
         </View>
 
-        <View style={styles.section}>
-          <Text style={[globalStyles.text, { marginBottom: 10, left: -20 }]}>
-            Appearance
+        <View style={{ marginBottom: 20 }}>
+          <Text
+            style={{ fontWeight: "bold", fontSize: 20, color: colors.primary }}
+          >
+            PREFERENCIAS
           </Text>
-
-          <SettingCard title="Valor del Aumento" value="30 segundos" />
-        </View>
-        <View style={styles.section}>
-          <Text style={[globalStyles.text, { marginBottom: 10, left: -20 }]}>
-            Genero
-          </Text>
-
-          <SettingCard title="Sexo" value={sexo} link="/settings/genre" />
+          <View style={[globalStyles.card, { paddingTop: 0, marginTop: 10 }]}>
+            {[
+              {
+                icon: "notifications-outline",
+                value: "Notificaciones",
+                link: "./notifications",
+              },
+              {
+                icon: "language-outline",
+                value: "Idioma",
+                link: "./language",
+              },
+              {
+                icon: "color-palette-outline",
+                value: "Tema",
+                link: "./theme",
+              },
+            ].map((item, index) => (
+              <View key={index} style={{ marginTop: 20 }}>
+                <TouchableOpacity
+                  style={{
+                    flexDirection: "row",
+                    gap: 10,
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}
+                  onPress={() => router.push(item.link as Href)}
+                >
+                  <View style={{ flexDirection: "row", gap: 10 }}>
+                    <Ionicons name={item.icon} size={24} color={colors.text} />
+                    <Text style={globalStyles.text}>{item.value}</Text>
+                  </View>
+                  <Ionicons
+                    name="chevron-forward"
+                    size={24}
+                    color={colors.text}
+                  />
+                </TouchableOpacity>
+              </View>
+            ))}
+          </View>
         </View>
       </ScrollView>
-    </ScrollView>
+    </View>
   );
 }
-
-const styles = StyleSheet.create({
-  selection: {
-    fontSize: 14,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 8,
-    marginTop: 8,
-  },
-
-  section: {
-    marginBottom: 24,
-  },
-});
