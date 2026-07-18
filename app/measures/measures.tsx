@@ -18,17 +18,17 @@ export default function MeasuresScreen() {
   const { colors } = useTheme();
   const globalStyles = getGlobalStyles(colors);
 
-  const [cuello, setCuello] = useState(0);
-  const [pecho, setPecho] = useState(0);
-  const [hombros, setHombros] = useState(0);
-  const [biceps, setBiceps] = useState(0);
-  const [antebrazo, setAntebrazo] = useState(0);
-  const [cintura, setCintura] = useState(0);
-  const [cadera, setCadera] = useState(0);
-  const [espalda, setEspalda] = useState(0);
-  const [cuadriceps, setCuadriceps] = useState(0);
-  const [gemelos, setGemelos] = useState(0);
-  const [gluteos, setGluteos] = useState(0);
+  const [cuello, setCuello] = useState(38);
+  const [pecho, setPecho] = useState(95);
+  const [hombros, setHombros] = useState(110);
+  const [biceps, setBiceps] = useState(32);
+  const [antebrazo, setAntebrazo] = useState(15);
+  const [cintura, setCintura] = useState(80);
+  const [cadera, setCadera] = useState(90);
+  const [espalda, setEspalda] = useState(105);
+  const [cuadriceps, setCuadriceps] = useState(45);
+  const [gemelos, setGemelos] = useState(33);
+  const [gluteos, setGluteos] = useState(95);
   const [edad, setEdad] = useState(0);
   const [sexo, setSexo] = useState("masculino");
   const [peso, setPeso] = useState(0);
@@ -65,20 +65,21 @@ export default function MeasuresScreen() {
 
   const loadMeasures = async () => {
     const data = await getMeasures();
-    setCuello(data[0]?.cuello || 0);
-    setPecho(data[0]?.pecho || 0);
-    setHombros(data[0]?.hombros || 0);
-    setBiceps(data[0]?.biceps || 0);
-    setAntebrazo(data[0]?.antebrazo || 0);
-    setCintura(data[0]?.cintura || 0);
-    setCadera(data[0]?.cadera || 0);
-    setCuadriceps(data[0]?.cuadriceps || 0);
-    setGemelos(data[0]?.gemelos || 0);
-    setGluteos(data[0]?.gluteos || 0);
-    setEdad(data[0]?.edad || 0);
-    setSexo(data[0]?.sexo || "masculino");
-    setPeso(data[0]?.peso || 0);
-    setAltura(data[0]?.altura || 0);
+    setCuello(data[0]?.cuello || 38);
+    setPecho(data[0]?.pecho || 95);
+    setHombros(data[0]?.hombros || 110);
+    setBiceps(data[0]?.biceps || 32);
+    setAntebrazo(data[0]?.antebrazo || 15);
+    setCintura(data[0]?.cintura || 80);
+    setCadera(data[0]?.cadera || 90);
+    setEspalda(data[0]?.espalda || 105);
+    setCuadriceps(data[0]?.cuadriceps || 45);
+    setGemelos(data[0]?.gemelos || 33);
+    setGluteos(data[0]?.gluteos || 95);
+    setEdad(data[0]?.edad || 18);
+    setSexo(data[0]?.sexo || "Masculino");
+    setPeso(data[0]?.peso || 70);
+    setAltura(data[0]?.altura || 170);
   };
 
   useFocusEffect(
@@ -87,50 +88,46 @@ export default function MeasuresScreen() {
     }, []),
   );
   return (
-    <ScrollView
-      style={globalStyles.container}
-      contentContainerStyle={{ paddingBottom: 20 }}
-    >
-      <View style={globalStyles.header}>
-        <Text style={globalStyles.title}>All Measures</Text>
+    <ScrollView style={globalStyles.container}>
+      <View
+        style={[
+          globalStyles.header,
+          {
+            flexDirection: "column",
+            alignItems: "flex-start",
+            marginBottom: 20,
+          },
+        ]}
+      >
+        <Text style={globalStyles.title}>Actualizar mis medidas</Text>
+        <Text style={globalStyles.textSecondary}>
+          Registra tu progreso. Valores en cm
+        </Text>
       </View>
-      <ScrollView style={{ gap: 20 }}>
-        <MeasureCard
-          measure={edad}
-          setMeasure={setEdad}
-          name="Edad"
-          measureType="años"
-        />
-        <MeasureCard
-          measure={peso}
-          setMeasure={setPeso}
-          name="Peso"
-          measureType="kg"
-        />
-        <MeasureCard measure={altura} setMeasure={setAltura} name="Altura" />
-        <MeasureCard measure={cuello} setMeasure={setCuello} name="Cuello" />
-        <MeasureCard measure={pecho} setMeasure={setPecho} name="Pecho" />
-        <MeasureCard measure={espalda} setMeasure={setEspalda} name="Espalda" />
-        <MeasureCard measure={hombros} setMeasure={setHombros} name="Hombros" />
-        <MeasureCard measure={biceps} setMeasure={setBiceps} name="Biceps" />
-        <MeasureCard
-          measure={antebrazo}
-          setMeasure={setAntebrazo}
-          name="Antebrazo"
-        />
-        <MeasureCard measure={cintura} setMeasure={setCintura} name="Cintura" />
-        <MeasureCard measure={cadera} setMeasure={setCadera} name="Cadera" />
-        <MeasureCard
-          measure={cuadriceps}
-          setMeasure={setCuadriceps}
-          name="Cuadriceps"
-        />
-        <MeasureCard measure={gemelos} setMeasure={setGemelos} name="Gemelos" />
-        <MeasureCard measure={gluteos} setMeasure={setGluteos} name="Gluteos" />
-      </ScrollView>
-      <TouchableOpacity onPress={handleSave} style={globalStyles.button}>
-        <Text style={globalStyles.buttonText}>Save Measure</Text>
-      </TouchableOpacity>
+      <MeasureCard measure={cuello} setMeasure={setCuello} name="Cuello" />
+      <MeasureCard measure={pecho} setMeasure={setPecho} name="Pecho" />
+      <MeasureCard measure={espalda} setMeasure={setEspalda} name="Espalda" />
+      <MeasureCard measure={hombros} setMeasure={setHombros} name="Hombros" />
+      <MeasureCard measure={biceps} setMeasure={setBiceps} name="Biceps" />
+      <MeasureCard
+        measure={antebrazo}
+        setMeasure={setAntebrazo}
+        name="Antebrazo"
+      />
+      <MeasureCard measure={cintura} setMeasure={setCintura} name="Cintura" />
+      <MeasureCard measure={cadera} setMeasure={setCadera} name="Cadera" />
+      <MeasureCard
+        measure={cuadriceps}
+        setMeasure={setCuadriceps}
+        name="Cuadriceps"
+      />
+      <MeasureCard measure={gemelos} setMeasure={setGemelos} name="Gemelos" />
+      <MeasureCard measure={gluteos} setMeasure={setGluteos} name="Gluteos" />
+      <View style={{ marginBottom: 90 }}>
+        <TouchableOpacity onPress={handleSave} style={globalStyles.button}>
+          <Text style={globalStyles.buttonText}>Save Measure</Text>
+        </TouchableOpacity>
+      </View>
     </ScrollView>
   );
 }

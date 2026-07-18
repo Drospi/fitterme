@@ -3,7 +3,7 @@ import { ExerciseHistory, getHistoryByMuscle } from "@/store/historyExcercise";
 import { Measure, getHistoryForBodyPart } from "@/store/measures";
 import { getGlobalStyles } from "@/styles/global";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { Dimensions, ScrollView, Text, View } from "react-native";
 import { LineChart } from "react-native-chart-kit";
@@ -12,6 +12,8 @@ import exercisesData from "../../../src/data/exercises.json";
 const DetailsMeasureScreen = () => {
   const { colors } = useTheme();
   const globalStyles = getGlobalStyles(colors);
+
+  const router = useRouter();
 
   const { name } = useLocalSearchParams<{ name: string }>();
 
@@ -88,7 +90,11 @@ const DetailsMeasureScreen = () => {
   const globalBest = muscleExerciseHistory.reduce(
     (best, log) => {
       return log.bestWeight > best.bestWeight
-        ? { bestWeight: log.bestWeight, bestReps: log.bestReps }
+        ? {
+            bestWeight: log.bestWeight,
+            bestReps: log.bestReps,
+            name: log.exerciseId,
+          }
         : best;
     },
     { bestWeight: 0, bestReps: 0 },
@@ -121,14 +127,12 @@ const DetailsMeasureScreen = () => {
         totalVolume: log.totalVolume, // Iniciamos el volumen
       };
     } else {
-      // 3. Si ya existe, solo sumamos el volumen
       acc[log.exerciseId].totalVolume += log.totalVolume;
     }
 
     return acc;
   }, {});
 
-  // 4. Convertimos el objeto en un array para poder ordenarlo fácilmente
   const sortedTop = Object.values(topExercises).sort(
     (a: any, b: any) => b.totalVolume - a.totalVolume,
   );
@@ -148,7 +152,12 @@ const DetailsMeasureScreen = () => {
           { marginBottom: 20, alignItems: "center" },
         ]}
       >
-        <Ionicons name="arrow-back" size={24} color={colors.text} />
+        <Ionicons
+          onPress={() => router.back()}
+          name="arrow-back"
+          size={24}
+          color={colors.text}
+        />
         <Text style={globalStyles.title}>{name.toUpperCase()}</Text>
         <Ionicons name="ellipsis-vertical" size={24} color={colors.text} />
       </View>
@@ -165,7 +174,7 @@ const DetailsMeasureScreen = () => {
           },
         ]}
       >
-        {history.length > 0 && (
+        {measureHistory.length > 0 && (
           <LineChart
             data={{
               labels: reversedChartLabels,
@@ -214,7 +223,9 @@ const DetailsMeasureScreen = () => {
               {globalBest.bestWeight}{" "}
               <Text style={globalStyles.textSecondary}>kg</Text>
             </Text>
-            <Text style={globalStyles.textSecondary}>Press tanto....</Text>
+            <Text style={globalStyles.textSecondary}>
+              {globalBest.bestReps} reps
+            </Text>
           </View>
           <Ionicons name="medal-outline" size={24} color={colors.primary} />
         </View>
@@ -311,9 +322,14 @@ const DetailsMeasureScreen = () => {
                     color: colors.secondary,
                   }}
                 >
-                  {((e.totalVolume / totalVolume) * 100).toFixed(1)}%{" "}
+                  {totalVolume > 0
+                    ? ((e.totalVolume / totalVolume) * 100).toFixed(1)
+                    : "Sin datos"}
+                  %{" "}
                 </Text>
-                <Text style={globalStyles.textSecondary}>del volumen</Text>
+                <Text style={globalStyles.textSecondary}>
+                  {totalVolume > 0 ? "del volumen" : "Sin datos"}
+                </Text>
               </View>
             </View>
           ))}

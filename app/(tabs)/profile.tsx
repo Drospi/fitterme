@@ -209,7 +209,7 @@ export default function ProfileScreen() {
         </View>
       ) : (
         <TouchableOpacity
-          style={[globalStyles.button, { width: "100%", marginBottom: 20 }]}
+          style={[globalStyles.button, { width: "100%", marginBottom: 80 }]}
           onPress={() => router.push("/measures/measures")}
         >
           <Text style={globalStyles.buttonText}>Actualizar Medidas</Text>
