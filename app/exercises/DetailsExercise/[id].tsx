@@ -410,6 +410,7 @@ const DetailsExerciseScreen = () => {
       </View>
 
       {history.length === 0 && <Text>No hay historial disponible.</Text>}
+      <View style={{ height: 100 }}></View>
     </ScrollView>
   );
 };

@@ -232,6 +232,7 @@ const DetailsRoutineScreen = () => {
           </View>
         </View>
       ))}
+      <View style={{ height: 100 }}></View>
     </ScrollView>
   );
 };

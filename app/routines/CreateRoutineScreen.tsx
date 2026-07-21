@@ -1,11 +1,18 @@
+import { useTheme } from "@/context/ThemeContext";
 import { Routine, addRoutine } from "@/store/routines";
+import { getGlobalStyles } from "@/styles/global";
+import { useRouter } from "expo-router";
 import { useState } from "react";
-import { View } from "react-native";
+import { ScrollView } from "react-native";
 import Step1 from "./Step1";
 import Step2 from "./Step2";
 import Step3 from "./Step3";
 
 const CreateRoutineScreen = () => {
+  const { colors } = useTheme();
+  const globalStyles = getGlobalStyles(colors);
+
+  const router = useRouter();
   const [step, setStep] = useState(1);
   const [routineData, setRoutineData] = useState({
     name: "",
@@ -26,7 +33,7 @@ const CreateRoutineScreen = () => {
     setRoutineData((prev) => ({ ...prev, ...newData }));
   };
 
-  const handleSaveRoutine = () => {
+  const handleSaveRoutine = async () => {
     const routineToSave: Routine = {
       ...routineData,
       id: Date.now().toString(),
@@ -39,16 +46,20 @@ const CreateRoutineScreen = () => {
       })),
     };
 
-    addRoutine(routineToSave);
+    await addRoutine(routineToSave);
     setStep(1);
     setRoutineData({
       name: "",
       category: "",
       exercises: [],
     });
+    router.push("/routines");
   };
   return (
-    <View style={{ flex: 1, backgroundColor: "#000" }}>
+    <ScrollView
+      showsVerticalScrollIndicator={false}
+      style={globalStyles.container}
+    >
       {step === 1 && (
         <Step1
           next={() => setStep(2)}
@@ -72,7 +83,7 @@ const CreateRoutineScreen = () => {
           saveRoutine={handleSaveRoutine}
         />
       )}
-    </View>
+    </ScrollView>
   );
 };
 export default CreateRoutineScreen;

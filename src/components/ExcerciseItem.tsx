@@ -1,6 +1,5 @@
 import { useTheme } from "@/context/ThemeContext";
 import { getGlobalStyles } from "@/styles/global";
-import { Ionicons } from "@expo/vector-icons";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 type ExerciseType = {
@@ -39,8 +38,10 @@ export default function ExcerciseItem({
           backgroundColor: isCheckedFather
             ? colors.primary + 33
             : colors.surface,
+          width: "100%",
         },
       ]}
+      onPress={onCheck}
     >
       <View style={{ flexDirection: "row", gap: 20 }}>
         <Image
@@ -54,23 +55,7 @@ export default function ExcerciseItem({
           </Text>
         </View>
       </View>
-      <View style={styles.colCheck}>
-        {isCheckedFather ? (
-          <Ionicons
-            name="checkmark-circle"
-            size={32}
-            color={colors.primary}
-            onPress={() => onCheck()}
-          />
-        ) : (
-          <Ionicons
-            name="add-circle-outline"
-            size={32}
-            color={colors.textSecondary}
-            onPress={() => onCheck()}
-          />
-        )}
-      </View>
+      <View style={styles.colCheck}></View>
     </TouchableOpacity>
   );
 }

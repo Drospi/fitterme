@@ -12,7 +12,13 @@ import { getGlobalStyles } from "@/styles/global";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useFocusEffect, useLocalSearchParams } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
-import { Text, TextInput, TouchableOpacity, View } from "react-native";
+import {
+  ScrollView,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import ExcerciseCompleted from "./ExcerciseCompleted";
 import RoutineCompleted from "./RoutineCompleted";
 
@@ -174,7 +180,7 @@ const PlayRoutineScreen = () => {
   const handleFinishRoutine = async () => {
     const sessionData = {
       name: routineData.name,
-      duration: timer, // Tu contador de tiempo
+      duration: timer,
       totalVolume: totalTonelaje,
       exercises: routineData.exercises.map((ex) => ({
         exerciseName: ex.nombre,
@@ -233,7 +239,10 @@ const PlayRoutineScreen = () => {
   }
 
   return (
-    <View style={globalStyles.container}>
+    <ScrollView
+      style={globalStyles.container}
+      showsVerticalScrollIndicator={false}
+    >
       <View style={globalStyles.header}>
         <View>
           <Text
@@ -255,10 +264,7 @@ const PlayRoutineScreen = () => {
           style={[
             globalStyles.card,
             {
-              flexDirection: "row",
-              gap: 10,
               alignItems: "center",
-              marginHorizontal: 20,
               borderRadius: 30,
               justifyContent: "center",
             },
@@ -266,11 +272,11 @@ const PlayRoutineScreen = () => {
         >
           <Ionicons
             name="timer-outline"
-            size={32}
+            size={24}
             color={colors.primary}
           ></Ionicons>
           <Text
-            style={[globalStyles.title, { fontSize: 20, alignSelf: "center" }]}
+            style={[globalStyles.title, { fontSize: 16, alignSelf: "center" }]}
           >
             {formatTime(timer)}
           </Text>
@@ -313,57 +319,71 @@ const PlayRoutineScreen = () => {
         <View
           style={{
             gap: 10,
-            flexDirection: "row",
-            alignItems: "center",
+            alignItems: "flex-start",
             justifyContent: "space-between",
           }}
         >
-          <View style={{ flexDirection: "row", gap: 10 }}>
-            {routineData?.exercises?.[0]?.series ? (
-              Array.from({
-                length: routineData.exercises[ejercicioActual].series,
-              }).map((_, i) => (
-                <View
-                  style={[
-                    globalStyles.card,
-                    {
-                      height: 50,
-                      width: 50,
-                      borderRadius: "100%",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      backgroundColor:
-                        i === serieActual ? colors.primary : colors.background,
-                    },
-                  ]}
-                  key={i}
-                >
-                  <Text
+          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+            <View
+              style={{
+                flexDirection: "row",
+                gap: 10,
+              }}
+            >
+              {routineData?.exercises?.[0]?.series ? (
+                Array.from({
+                  length: routineData.exercises[ejercicioActual].series,
+                }).map((_, i) => (
+                  <View
                     style={[
-                      globalStyles.cardText,
+                      globalStyles.card,
                       {
-                        color:
+                        height: 50,
+                        width: 50,
+                        borderRadius: "100%",
+                        backgroundColor:
                           i === serieActual
-                            ? colors.neutral
-                            : colors.textSecondary,
+                            ? colors.primary
+                            : colors.background,
                       },
                     ]}
+                    key={i}
                   >
-                    {i + 1}
-                  </Text>
-                </View>
-              ))
-            ) : (
-              <Text>Cargando series...</Text>
-            )}
-          </View>
+                    <Text
+                      style={[
+                        globalStyles.cardText,
+                        {
+                          color:
+                            i === serieActual
+                              ? colors.neutral
+                              : colors.textSecondary,
+                          alignSelf: "center",
+                        },
+                      ]}
+                    >
+                      {i + 1}
+                    </Text>
+                  </View>
+                ))
+              ) : (
+                <Text>Cargando series...</Text>
+              )}
+            </View>
+          </ScrollView>
           <Text style={globalStyles.textSecondary}>
             Serie Actual {serieActual + 1} /{" "}
             {routineData?.exercises?.[ejercicioActual]?.series}
           </Text>
         </View>
-        <View style={{ flexDirection: "row", gap: 10 }}>
-          <View style={{ flex: 1 }}>
+        <View style={{ gap: 10 }}>
+          <View
+            style={{
+              gap: 10,
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
             <Text style={globalStyles.cardText}>PESO (KG)</Text>
 
             <View
@@ -382,9 +402,9 @@ const PlayRoutineScreen = () => {
               />
               <TextInput
                 placeholder="4"
-                placeholderTextColor="#666"
+                placeholderTextColor={colors.textSecondary}
                 keyboardType="numeric"
-                value={pesoActual.toString()}
+                value={pesoActual.toString() ?? pesoActual.toString() ?? ""}
                 style={[
                   globalStyles.input,
                   {
@@ -394,9 +414,19 @@ const PlayRoutineScreen = () => {
                     marginBottom: 10,
                     height: 50,
                     paddingVertical: 0,
-                    width: "60%",
+                    width: 150,
                   },
                 ]}
+                onChangeText={(text) => {
+                  if (text === "") {
+                    setPesoActual(0);
+                  } else {
+                    const parsed = parseInt(text, 10);
+                    if (!isNaN(parsed)) {
+                      setPesoActual(parsed);
+                    }
+                  }
+                }}
               />
               <Ionicons
                 name="add-circle"
@@ -406,7 +436,14 @@ const PlayRoutineScreen = () => {
               />
             </View>
           </View>
-          <View style={{ flex: 1 }}>
+          <View
+            style={{
+              gap: 10,
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
             <Text style={globalStyles.cardText}>REPS</Text>
             <View
               style={{
@@ -424,10 +461,10 @@ const PlayRoutineScreen = () => {
               />
 
               <TextInput
-                placeholder="4"
+                placeholder="10"
                 placeholderTextColor="#666"
                 keyboardType="numeric"
-                value={repActual.toString()}
+                value={repActual ? repActual.toString() : ""}
                 style={[
                   globalStyles.input,
                   {
@@ -437,9 +474,19 @@ const PlayRoutineScreen = () => {
                     marginBottom: 10,
                     height: 50,
                     paddingVertical: 0,
-                    width: "60%",
+                    width: 150,
                   },
                 ]}
+                onChangeText={(text) => {
+                  if (text === "") {
+                    setRepActual(0);
+                  } else {
+                    const parsed = parseInt(text, 10);
+                    if (!isNaN(parsed)) {
+                      setRepActual(parsed);
+                    }
+                  }
+                }}
               />
               <Ionicons
                 name="add-circle"
@@ -464,7 +511,12 @@ const PlayRoutineScreen = () => {
         </TouchableOpacity>
       </View>
 
-      <View style={[globalStyles.card, { opacity: 0.5, marginTop: 20 }]}>
+      <View
+        style={[
+          globalStyles.card,
+          { opacity: 0.5, marginTop: 20, marginBottom: 100 },
+        ]}
+      >
         <Text style={globalStyles.title}>Proximos Ejercicios</Text>
         {routineData.exercises.slice(ejercicioActual + 1).map((ex) => (
           <View key={ex.id}>
@@ -476,7 +528,7 @@ const PlayRoutineScreen = () => {
           </View>
         ))}
       </View>
-    </View>
+    </ScrollView>
   );
 };
 

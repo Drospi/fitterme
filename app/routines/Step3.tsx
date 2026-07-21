@@ -89,7 +89,7 @@ export default function Step3({ back, data, updateData, saveRoutine }: Props) {
   };
 
   return (
-    <ScrollView style={globalStyles.container}>
+    <ScrollView>
       <Ionicons name="arrow-back" size={32} onPress={back} color="#fff" />
       <Text style={styles.title}>Paso 3: Configuracion</Text>
       <Text style={globalStyles.textSecondary}>
@@ -209,7 +209,10 @@ export default function Step3({ back, data, updateData, saveRoutine }: Props) {
         </View>
       ))}
 
-      <TouchableOpacity style={globalStyles.button} onPress={handleSave}>
+      <TouchableOpacity
+        style={[globalStyles.button, { marginBottom: 100 }]}
+        onPress={handleSave}
+      >
         <Text>Guardar Rutina</Text>
       </TouchableOpacity>
     </ScrollView>

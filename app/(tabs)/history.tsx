@@ -38,7 +38,7 @@ export default function HistoryScreen() {
       <View style={{ marginTop: 30, gap: 20 }}>
         <CalendarToday />
       </View>
-      <View style={{ marginTop: 30, gap: 20 }}>
+      <View style={{ marginTop: 30, gap: 20, marginBottom: 100 }}>
         {sessions.length === 0 ? (
           <Text style={globalStyles.text}>
             No hay registros todavia, ¡comienza a entrenar!

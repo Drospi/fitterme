@@ -2,13 +2,16 @@ import MealItem from "@/components/MealItem";
 import { useTheme } from "@/context/ThemeContext";
 import { getMeals, Meal } from "@/store/meals";
 import { getGlobalStyles } from "@/styles/global";
-import { Link, useFocusEffect } from "expo-router";
+import { useFocusEffect, useRouter } from "expo-router";
 import { useCallback, useState } from "react";
 import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 
 export default function AllMealsScreen() {
   const { colors } = useTheme();
   const globalStyles = getGlobalStyles(colors);
+
+  const router = useRouter();
+
   const [meals, setMeals] = useState<Meal[]>([]);
 
   const loadMeals = async () => {
@@ -83,18 +86,12 @@ export default function AllMealsScreen() {
           ))
         )}
       </View>
-      <Link href="/meals/add" push asChild>
-        <TouchableOpacity style={globalStyles.button}>
-          <Text style={globalStyles.buttonText}>Add Meal</Text>
-        </TouchableOpacity>
-      </Link>
+      <TouchableOpacity
+        onPress={() => router.push("/meals/add")}
+        style={[globalStyles.button, { marginBottom: 100 }]}
+      >
+        <Text style={globalStyles.buttonText}>Add Meal</Text>
+      </TouchableOpacity>
     </View>
   );
 }
-
-const styles = {
-  clearButton: {
-    color: "red",
-    fontSize: 16,
-  },
-};

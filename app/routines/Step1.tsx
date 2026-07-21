@@ -28,19 +28,21 @@ export default function Step1({ next, data, updateData }: Props) {
   };
 
   return (
-    <ScrollView style={[globalStyles.container]}>
+    <ScrollView showsVerticalScrollIndicator={false}>
       <Ionicons
         name="arrow-back"
         size={32}
         onPress={() => router.back()}
         color={colors.text}
       />
-      <Text style={globalStyles.title}>Paso 1: Información Básica</Text>
+      <Text style={[globalStyles.title, { fontSize: 20 }]}>
+        Paso 1: Información Básica
+      </Text>
       <Text style={globalStyles.textSecondary}>
         Define el nombre y el objetivo principal de tu nueva rutina para
         empezar.
       </Text>
-      <Text style={[globalStyles.title, { fontSize: 20 }]}>
+      <Text style={[globalStyles.title, { fontSize: 28 }]}>
         Nombre de la Rutina
       </Text>
       <TextInput

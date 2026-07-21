@@ -10,6 +10,7 @@ export const getGlobalStyles = (colors: any) =>
       backgroundColor: colors.background,
       paddingTop: 60,
       paddingHorizontal: 20,
+      paddingBottom: 20,
     },
     title: {
       fontSize: 28,

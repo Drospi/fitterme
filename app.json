@@ -18,7 +18,8 @@
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "predictiveBackGestureEnabled": false,
-      "package": "com.drospi.fitterme"
+      "package": "com.drospi.fitterme",
+      "versionCode": 2
     },
     "web": {
       "output": "static",
