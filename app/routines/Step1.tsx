@@ -118,6 +118,7 @@ export default function Step1({ next, data, updateData }: Props) {
             flexDirection: "row",
             alignItems: "center",
             justifyContent: "center",
+            marginBottom: 100,
           },
         ]}
         onPress={handleSelect}

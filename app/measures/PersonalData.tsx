@@ -352,7 +352,10 @@ const PersonalData = () => {
         </View>
       </View>
 
-      <TouchableOpacity onPress={handleSave} style={globalStyles.button}>
+      <TouchableOpacity
+        onPress={handleSave}
+        style={[globalStyles.button, { marginBottom: 100 }]}
+      >
         <Text style={globalStyles.buttonText}>Guardar Datos Personales</Text>
       </TouchableOpacity>
     </ScrollView>

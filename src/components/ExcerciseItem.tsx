@@ -1,5 +1,6 @@
 import { useTheme } from "@/context/ThemeContext";
 import { getGlobalStyles } from "@/styles/global";
+import { getExerciseImage } from "@/utils/imageMap";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 type ExerciseType = {
@@ -45,7 +46,10 @@ export default function ExcerciseItem({
     >
       <View style={{ flexDirection: "row", gap: 20 }}>
         <Image
-          source={require("@/assets/images/excercises/example.jpeg")}
+          source={
+            getExerciseImage(excerciseInfo.id) ??
+            require("@/assets/images/excercises/example.jpeg")
+          }
           style={{ width: 60, height: 60, borderRadius: 10 }}
         />
         <View>
