@@ -26,6 +26,9 @@ export default function ProfileScreen() {
     }, []),
   );
 
+  const latest = measures[0];
+  const previous = measures.length > 1 ? measures[1] : undefined;
+
   return (
     <ScrollView style={globalStyles.container}>
       <View style={globalStyles.header}>
@@ -70,7 +73,7 @@ export default function ProfileScreen() {
                       fontSize: 20,
                     }}
                   >
-                    {measures[0]?.peso || "No data"}
+                    {latest?.peso || "No data"}
                   </Text>{" "}
                   kg
                 </Text>
@@ -88,7 +91,7 @@ export default function ProfileScreen() {
                       fontSize: 20,
                     }}
                   >
-                    {measures[0]?.edad || "No data"}
+                    {latest?.edad || "No data"}
                   </Text>{" "}
                   años
                 </Text>
@@ -103,7 +106,7 @@ export default function ProfileScreen() {
                       fontSize: 20,
                     }}
                   >
-                    {measures[0]?.altura || "No data"}
+                    {latest?.altura || "No data"}
                   </Text>{" "}
                   cm
                 </Text>
@@ -130,11 +133,11 @@ export default function ProfileScreen() {
                       fontSize: 20,
                     }}
                   >
-                    {measures[0]?.sexo || "No data"}
+                    {latest?.sexo || "No data"}
                   </Text>
                 </Text>
               </View>
-              {measures[0]?.sexo === "Masculino" ? (
+              {latest?.sexo === "Masculino" ? (
                 <Ionicons
                   name="male-outline"
                   size={40}
@@ -156,49 +159,83 @@ export default function ProfileScreen() {
         <Text style={globalStyles.textSecondary}>
           Rastrea tu progreso a lo largo del tiempo.
         </Text>
-        {measures[0]?.pecho ? (
-          <MeasureItem name="Pecho" measure={measures[0]?.pecho} link="" />
+
+        {latest?.pecho ? (
+          <MeasureItem
+            name="Pecho"
+            measure={latest.pecho}
+            previousMeasure={previous?.pecho}
+          />
         ) : null}
-        {measures[0]?.cuello ? (
-          <MeasureItem name="Cuello" measure={measures[0]?.cuello} link="" />
+        {latest?.cuello ? (
+          <MeasureItem
+            name="Cuello"
+            measure={latest.cuello}
+            previousMeasure={previous?.cuello}
+          />
         ) : null}
-        {measures[0]?.hombros ? (
-          <MeasureItem name="Hombros" measure={measures[0]?.hombros} link="" />
+        {latest?.hombros ? (
+          <MeasureItem
+            name="Hombros"
+            measure={latest.hombros}
+            previousMeasure={previous?.hombros}
+          />
         ) : null}
-        {measures[0]?.biceps ? (
-          <MeasureItem name="Biceps" measure={measures[0]?.biceps} link="" />
+        {latest?.biceps ? (
+          <MeasureItem
+            name="Bíceps"
+            measure={latest.biceps}
+            previousMeasure={previous?.biceps}
+          />
         ) : null}
-        {measures[0]?.antebrazo ? (
+        {latest?.antebrazo ? (
           <MeasureItem
             name="Antebrazo"
-            measure={measures[0]?.antebrazo}
-            link=""
+            measure={latest.antebrazo}
+            previousMeasure={previous?.antebrazo}
           />
         ) : null}
-        {measures[0]?.cintura ? (
-          <MeasureItem name="Cintura" measure={measures[0]?.cintura} link="" />
-        ) : null}
-        {measures[0]?.cadera ? (
-          <MeasureItem name="Cadera" measure={measures[0]?.cadera} link="" />
-        ) : null}
-        {measures[0]?.cuadriceps ? (
+        {latest?.cintura ? (
           <MeasureItem
-            name="Cuadriceps"
-            measure={measures[0]?.cuadriceps}
-            link=""
+            name="Cintura"
+            measure={latest.cintura}
+            previousMeasure={previous?.cintura}
           />
         ) : null}
-        {measures[0]?.gemelos ? (
-          <MeasureItem name="Gemelos" measure={measures[0]?.gemelos} link="" />
+        {latest?.cadera ? (
+          <MeasureItem
+            name="Cadera"
+            measure={latest.cadera}
+            previousMeasure={previous?.cadera}
+          />
         ) : null}
-        {measures[0]?.gluteos ? (
-          <MeasureItem name="Gluteos" measure={measures[0]?.gluteos} link="" />
+        {latest?.cuadriceps ? (
+          <MeasureItem
+            name="Cuádriceps"
+            measure={latest.cuadriceps}
+            previousMeasure={previous?.cuadriceps}
+          />
+        ) : null}
+        {latest?.gemelos ? (
+          <MeasureItem
+            name="Gemelos"
+            measure={latest.gemelos}
+            previousMeasure={previous?.gemelos}
+          />
+        ) : null}
+        {latest?.gluteos ? (
+          <MeasureItem
+            name="Glúteos"
+            measure={latest.gluteos}
+            previousMeasure={previous?.gluteos}
+          />
         ) : null}
       </View>
+
       {measures.length === 0 ? (
         <View>
           <Text style={globalStyles.textSecondary}>
-            No existen medidas todavia...
+            No existen medidas todavía...
           </Text>
           <TouchableOpacity
             style={[globalStyles.button, { width: "100%", marginBottom: 20 }]}

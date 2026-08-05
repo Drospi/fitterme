@@ -708,5 +708,187 @@
     "musculo": "espalda",
     "objetivo": "Resistencia",
     "equipamiento": "Bandas"
+  },
+  {
+    "id": 101,
+    "nombre": "Press de Banca Inclinado con Barra",
+    "musculo": "pecho",
+    "objetivo": "Fuerza",
+    "equipamiento": "Barra"
+  },
+  {
+    "id": 102,
+    "nombre": "Press de Banca Declinado con Barra",
+    "musculo": "pecho",
+    "objetivo": "Fuerza",
+    "equipamiento": "Barra"
+  },
+  {
+    "id": 103,
+    "nombre": "Press Hack Sled",
+    "musculo": "cuadriceps",
+    "objetivo": "Fuerza",
+    "equipamiento": "Máquina"
+  },
+  {
+    "id": 104,
+    "nombre": "Prensa de Piernas 45° (Leg Press Pesado)",
+    "musculo": "cuadriceps",
+    "objetivo": "Fuerza",
+    "equipamiento": "Máquina"
+  },
+  {
+    "id": 105,
+    "nombre": "Press Arnold con Mancuernas",
+    "musculo": "hombros",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Mancuernas"
+  },
+  {
+    "id": 106,
+    "nombre": "Cruce de Poleas Alta a Baja",
+    "musculo": "pecho",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Polea"
+  },
+  {
+    "id": 107,
+    "nombre": "Cruce de Poleas Baja a Alta",
+    "musculo": "pecho",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Polea"
+  },
+  {
+    "id": 108,
+    "nombre": "Jalón al Pecho Agarre Neutro / V",
+    "musculo": "espalda",
+    "objetivo": "Fuerza",
+    "equipamiento": "Polea"
+  },
+  {
+    "id": 109,
+    "nombre": "Jalón al Pecho Agarre Supino",
+    "musculo": "espalda",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Polea"
+  },
+  {
+    "id": 110,
+    "nombre": "Remo en Polea Baja con Agarre V",
+    "musculo": "espalda",
+    "objetivo": "Fuerza",
+    "equipamiento": "Polea"
+  },
+  {
+    "id": 111,
+    "nombre": "Extensiones de Tríceps en Polea Alta con Cuerda",
+    "musculo": "triceps",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Polea"
+  },
+  {
+    "id": 112,
+    "nombre": "Extensiones de Tríceps en Polea Alta con Barra Recta",
+    "musculo": "triceps",
+    "objetivo": "Fuerza",
+    "equipamiento": "Polea"
+  },
+  {
+    "id": 113,
+    "nombre": "Curl de Bíceps en Polea Baja con Barra",
+    "musculo": "biceps",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Polea"
+  },
+  {
+    "id": 114,
+    "nombre": "Curl Martillo en Polea Baja con Cuerda",
+    "musculo": "biceps",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Polea"
+  },
+  {
+    "id": 115,
+    "nombre": "Patada de Glúteo en Polea Baja",
+    "musculo": "gluteos",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Polea"
+  },
+  {
+    "id": 116,
+    "nombre": "Abducción de Cadera en Polea Baja",
+    "musculo": "gluteos",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Polea"
+  },
+  {
+    "id": 117,
+    "nombre": "Elevaciones Laterales en Polea Baja",
+    "musculo": "hombros",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Polea"
+  },
+  {
+    "id": 118,
+    "nombre": "Press Francés con Barra Z (Skullcrushers)",
+    "musculo": "triceps",
+    "objetivo": "Fuerza",
+    "equipamiento": "Barra"
+  },
+  {
+    "id": 119,
+    "nombre": "Press Inclinado con Mancuernas Pesado",
+    "musculo": "pecho",
+    "objetivo": "Fuerza",
+    "equipamiento": "Mancuernas"
+  },
+  {
+    "id": 120,
+    "nombre": "Hip Thrust Pesado con Barra",
+    "musculo": "gluteos",
+    "objetivo": "Fuerza",
+    "equipamiento": "Barra"
+  },
+  {
+    "id": 121,
+    "nombre": "Aperturas para Pecho en Polea (Cruce de Poleas Horizontal)",
+    "musculo": "pecho",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Polea"
+  },
+  {
+    "id": 122,
+    "nombre": "Remo Remo T o Remo Pesado en Máquina / Barra",
+    "musculo": "espalda",
+    "objetivo": "Fuerza",
+    "equipamiento": "Barra"
+  },
+  {
+    "id": 123,
+    "nombre": "Elevaciones Laterales en Máquina (Brazos en L)",
+    "musculo": "hombros",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Máquina"
+  },
+  {
+    "id": 124,
+    "nombre": "Aperturas Invertidas para Espalda / Deltoides Posterior (Peck Deck Invertido / Polea)",
+    "musculo": "espalda",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Máquina"
+  },
+  {
+    "id": 125,
+    "nombre": "Abducciones en Máquina para Cadera",
+    "musculo": "gluteos",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Máquina"
+  },
+  {
+    "id": 126,
+    "nombre": "Extensiones de Tríceps en Polea con Cuerda (Agarre de Bolas)",
+    "musculo": "triceps",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Polea"
   }
 ]

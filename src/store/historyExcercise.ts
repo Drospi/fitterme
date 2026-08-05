@@ -91,19 +91,29 @@ export const getPersonalBest = async (
 
   if (exerciseLogs.length === 0) return null;
 
-  let bestWeight = 0;
-  let bestReps = 0;
+  let bestSet: ExerciseSet = { peso: 0, reps: 0 };
 
   exerciseLogs.forEach((log) => {
-    if (log.bestWeight > bestWeight) {
-      bestWeight = log.bestWeight;
-      bestReps = log.bestReps;
-    } else if (log.bestWeight === bestWeight && log.bestReps > bestReps) {
-      bestReps = log.bestReps;
+    if (log.sets && Array.isArray(log.sets) && log.sets.length > 0) {
+      log.sets.forEach((set) => {
+        if (
+          set.peso > bestSet.peso ||
+          (set.peso === bestSet.peso && set.reps > bestSet.reps)
+        ) {
+          bestSet = { peso: set.peso, reps: set.reps };
+        }
+      });
+    } else if (log.bestWeight > 0) {
+      if (
+        log.bestWeight > bestSet.peso ||
+        (log.bestWeight === bestSet.peso && log.bestReps > bestSet.reps)
+      ) {
+        bestSet = { peso: log.bestWeight, reps: log.bestReps };
+      }
     }
   });
 
-  return { peso: bestWeight, reps: bestReps };
+  return bestSet.peso > 0 ? bestSet : null;
 };
 
 // Borrar el historial de un ejercicio específico (opcional)

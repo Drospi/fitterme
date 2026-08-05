@@ -1,4 +1,4 @@
-import { useTheme } from "@react-navigation/native";
+import { useTheme } from "@/context/ThemeContext";
 import React from "react";
 import { View } from "react-native";
 import Svg, { Circle } from "react-native-svg";
@@ -39,7 +39,8 @@ export default function ProgressCircle({
           strokeDashoffset={strokeDashoffset}
           strokeLinecap="round"
           rotation="-90"
-          origin={`${radius}, ${radius}`}
+          originX={radius}
+          originY={radius}
         />
       </Svg>
     </View>

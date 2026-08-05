@@ -85,14 +85,11 @@ export default function Step2({ next, back, data, updateData }: Props) {
     <View
       style={{
         flex: 1,
-        paddingBottom: 20,
-        justifyContent: "space-between",
-        alignItems: "flex-start",
         width: "100%",
       }}
     >
       {/* 1. Cabecera */}
-      <Ionicons name="arrow-back" size={32} onPress={back} color="#fff" />
+      <Ionicons name="arrow-back" size={32} onPress={back} color={colors.text} />
       <Text style={[globalStyles.title, { marginVertical: 10 }]}>
         Paso 2: Ejercicios
       </Text>
@@ -108,10 +105,11 @@ export default function Step2({ next, back, data, updateData }: Props) {
             marginBottom: 10,
             paddingHorizontal: 20,
             paddingVertical: 10,
+            marginTop: 0,
           },
         ]}
       >
-        <Ionicons name="search" size={20} color="#fff" />
+        <Ionicons name="search" size={20} color={colors.textSecondary} />
         <TextInput
           placeholder="Buscar Ejercicios"
           placeholderTextColor={colors.textSecondary}
@@ -145,41 +143,31 @@ export default function Step2({ next, back, data, updateData }: Props) {
         Ejercicios seleccionados ({exercises.length})
       </Text>
 
-      {/* 4. Lista de ejercicios (ocupa el espacio flexible del medio) */}
-      <View style={{ maxHeight: 500 }}>
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          style={{
-            flex: 1,
-            marginBottom: 15,
-          }}
-        >
-          {filteredExercises.map((excercise: ExerciseType) => (
-            <ExerciseItem
-              key={excercise.id}
-              excerciseInfo={excercise}
-              onCheck={() => handleSelect(excercise)}
-              isCheckedFather={exercises.some((e) => e.id === excercise.id)}
-            />
-          ))}
-        </ScrollView>
-      </View>
-
-      {/* 5. Botón Siguiente fijo al fondo de la pantalla de manera limpia */}
-      <TouchableOpacity
-        onPress={next}
-        style={[
-          globalStyles.button,
-          {
-            position: "absolute",
-            top: Dimensions.get("window").height - 180,
-            left: 0,
-            width: "100%",
-          },
-        ]}
+      {/* 4. Lista de ejercicios que ocupa todo el espacio scrollable disponible */}
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        style={{ flex: 1 }}
+        contentContainerStyle={{ paddingBottom: 15 }}
       >
-        <Text style={globalStyles.buttonText}>Siguiente</Text>
-      </TouchableOpacity>
+        {filteredExercises.map((excercise: ExerciseType) => (
+          <ExerciseItem
+            key={excercise.id}
+            excerciseInfo={excercise}
+            onCheck={() => handleSelect(excercise)}
+            isCheckedFather={exercises.some((e) => e.id === excercise.id)}
+          />
+        ))}
+      </ScrollView>
+
+      {/* 5. Botón Siguiente anclado permanentemente en la parte inferior */}
+      <View style={{ paddingTop: 10, paddingBottom: 20, backgroundColor: colors.background, width: "100%" }}>
+        <TouchableOpacity
+          onPress={next}
+          style={[globalStyles.button, { marginTop: 0 }]}
+        >
+          <Text style={globalStyles.buttonText}>Siguiente</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }

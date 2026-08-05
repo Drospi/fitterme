@@ -126,7 +126,7 @@ const DetailsRoutineScreen = () => {
               name="information-circle-outline"
               onPress={() =>
                 router.push({
-                  pathname: "../../exercises/DetailsExercise/[id]",
+                  pathname: "/exercises/DetailsExercise/[id]",
                   params: { id: exercise.exerciseName },
                 })
               }
@@ -160,75 +160,81 @@ const DetailsRoutineScreen = () => {
 
           {/* Lista de sets con estilo "caja" */}
           <View style={{ gap: 8 }}>
-            {exercise.sets.map((set, setIndex) => {
-              const bestWeight = exercise.sets.reduce(
-                (acc, s) => Math.max(acc, s.peso),
-                0,
+            {(() => {
+              const bestSetInExercise = exercise.sets.reduce(
+                (best, s) => {
+                  if (s.peso > best.peso) return s;
+                  if (s.peso === best.peso && s.reps > best.reps) return s;
+                  return best;
+                },
+                { peso: 0, reps: 0 }
               );
-              const bestReps = exercise.sets.reduce(
-                (acc, s) => Math.max(acc, s.reps),
-                0,
-              );
-              return (
-                <View
-                  key={`${exercise.exerciseName}-${setIndex}`}
-                  style={{
-                    flexDirection: "row",
-                    backgroundColor: colors.background, // Un color ligeramente diferente al card
-                    padding: 12,
-                    borderRadius: 10,
-                    alignItems: "center",
-                  }}
-                >
-                  <Text
-                    style={{ flex: 1, textAlign: "center", color: colors.text }}
-                  >
-                    {setIndex + 1}
-                  </Text>
-                  <Text
+              return exercise.sets.map((set, setIndex) => {
+                const isBestSet =
+                  set.peso === bestSetInExercise.peso &&
+                  set.reps === bestSetInExercise.reps &&
+                  set.peso > 0;
+                return (
+                  <View
+                    key={`${exercise.exerciseName}-${setIndex}`}
                     style={{
-                      flex: 1,
-                      textAlign: "center",
-                      fontWeight: "bold",
-                      color: colors.text,
+                      flexDirection: "row",
+                      backgroundColor: colors.background,
+                      padding: 12,
+                      borderRadius: 10,
+                      alignItems: "center",
                     }}
                   >
-                    {set.peso} <Text style={{ fontSize: 10 }}>kg</Text>
-                  </Text>
-                  <Text
-                    style={{
-                      flex: 1,
-                      textAlign: "center",
-                      fontWeight: "bold",
-                      color: colors.text,
-                    }}
-                  >
-                    {set.reps}
-                  </Text>
-                  <View style={{ flex: 1, alignItems: "center" }}>
-                    {bestWeight === set.peso && bestReps === set.reps && (
-                      <View
-                        style={{
-                          backgroundColor: colors.primary + "20",
-                          paddingHorizontal: 6,
-                          borderRadius: 4,
-                        }}
-                      >
-                        <Text
+                    <Text
+                      style={{ flex: 1, textAlign: "center", color: colors.text }}
+                    >
+                      {setIndex + 1}
+                    </Text>
+                    <Text
+                      style={{
+                        flex: 1,
+                        textAlign: "center",
+                        fontWeight: "bold",
+                        color: colors.text,
+                      }}
+                    >
+                      {set.peso} <Text style={{ fontSize: 10 }}>kg</Text>
+                    </Text>
+                    <Text
+                      style={{
+                        flex: 1,
+                        textAlign: "center",
+                        fontWeight: "bold",
+                        color: colors.text,
+                      }}
+                    >
+                      {set.reps}
+                    </Text>
+                    <View style={{ flex: 1, alignItems: "center" }}>
+                      {isBestSet && (
+                        <View
                           style={{
-                            color: colors.primary,
-                            fontSize: 10,
-                            fontWeight: "bold",
+                            backgroundColor: colors.primary + "20",
+                            paddingHorizontal: 6,
+                            borderRadius: 4,
                           }}
                         >
-                          MEJOR
-                        </Text>
-                      </View>
-                    )}
+                          <Text
+                            style={{
+                              color: colors.primary,
+                              fontSize: 10,
+                              fontWeight: "bold",
+                            }}
+                          >
+                            MEJOR
+                          </Text>
+                        </View>
+                      )}
+                    </View>
                   </View>
-                </View>
-              );
-            })}
+                );
+              });
+            })()}
           </View>
         </View>
       ))}

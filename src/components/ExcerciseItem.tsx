@@ -46,10 +46,7 @@ export default function ExcerciseItem({
     >
       <View style={{ flexDirection: "row", gap: 20 }}>
         <Image
-          source={
-            getExerciseImage(excerciseInfo.id) ??
-            require("@/assets/images/excercises/example.jpeg")
-          }
+          source={getExerciseImage(excerciseInfo.id)}
           style={{ width: 60, height: 60, borderRadius: 10 }}
         />
         <View>

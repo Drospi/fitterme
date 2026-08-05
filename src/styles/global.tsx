@@ -1,7 +1,4 @@
-import { useTheme } from "@/context/ThemeContext";
 import { StyleSheet } from "react-native";
-
-export const { colors } = useTheme();
 
 export const getGlobalStyles = (colors: any) =>
   StyleSheet.create({

@@ -26,7 +26,7 @@ export default function HomeScreen() {
 
   return (
     <ScrollView style={globalStyles.container}>
-      <View style={globalStyles.header}>
+      <View style={[globalStyles.header, { marginBottom: 20 }]}>
         <Image
           style={globalStyles.icon}
           source={require("@/assets/images/profile.jpeg")}

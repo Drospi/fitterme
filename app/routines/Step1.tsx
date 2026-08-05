@@ -124,7 +124,7 @@ export default function Step1({ next, data, updateData }: Props) {
         onPress={handleSelect}
       >
         <Text style={globalStyles.buttonText}>Siguiente</Text>
-        <Ionicons name="arrow-forward" size={24} color={colors.neutral} />
+        <Ionicons name="arrow-forward" size={24} color={colors.background} />
       </TouchableOpacity>
     </ScrollView>
   );

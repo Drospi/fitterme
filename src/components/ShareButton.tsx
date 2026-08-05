@@ -1,5 +1,5 @@
+import { useTheme } from "@/context/ThemeContext";
 import { Meal } from "@/store/meals";
-import { colors } from "@/styles/global";
 import { Ionicons } from "@expo/vector-icons";
 import { Share, TouchableOpacity } from "react-native";
 
@@ -8,6 +8,7 @@ type ShareButtonProps = {
 };
 
 export default function ShareButton({ meals }: ShareButtonProps) {
+  const { colors } = useTheme();
   const handleShare = async () => {
     const totals = meals.reduce(
       (acc, meal) => ({

@@ -1,6 +1,6 @@
 import MeasureCard from "@/components/MeasureCard";
 import { useTheme } from "@/context/ThemeContext";
-import { addMeasure, getMeasures } from "@/store/measures";
+import { addMeasure, getMeasures, Measure } from "@/store/measures";
 import { getGlobalStyles } from "@/styles/global";
 
 import * as Haptics from "expo-haptics";
@@ -29,10 +29,12 @@ export default function MeasuresScreen() {
   const [cuadriceps, setCuadriceps] = useState(45);
   const [gemelos, setGemelos] = useState(33);
   const [gluteos, setGluteos] = useState(95);
-  const [edad, setEdad] = useState(0);
-  const [sexo, setSexo] = useState("masculino");
-  const [peso, setPeso] = useState(0);
-  const [altura, setAltura] = useState(0);
+  const [edad, setEdad] = useState(18);
+  const [sexo, setSexo] = useState("Masculino");
+  const [peso, setPeso] = useState(70);
+  const [altura, setAltura] = useState(170);
+
+  const [previousMeasures, setPreviousMeasures] = useState<Partial<Measure>>({});
 
   const route = useRouter();
 
@@ -65,21 +67,27 @@ export default function MeasuresScreen() {
 
   const loadMeasures = async () => {
     const data = await getMeasures();
-    setCuello(data[0]?.cuello || 38);
-    setPecho(data[0]?.pecho || 95);
-    setHombros(data[0]?.hombros || 110);
-    setBiceps(data[0]?.biceps || 32);
-    setAntebrazo(data[0]?.antebrazo || 15);
-    setCintura(data[0]?.cintura || 80);
-    setCadera(data[0]?.cadera || 90);
-    setEspalda(data[0]?.espalda || 105);
-    setCuadriceps(data[0]?.cuadriceps || 45);
-    setGemelos(data[0]?.gemelos || 33);
-    setGluteos(data[0]?.gluteos || 95);
-    setEdad(data[0]?.edad || 18);
-    setSexo(data[0]?.sexo || "Masculino");
-    setPeso(data[0]?.peso || 70);
-    setAltura(data[0]?.altura || 170);
+    if (data && data.length > 0) {
+      const latest = data[0];
+      setCuello(latest.cuello || 38);
+      setPecho(latest.pecho || 95);
+      setHombros(latest.hombros || 110);
+      setBiceps(latest.biceps || 32);
+      setAntebrazo(latest.antebrazo || 15);
+      setCintura(latest.cintura || 80);
+      setCadera(latest.cadera || 90);
+      setEspalda(latest.espalda || 105);
+      setCuadriceps(latest.cuadriceps || 45);
+      setGemelos(latest.gemelos || 33);
+      setGluteos(latest.gluteos || 95);
+      setEdad(latest.edad || 18);
+      setSexo(latest.sexo || "Masculino");
+      setPeso(latest.peso || 70);
+      setAltura(latest.altura || 170);
+
+      const prev = data.length > 1 ? data[1] : data[0];
+      setPreviousMeasures(prev);
+    }
   };
 
   useFocusEffect(
@@ -87,6 +95,7 @@ export default function MeasuresScreen() {
       loadMeasures();
     }, []),
   );
+
   return (
     <ScrollView style={globalStyles.container}>
       <View
@@ -101,31 +110,91 @@ export default function MeasuresScreen() {
       >
         <Text style={globalStyles.title}>Actualizar mis medidas</Text>
         <Text style={globalStyles.textSecondary}>
-          Registra tu progreso. Valores en cm
+          Registra tu progreso corporal. Todos los valores en centímetros (cm).
         </Text>
       </View>
-      <MeasureCard measure={cuello} setMeasure={setCuello} name="Cuello" />
-      <MeasureCard measure={pecho} setMeasure={setPecho} name="Pecho" />
-      <MeasureCard measure={espalda} setMeasure={setEspalda} name="Espalda" />
-      <MeasureCard measure={hombros} setMeasure={setHombros} name="Hombros" />
-      <MeasureCard measure={biceps} setMeasure={setBiceps} name="Biceps" />
+
       <MeasureCard
-        measure={antebrazo}
-        setMeasure={setAntebrazo}
+        name="Cuello"
+        measure={cuello}
+        previousMeasure={previousMeasures.cuello}
+        setMeasure={setCuello}
+        instructions="Mide alrededor de la parte media del cuello, justo por debajo de la manzana de Adán. Mantén la cabeza erguida en posición relajada."
+      />
+      <MeasureCard
+        name="Pecho"
+        measure={pecho}
+        previousMeasure={previousMeasures.pecho}
+        setMeasure={setPecho}
+        instructions="Pasa la cinta alrededor del tórax a la altura de los pezones (parte más prominente). Mide al final de una exhalación normal con el torso erguido."
+      />
+      <MeasureCard
+        name="Espalda"
+        measure={espalda}
+        previousMeasure={previousMeasures.espalda}
+        setMeasure={setEspalda}
+        instructions="Coloca la cinta métrica justo por debajo de las axilas, rodeando la parte superior de la espalda sobre los dorsales (lats) con los brazos relajados."
+      />
+      <MeasureCard
+        name="Hombros"
+        measure={hombros}
+        previousMeasure={previousMeasures.hombros}
+        setMeasure={setHombros}
+        instructions="Mide alrededor de la parte más ancha de los hombros, envolviendo ambos deltoides con los brazos pegados al cuerpo en posición erguida."
+      />
+      <MeasureCard
+        name="Bíceps"
+        measure={biceps}
+        previousMeasure={previousMeasures.biceps}
+        setMeasure={setBiceps}
+        instructions="Mide en el punto de mayor circunferencia del brazo. Flexiona el codo a 90° y contrae el bíceps al máximo para una medición precisa."
+      />
+      <MeasureCard
         name="Antebrazo"
+        measure={antebrazo}
+        previousMeasure={previousMeasures.antebrazo}
+        setMeasure={setAntebrazo}
+        instructions="Extiende el brazo y cierra el puño. Mide alrededor de la zona más gruesa del antebrazo, aproximadamente 2 cm por debajo del codo."
       />
-      <MeasureCard measure={cintura} setMeasure={setCintura} name="Cintura" />
-      <MeasureCard measure={cadera} setMeasure={setCadera} name="Cadera" />
       <MeasureCard
-        measure={cuadriceps}
-        setMeasure={setCuadriceps}
-        name="Cuadriceps"
+        name="Cintura"
+        measure={cintura}
+        previousMeasure={previousMeasures.cintura}
+        setMeasure={setCintura}
+        instructions="Mide en el punto más estrecho del abdomen (justo por encima del ombligo). Mide al final de una exhalación relajada sin contraer el abdomen."
       />
-      <MeasureCard measure={gemelos} setMeasure={setGemelos} name="Gemelos" />
-      <MeasureCard measure={gluteos} setMeasure={setGluteos} name="Gluteos" />
+      <MeasureCard
+        name="Cadera"
+        measure={cadera}
+        previousMeasure={previousMeasures.cadera}
+        setMeasure={setCadera}
+        instructions="Junta los pies y mide alrededor de la parte más prominente de los glúteos y la cadera con la cinta métrica perfectamente horizontal."
+      />
+      <MeasureCard
+        name="Cuádriceps"
+        measure={cuadriceps}
+        previousMeasure={previousMeasures.cuadriceps}
+        setMeasure={setCuadriceps}
+        instructions="De pie con el peso distribuido por igual, mide en la parte media del muslo (punto medio entre la cadera y la rodilla) en la zona de mayor volumen."
+      />
+      <MeasureCard
+        name="Gemelos"
+        measure={gemelos}
+        previousMeasure={previousMeasures.gemelos}
+        setMeasure={setGemelos}
+        instructions="De pie, mide alrededor de la circunferencia más ancha de la pantorrilla, asegurándote de que la cinta esté nivelada."
+      />
+      <MeasureCard
+        name="Glúteos"
+        measure={gluteos}
+        previousMeasure={previousMeasures.gluteos}
+        setMeasure={setGluteos}
+        instructions="Mide alrededor de la parte con mayor volumen de los glúteos vista de perfil, manteniendo los pies juntos."
+      />
+
       <View style={{ marginBottom: 90 }}>
         <TouchableOpacity onPress={handleSave} style={globalStyles.button}>
-          <Text style={globalStyles.buttonText}>Save Measure</Text>
+          <Text style={globalStyles.buttonText}>Guardar Medidas</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>

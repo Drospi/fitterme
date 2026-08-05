@@ -3,7 +3,7 @@ import { Routine, addRoutine } from "@/store/routines";
 import { getGlobalStyles } from "@/styles/global";
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import { ScrollView } from "react-native";
+import { View } from "react-native";
 import Step1 from "./Step1";
 import Step2 from "./Step2";
 import Step3 from "./Step3";
@@ -56,10 +56,7 @@ const CreateRoutineScreen = () => {
     router.push("/routines");
   };
   return (
-    <ScrollView
-      showsVerticalScrollIndicator={false}
-      style={globalStyles.container}
-    >
+    <View style={globalStyles.container}>
       {step === 1 && (
         <Step1
           next={() => setStep(2)}
@@ -83,7 +80,7 @@ const CreateRoutineScreen = () => {
           saveRoutine={handleSaveRoutine}
         />
       )}
-    </ScrollView>
+    </View>
   );
 };
 export default CreateRoutineScreen;

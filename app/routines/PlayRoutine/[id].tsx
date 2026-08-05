@@ -72,7 +72,7 @@ const PlayRoutineScreen = () => {
   };
 
   useEffect(() => {
-    let interval: number = 0;
+    let interval: any = null;
 
     if (isActiveTimer && timer > 0) {
       interval = setInterval(() => {
@@ -206,9 +206,12 @@ const PlayRoutineScreen = () => {
     setTotalTonelaje((prev) => prev + pesoActual * repActual);
     setTotalSeries((prev) => prev + 1);
 
-    if (repActual > mejorRepEjercicio || pesoActual > mejorPesoEjercicio) {
-      setMejorRepEjercicio(repActual);
+    if (
+      pesoActual > mejorPesoEjercicio ||
+      (pesoActual === mejorPesoEjercicio && repActual > mejorRepEjercicio)
+    ) {
       setMejorPesoEjercicio(pesoActual);
+      setMejorRepEjercicio(repActual);
     }
   };
 

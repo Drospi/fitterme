@@ -128,15 +128,15 @@ const ExcerciseCompleted = ({
               { alignItems: "center", gap: 10, flex: 1 },
             ]}
           >
-            <Text style={globalStyles.textSecondary}>Reps Totales</Text>
+            <Text style={globalStyles.textSecondary}>Mejor Serie</Text>
             <Text
               style={{
                 fontWeight: "bold",
-                fontSize: 24,
+                fontSize: 20,
                 color: colors.secondary,
               }}
             >
-              {mejorRepEjercicio} reps x {mejorPesoEjercicio} kg
+              {mejorPesoEjercicio} kg x {mejorRepEjercicio} reps
             </Text>
           </View>
         </View>

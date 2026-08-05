@@ -1,5 +1,6 @@
 import { useTheme } from "@/context/ThemeContext";
 import { getGlobalStyles } from "@/styles/global";
+import { getExerciseImage } from "@/utils/imageMap";
 import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
 import {
@@ -89,9 +90,9 @@ export default function Step3({ back, data, updateData, saveRoutine }: Props) {
   };
 
   return (
-    <ScrollView>
-      <Ionicons name="arrow-back" size={32} onPress={back} color="#fff" />
-      <Text style={styles.title}>Paso 3: Configuracion</Text>
+    <ScrollView showsVerticalScrollIndicator={false}>
+      <Ionicons name="arrow-back" size={32} onPress={back} color={colors.text} />
+      <Text style={globalStyles.title}>Paso 3: Configuración</Text>
       <Text style={globalStyles.textSecondary}>
         Ajusta las series, repeticiones y descansos para cada ejercicio
         seleccionado
@@ -112,9 +113,9 @@ export default function Step3({ back, data, updateData, saveRoutine }: Props) {
             <View style={{ flexDirection: "row", gap: 20 }}>
               <Image
                 style={{ width: 60, height: 60, borderRadius: 10 }}
-                source={require("@/assets/images/excercises/example.jpeg")}
+                source={getExerciseImage(exercise.id)}
               />
-              <View>
+              <View style={{ flex: 1 }}>
                 <Text style={globalStyles.cardTitle}>{exercise.nombre}</Text>
                 <Text style={globalStyles.textSecondary}>
                   {exercise.musculo} • {exercise.objetivo}
@@ -143,7 +144,7 @@ export default function Step3({ back, data, updateData, saveRoutine }: Props) {
             </View>
           </View>
           <View style={{ gap: 10, flexDirection: "row", width: "100%" }}>
-            <View style={{ flexDirection: "column", flex: 1, marginRight: 10 }}>
+            <View style={{ flexDirection: "column", flex: 1 }}>
               <Text
                 style={[
                   globalStyles.cardText,
@@ -154,7 +155,7 @@ export default function Step3({ back, data, updateData, saveRoutine }: Props) {
               </Text>
               <TextInput
                 placeholder="4"
-                placeholderTextColor="#666"
+                placeholderTextColor={colors.textSecondary}
                 keyboardType="numeric"
                 value={
                   exercises[index].series
@@ -162,10 +163,10 @@ export default function Step3({ back, data, updateData, saveRoutine }: Props) {
                     : ""
                 }
                 onChangeText={(val) => handleInputChange(index, "series", val)}
-                style={styles.input}
+                style={[globalStyles.input, { marginTop: 0 }]}
               />
             </View>
-            <View style={{ flexDirection: "column", flex: 1, marginRight: 10 }}>
+            <View style={{ flexDirection: "column", flex: 1 }}>
               <Text
                 style={[
                   globalStyles.cardText,
@@ -176,16 +177,16 @@ export default function Step3({ back, data, updateData, saveRoutine }: Props) {
               </Text>
               <TextInput
                 placeholder="10"
-                placeholderTextColor="#666"
+                placeholderTextColor={colors.textSecondary}
                 keyboardType="numeric"
                 value={
                   exercises[index].reps ? exercises[index].reps?.toString() : ""
                 }
                 onChangeText={(val) => handleInputChange(index, "reps", val)}
-                style={styles.input}
+                style={[globalStyles.input, { marginTop: 0 }]}
               />
             </View>
-            <View style={{ flexDirection: "column", flex: 1, marginRight: 10 }}>
+            <View style={{ flexDirection: "column", flex: 1 }}>
               <Text
                 style={[
                   globalStyles.cardText,
@@ -196,13 +197,13 @@ export default function Step3({ back, data, updateData, saveRoutine }: Props) {
               </Text>
               <TextInput
                 placeholder="15"
-                placeholderTextColor="#666"
+                placeholderTextColor={colors.textSecondary}
                 keyboardType="numeric"
                 value={
                   exercises[index].peso ? exercises[index].peso?.toString() : ""
                 }
                 onChangeText={(val) => handleInputChange(index, "peso", val)}
-                style={styles.input}
+                style={[globalStyles.input, { marginTop: 0 }]}
               />
             </View>
           </View>
@@ -213,7 +214,7 @@ export default function Step3({ back, data, updateData, saveRoutine }: Props) {
         style={[globalStyles.button, { marginBottom: 100 }]}
         onPress={handleSave}
       >
-        <Text>Guardar Rutina</Text>
+        <Text style={globalStyles.buttonText}>Guardar Rutina</Text>
       </TouchableOpacity>
     </ScrollView>
   );
@@ -221,12 +222,4 @@ export default function Step3({ back, data, updateData, saveRoutine }: Props) {
 
 const styles = StyleSheet.create({
   container: { padding: 20, flex: 1 },
-  title: { color: "#fff", fontSize: 24, fontWeight: "bold", marginBottom: 20 },
-  input: {
-    backgroundColor: "#1a1a1a",
-    color: "#fff",
-    padding: 15,
-    borderRadius: 10,
-    marginBottom: 20,
-  },
 });
