@@ -5,21 +5,23 @@
     "musculo": "hombros",
     "objetivo": "Hipertrofia",
     "equipamiento": "Mancuernas",
-    "urlimage": "https://example.com/press_militar.jpg"
+    "descripcion": "Siéntate en un banco con respaldo inclinado a 90°. Sostén las mancuernas a la altura de los hombros con las palmas mirando al frente. Empuja el peso de forma vertical hasta extender los brazos sin bloquear codos. Controla la bajada despacio."
   },
   {
     "id": 2,
     "nombre": "Elevaciones Laterales",
     "musculo": "hombros",
     "objetivo": "Hipertrofia",
-    "equipamiento": "Mancuernas"
+    "equipamiento": "Mancuernas",
+    "descripcion": "De pie con las mancuernas a los lados y rodillas levemente flexionadas. Eleva los brazos hacia los lados manteniendo una ligera flexión de codos hasta alcanzar la altura de los hombros. Pausa un segundo arriba y baja bajo control."
   },
   {
     "id": 3,
     "nombre": "Press de Banca Plano",
     "musculo": "pecho",
     "objetivo": "Hipertrofia",
-    "equipamiento": "Barra"
+    "equipamiento": "Barra",
+    "descripcion": "Acuéstate sobre un banco plano sosteniendo la barra con agarre más ancho que tus hombros. Desciende la barra con control hasta la parte media del pecho, manteniendo los escápulas retráctiles, y empuja con fuerza hacia arriba."
   },
   {
     "id": 4,
@@ -27,14 +29,15 @@
     "musculo": "pecho",
     "objetivo": "Hipertrofia",
     "equipamiento": "Mancuernas",
-    "urlimage": "https://example.com/aperturas.jpg"
+    "descripcion": "Acostado en banco plano con las mancuernas sobre el pecho y codos semi-flexionados. Abre los brazos lateralmente en arco hasta sentir un buen estiramiento pectoral. Contrae los pectorales para volver al punto inicial."
   },
   {
     "id": 5,
     "nombre": "Curl de Bíceps con Barra",
     "musculo": "biceps",
     "objetivo": "Hipertrofia",
-    "equipamiento": "Barra"
+    "equipamiento": "Barra",
+    "descripcion": "De pie con la espalda recta y agarre supino (palmas hacia arriba). Flexiona los codos manteniendo los brazos pegados al torso para elevar la barra hacia el pecho. Aprieta los bíceps arriba y desciende despacio."
   },
   {
     "id": 6,
@@ -42,853 +45,918 @@
     "musculo": "biceps",
     "objetivo": "Hipertrofia",
     "equipamiento": "Mancuernas",
-    "urlimage": "https://example.com/curl_martillo.jpg"
+    "descripcion": "Sostén las mancuernas con agarre neutro (palmas enfrentadas). Flexiona los codos elevando las mancuernas de forma coordinada manteniendo los codos inmóviles pegados al cuerpo."
   },
   {
     "id": 7,
-    "nombre": "Curl Inverso",
-    "musculo": "antebrazo",
+    "nombre": "Press Francés con Mancuernas",
+    "musculo": "triceps",
     "objetivo": "Hipertrofia",
-    "equipamiento": "Barra"
+    "equipamiento": "Mancuernas",
+    "descripcion": "Acostado boca arriba con los brazos extendidos arriba. Flexiona únicamente los codos bajando las mancuernas hacia los lados de la cabeza. Extiende con fuerza el tríceps para retornar a la posición vertical."
   },
   {
     "id": 8,
-    "nombre": "Flexión de Muñeca con Barra",
-    "musculo": "antebrazo",
+    "nombre": "Extensiones de Tríceps en Polea",
+    "musculo": "triceps",
     "objetivo": "Hipertrofia",
-    "equipamiento": "Barra"
+    "equipamiento": "Polea",
+    "descripcion": "De pie frente a la polea alta sostenida con cuerda o barra recta. Mantén los codos pegados a los costados y empuja la carga hacia abajo hasta extender por completo los brazos. Aprieta el tríceps abajo."
   },
   {
     "id": 9,
-    "nombre": "Plancha Abdominal",
-    "musculo": "cintura",
-    "objetivo": "Hipertrofia",
-    "equipamiento": "Peso corporal"
+    "nombre": "Dominadas Pronadas",
+    "musculo": "espalda",
+    "objetivo": "Fuerza",
+    "equipamiento": "Peso corporal",
+    "descripcion": "Cuélgate de la barra con agarre amplio y palmas al frente. Activa el dorsal tirando del cuerpo hacia arriba hasta que la barbilla supere la barra. Desciende con soltura controlada."
   },
   {
     "id": 10,
-    "nombre": "Russian Twists",
-    "musculo": "cintura",
-    "objetivo": "Hipertrofia",
-    "equipamiento": "Disco",
-    "urlimage": "https://example.com/russian_twists.jpg"
+    "nombre": "Remo con Barra",
+    "musculo": "espalda",
+    "objetivo": "Fuerza",
+    "equipamiento": "Barra",
+    "descripcion": "Inclina el torso a 45° sosteniendo la barra. Tracciona la barra dirigiendo los codos hacia atrás hasta tocar la zona abdominal baja. Mantén la columna neutra durante todo el trayecto."
   },
   {
     "id": 11,
-    "nombre": "Peso Muerto Rumano",
-    "musculo": "cadera",
-    "objetivo": "Hipertrofia",
-    "equipamiento": "Barra"
+    "nombre": "Sentadilla Trasera con Barra",
+    "musculo": "cuadriceps",
+    "objetivo": "Fuerza",
+    "equipamiento": "Barra",
+    "descripcion": "Apoya la barra sobre los trapecios de forma estable. Con los pies al ancho de hombros, desciende flexionando cadera y rodillas hasta que los muslos queden paralelos al suelo. Empuja fuerte con los talones."
   },
   {
     "id": 12,
-    "nombre": "Hip Thrust",
-    "musculo": "cadera",
+    "nombre": "Prensa de Piernas 45°",
+    "musculo": "cuadriceps",
     "objetivo": "Hipertrofia",
-    "equipamiento": "Barra",
-    "urlimage": "https://example.com/hip_thrust.jpg"
+    "equipamiento": "Máquina",
+    "descripcion": "Coloca los pies a la anchura de hombros sobre la plataforma. Quita los seguros y flexiona las rodillas a 90° sin descolgar la pelvis del respaldo. Empuja con firmeza sin bloquear rodillas arriba."
   },
   {
     "id": 13,
-    "nombre": "Sentadilla con Barra",
-    "musculo": "cuadriceps",
+    "nombre": "Peso Muerto Rumano",
+    "musculo": "gluteos",
     "objetivo": "Hipertrofia",
-    "equipamiento": "Barra"
+    "equipamiento": "Barra",
+    "descripcion": "Sostén la barra al frente con piernas ligeramente flexionadas. Lleva la cadera hacia atrás descendiendo la barra pegada a las espinillas hasta sentir máximo estiramiento isquiotibial. Regresa apretando glúteos."
   },
   {
     "id": 14,
-    "nombre": "Extensiones de Pierna",
-    "musculo": "cuadriceps",
+    "nombre": "Zancadas con Mancuernas",
+    "musculo": "gluteos",
     "objetivo": "Hipertrofia",
-    "equipamiento": "Máquina"
+    "equipamiento": "Mancuernas",
+    "descripcion": "Con una mancuerna en cada mano, da un paso amplio hacia adelante. Baja la rodilla trasera casi rozando el suelo formando ángulo recto con la delantera. Empuja y vuelve arriba."
   },
   {
     "id": 15,
     "nombre": "Elevación de Talones de Pie",
     "musculo": "gemelos",
     "objetivo": "Hipertrofia",
-    "equipamiento": "Máquina"
+    "equipamiento": "Máquina",
+    "descripcion": "Apoya los metatarsos sobre el borde del escalón. Eleva los talones lo más alto posible contrayendo los gemelos durante un segundo y desciende estirando completamente el sóleo."
   },
   {
     "id": 16,
-    "nombre": "Elevación de Talones Sentado",
-    "musculo": "gemelos",
-    "objetivo": "Hipertrofia",
-    "equipamiento": "Máquina"
+    "nombre": "Crunch Abdominal",
+    "musculo": "abdomen",
+    "objetivo": "Resistencia",
+    "equipamiento": "Peso corporal",
+    "descripcion": "Tumbado boca arriba con rodillas flexionadas. Exhala flexionando la columna elevando únicamente las escápulas del suelo contrayendo el abdomen con fuerza. Inhala al bajar."
   },
   {
     "id": 17,
-    "nombre": "Sentadilla Búlgara",
-    "musculo": "gluteos",
-    "objetivo": "Hipertrofia",
-    "equipamiento": "Mancuernas"
+    "nombre": "Plancha Abdominal Isometrica",
+    "musculo": "abdomen",
+    "objetivo": "Resistencia",
+    "equipamiento": "Peso corporal",
+    "descripcion": "Apoya antebrazos y puntas de pie formando una línea recta con el cuerpo. Contrae abdomen, glúteos y cuádriceps de forma estática manteniendo respiración fluida."
   },
   {
     "id": 18,
+    "nombre": "Press Inclinado con Mancuernas",
+    "musculo": "pecho",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Mancuernas",
+    "descripcion": "Banco inclinado entre 30° y 45°. Empuja las mancuernas hacia arriba convergiendo al centro sobre el pecho alto. Desciende sintiendo apertura pectoral."
+  },
+  {
+    "id": 19,
+    "nombre": "Fondos en Paralelas",
+    "musculo": "pecho",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Peso corporal",
+    "descripcion": "Suéltate en las barras paralelas inclinando ligeramente el torso hacia adelante. Desciende flexionando codos a 90° y empuja fuerte activando pectorales y tríceps."
+  },
+  {
+    "id": 20,
+    "nombre": "Remo con Mancuerna a una Mano",
+    "musculo": "espalda",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Mancuernas",
+    "descripcion": "Apoya rodilla y mano contrarias sobre banco plano. Tira de la mancuerna hacia la cadera llevando el codo bien pegado atrás. Siente la tracción del dorsal."
+  },
+  {
+    "id": 21,
+    "nombre": "Jalón al Pecho en Polea",
+    "musculo": "espalda",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Polea",
+    "descripcion": "Agarre amplio mirando al frente. Tracciona la barra hacia la clavícula sacando pecho y juntando las escápulas. Extiende brazos arriba sin soltar la tensión."
+  },
+  {
+    "id": 22,
+    "nombre": "Press Arnold",
+    "musculo": "hombros",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Mancuernas",
+    "descripcion": "Inicia con mancuernas al frente de los hombros y palmas hacia ti. Al empujar verticalmente, rota las muñecas 180° terminando arriba con palmas al frente."
+  },
+  {
+    "id": 23,
+    "nombre": "Pájaros con Mancuernas",
+    "musculo": "hombros",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Mancuernas",
+    "descripcion": "Inclinado hacia adelante con el torso casi paralelo al suelo. Eleva las mancuernas hacia los lados contrayendo los deltoides posteriores. Controla la bajada."
+  },
+  {
+    "id": 24,
+    "nombre": "Curl de Bíceps en Banco Scott",
+    "musculo": "biceps",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Barra",
+    "descripcion": "Apoya tríceps sobre el banco predicador. Realiza flexión de codo aislada subiendo la barra Z y controlando la bajada sin bloquear codos de golpe."
+  },
+  {
+    "id": 25,
+    "nombre": "Curl Concentrado",
+    "musculo": "biceps",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Mancuernas",
+    "descripcion": "Sentado con codo apoyado en la cara interna del muslo. Flexiona el antebrazo enfocando la contracción pura del pico del bíceps."
+  },
+  {
+    "id": 26,
+    "nombre": "Press Francés con Barra Z",
+    "musculo": "triceps",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Barra",
+    "descripcion": "Tumbado en banco plano, flexiona los codos llevando la barra Z hacia la frente. Extiende brazos con fuerza activando las tres cabezas del tríceps."
+  },
+  {
+    "id": 27,
+    "nombre": "Patada de Tríceps",
+    "musculo": "triceps",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Mancuernas",
+    "descripcion": "Torso inclinado al frente con el brazo paralelo al suelo. Extiende el codo hacia atrás completamente y aprieta el tríceps antes de retornar."
+  },
+  {
+    "id": 28,
+    "nombre": "Zancadas Búlgaras",
+    "musculo": "gluteos",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Mancuernas",
+    "descripcion": "Apoya el empeine trasero en un banco elevado. Baja verticalmente flexionando la pierna delantera cargando el peso sobre el glúteo activo."
+  },
+  {
+    "id": 29,
+    "nombre": "Hip Thrust con Barra",
+    "musculo": "gluteos",
+    "objetivo": "Fuerza",
+    "equipamiento": "Barra",
+    "descripcion": "Apoya escápulas en banco y barra sobre la cadera con almohadilla. Empuja la cadera hacia arriba contrayendo glúteos al máximo en alineación horizontal."
+  },
+  {
+    "id": 30,
+    "nombre": "Extensión de Cuádriceps",
+    "musculo": "cuadriceps",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Máquina",
+    "descripcion": "Sentado en la máquina con rodillas alineadas al eje. Extiende las piernas arriba hasta lograr contracción completa de cuádriceps y baja despacio."
+  },
+  {
+    "id": 31,
+    "nombre": "Curl Femoral Tumbado",
+    "musculo": "gluteos",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Máquina",
+    "descripcion": "Boca abajo con rodillo sobre talones. Flexiona las piernas llevando los talones hacia los glúteos activando la musculatura isquiotibial."
+  },
+  {
+    "id": 32,
+    "nombre": "Elevación de Gemelos Sentado",
+    "musculo": "gemelos",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Máquina",
+    "descripcion": "Sentado con almohadillas sobre los muslos bajos. Eleva talones enfocando el esfuerzo en el músculo sóleo con parada de 1s en la cima."
+  },
+  {
+    "id": 33,
+    "nombre": "Elevación de Piernas Colgado",
+    "musculo": "abdomen",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Peso corporal",
+    "descripcion": "Sujeto a barra fija, eleva las piernas extendidas o flexionadas rodando la pelvis hacia arriba para enfocar el recto abdominal inferior."
+  },
+  {
+    "id": 34,
+    "nombre": "Rueda Abdominal",
+    "musculo": "abdomen",
+    "objetivo": "Fuerza",
+    "equipamiento": "Peso corporal",
+    "descripcion": "Rodillas en suelo apoyando la rueda al frente. Rueda hacia adelante manteniendo la espalda fuerte sin arquear la zona lumbar y regresa tirando del core."
+  },
+  {
+    "id": 35,
+    "nombre": "Cruce de Poleas Altas",
+    "musculo": "pecho",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Polea",
+    "descripcion": "De pie en el centro de las poleas altas. Cruza las manos al frente a la altura de la cadera apretando la parte inferior y media del pecho."
+  },
+  {
+    "id": 36,
+    "nombre": "Pull-Over con Mancuerna",
+    "musculo": "espalda",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Mancuernas",
+    "descripcion": "Apoya la parte alta de la espalda en banco perpendicular. Desciende la mancuerna por detrás de la cabeza estirando caja torácica y dorsales."
+  },
+  {
+    "id": 37,
+    "nombre": "Encogimientos con Barra",
+    "musculo": "espalda",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Barra",
+    "descripcion": "Sostén la barra al frente y eleva los hombros verticalmente hacia las orejas contrayendo el trapecio alto sin rotar los hombros."
+  },
+  {
+    "id": 38,
+    "nombre": "Remo Gironda en Polea Baja",
+    "musculo": "espalda",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Polea",
+    "descripcion": "Sentado con pies apoyados y espalda erguida. Tracciona el agarre estrecho al abdomen medio juntando las escápulas y sacando pecho."
+  },
+  {
+    "id": 39,
+    "nombre": "Press Inclinado con Barra",
+    "musculo": "pecho",
+    "objetivo": "Fuerza",
+    "equipamiento": "Barra",
+    "descripcion": "Banco a 30°. Baja la barra rozando la parte alta del pectoral y empuja firmemente arriba aislando el haz clavicular del pecho."
+  },
+  {
+    "id": 40,
+    "nombre": "Face Pulls con Cuerda",
+    "musculo": "hombros",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Polea",
+    "descripcion": "Tracciona la cuerda alta hacia la cara/frente abriendo los codos y realizando rotación externa de hombro para salud articular y deltoides posterior."
+  },
+  {
+    "id": 41,
+    "nombre": "Curl de Bíceps Inclinado",
+    "musculo": "biceps",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Mancuernas",
+    "descripcion": "Sentado en banco inclinado a 60° con brazos colgando. Eleva las mancuernas con estiramiento máximo de la cabeza larga del bíceps."
+  },
+  {
+    "id": 42,
+    "nombre": "Fondos entre Bancos",
+    "musculo": "triceps",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Peso corporal",
+    "descripcion": "Manos apoyadas en banco trasero y pies delante. Desciende doblando codos a 90° y empuja con potencia con la fuerza del tríceps."
+  },
+  {
+    "id": 43,
+    "nombre": "Sentadilla Hack en Máquina",
+    "musculo": "cuadriceps",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Máquina",
+    "descripcion": "Espalda firme contra el respaldo en la máquina Hack. Baja en flexión profunda de rodillas y empuja enfocando todo el esfuerzo en los cuádriceps."
+  },
+  {
+    "id": 44,
+    "nombre": "Sentadilla Búlgara con Mancuernas",
+    "musculo": "cuadriceps",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Mancuernas",
+    "descripcion": "Pie trasero apoyado sobre banco. Baja verticalmente enfatizando el trabajo unilateral en cuadríceps y glúteos."
+  },
+  {
+    "id": 45,
+    "nombre": "Peso Muerto Convencional",
+    "musculo": "espalda",
+    "objetivo": "Fuerza",
+    "equipamiento": "Barra",
+    "descripcion": "Pies bajo la barra a anchura de caderas. Agarra la barra, bloquea la espalda y empuja el suelo extendiendo cadera y rodillas simultáneamente."
+  },
+  {
+    "id": 46,
+    "nombre": "Abductores en Máquina",
+    "musculo": "gluteos",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Máquina",
+    "descripcion": "Sentado abriendo las piernas contra la resistencia de las almohadillas externas para estimular el glúteo medio."
+  },
+  {
+    "id": 47,
+    "nombre": "Aductores en Máquina",
+    "musculo": "cuadriceps",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Máquina",
+    "descripcion": "Junta las piernas contrayendo la cara interna de los muslos (aductores) de forma pausada."
+  },
+  {
+    "id": 48,
+    "nombre": "Flexión de Brazos Flexiones Push-Ups",
+    "musculo": "pecho",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Peso corporal",
+    "descripcion": "Cuerpo recto apoyado en manos y puntas de pie. Baja el pecho cerca del suelo manteniendo codos a 45° y empuja fuerte."
+  },
+  {
+    "id": 49,
+    "nombre": "Remo con Barra T",
+    "musculo": "espalda",
+    "objetivo": "Fuerza",
+    "equipamiento": "Barra",
+    "descripcion": "Sostén la barra T o landmine con agarre estrecho. Tracciona al pecho bajo activando la densidad de la espalda media."
+  },
+  {
+    "id": 50,
+    "nombre": "Elevaciones Frontales con Mancuernas",
+    "musculo": "hombros",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Mancuernas",
+    "descripcion": "De pie elevando una a una las mancuernas al frente a la altura de los ojos enfatizando el deltoides anterior."
+  },
+  {
+    "id": 51,
+    "nombre": "Press Decline con Barra",
+    "musculo": "pecho",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Barra",
+    "descripcion": "Banco declinado. Empuja la barra aislando las fibras inferiores del pectoral con menor tensión en el hombro."
+  },
+  {
+    "id": 52,
+    "nombre": "Curl de Muñeca Pronado",
+    "musculo": "antebrazo",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Barra",
+    "descripcion": "Antebrazos apoyados en los muslos con palmas abajo. Extiende la muñeca elevando la barra para desarrollar extensores de antebrazo."
+  },
+  {
+    "id": 53,
+    "nombre": "Curl de Muñeca Supinado",
+    "musculo": "antebrazo",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Barra",
+    "descripcion": "Antebrazos apoyados con palmas arriba. Flexiona la muñeca subiendo la barra contrayendo flexores de antebrazo."
+  },
+  {
+    "id": 54,
+    "nombre": "Press Militar en Máquina",
+    "musculo": "hombros",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Máquina",
+    "descripcion": "Sentado con la espalda bien firme en el respaldo. Empuja las agarraderas guiadas por encima de la cabeza y baja despacio."
+  },
+  {
+    "id": 55,
+    "nombre": "Pectoral Contractor Pec-Deck",
+    "musculo": "pecho",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Máquina",
+    "descripcion": "Sentado juntando los brazos al frente en la máquina Pec-Deck focalizando la tensión continua en la zona central del pectoral."
+  },
+  {
+    "id": 56,
+    "nombre": "Press Militar Pesado con Barra",
+    "musculo": "hombros",
+    "objetivo": "Fuerza",
+    "equipamiento": "Barra",
+    "descripcion": "De pie empujando la barra desde las clavículas de forma estricta por encima de la cabeza usando el core para estabilidad."
+  },
+  {
+    "id": 57,
+    "nombre": "Press Inclinado Pesado con Barra",
+    "musculo": "pecho",
+    "objetivo": "Fuerza",
+    "equipamiento": "Barra",
+    "descripcion": "Press inclinado enfocado en bajas repeticiones con cargas pesadas para máxima fuerza en haz clavicular."
+  },
+  {
+    "id": 58,
+    "nombre": "Press Plano con Mancuernas Pesadas",
+    "musculo": "pecho",
+    "objetivo": "Fuerza",
+    "equipamiento": "Mancuernas",
+    "descripcion": "Trabajo de empuje pesado en banco plano con mancuernas para mayor rango articular de movimiento."
+  },
+  {
+    "id": 59,
+    "nombre": "Press Guillotine con Barra",
+    "musculo": "pecho",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Barra",
+    "descripcion": "Variante de press de banca llevando la barra hacia el cuello/clavícula con codos abiertos a 90° para aislamiento pectoral."
+  },
+  {
+    "id": 60,
+    "nombre": "Press Inclinado en Máquina Smith",
+    "musculo": "pecho",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Máquina",
+    "descripcion": "Press inclinado en barra guiada para máxima estabilidad y aislamiento sin preocuparse por el equilibrio."
+  },
+  {
+    "id": 61,
+    "nombre": "Press Declinado con Mancuernas",
+    "musculo": "pecho",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Mancuernas",
+    "descripcion": "Empuje declinado con mancuernas para focalizar la zona baja del pecho."
+  },
+  {
+    "id": 62,
+    "nombre": "Cruce de Poleas Bajas",
+    "musculo": "pecho",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Polea",
+    "descripcion": "Tira de las poleas desde abajo hacia arriba y al centro juntando las manos para trabajar el pecho superior."
+  },
+  {
+    "id": 63,
+    "nombre": "Cruce de Poleas Medias",
+    "musculo": "pecho",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Polea",
+    "descripcion": "Cruce horizontal a la altura del esternón para bombeo pectoral continuo."
+  },
+  {
+    "id": 64,
+    "nombre": "Press de Pecho sentado en Máquina",
+    "musculo": "pecho",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Máquina",
+    "descripcion": "Empuje guiado sentado ideal para llegar al fallo de forma segura."
+  },
+  {
+    "id": 65,
+    "nombre": "Remo con Barra Agarre Invertido",
+    "musculo": "espalda",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Barra",
+    "descripcion": "Remo con agarre supino involucrando mayor trabajo de dorsal inferior y bíceps."
+  },
+  {
+    "id": 66,
+    "nombre": "Remo en Máquina Lever",
+    "musculo": "espalda",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Máquina",
+    "descripcion": "Remo articulado con soporte en el pecho para aislar la espalda sin sobrecargar la zona lumbar."
+  },
+  {
+    "id": 67,
+    "nombre": "Jalón al Pecho Agarre Estrecho Neutro",
+    "musculo": "espalda",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Polea",
+    "descripcion": "Jalón vertical usando agarre V o estrecho para máximo estiramiento y tracción de los dorsales."
+  },
+  {
+    "id": 68,
+    "nombre": "Jalón Neutro con Manerales",
+    "musculo": "espalda",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Polea",
+    "descripcion": "Jalón usando agarres independientes permitiendo rotación natural del hombro."
+  },
+  {
+    "id": 69,
+    "nombre": "Pull-Over en Polea Alta con Cuerda",
+    "musculo": "espalda",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Polea",
+    "descripcion": "De pie tirando de la cuerda alta hacia los muslos manteniendo brazos casi extendidos."
+  },
+  {
+    "id": 70,
+    "nombre": "Dominadas Supinas",
+    "musculo": "espalda",
+    "objetivo": "Fuerza",
+    "equipamiento": "Peso corporal",
+    "descripcion": "Dominadas con palmas hacia ti activando fuertemente dorsales y bíceps."
+  },
+  {
+    "id": 71,
+    "nombre": "Press Militar con Barra Z",
+    "musculo": "hombros",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Barra",
+    "descripcion": "Empuje militar vertical con agarre anatómico en barra Z."
+  },
+  {
+    "id": 72,
+    "nombre": "Elevaciones Laterales en Polea",
+    "musculo": "hombros",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Polea",
+    "descripcion": "Elevación lateral a una mano con polea baja para tensión constante en todo el rango de movimiento."
+  },
+  {
+    "id": 73,
+    "nombre": "Pájaros en Máquina Pec-Deck Invertido",
+    "musculo": "hombros",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Máquina",
+    "descripcion": "Sentado de frente a la máquina abriendo los brazos hacia atrás para aislar el deltoides posterior."
+  },
+  {
+    "id": 74,
+    "nombre": "Elevaciones Frontales con Disco",
+    "musculo": "hombros",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Peso corporal",
+    "descripcion": "Eleva un disco de pesas sujetándolo por los bordes hasta la altura de los ojos."
+  },
+  {
+    "id": 75,
+    "nombre": "Remo al Mentón con Barra Z",
+    "musculo": "hombros",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Barra",
+    "descripcion": "Tracciona la barra Z pegada al torso elevando codos por encima de los hombros."
+  },
+  {
+    "id": 76,
+    "nombre": "Curl de Bíceps Arrastre Drag Curl",
+    "musculo": "biceps",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Barra",
+    "descripcion": "Subes la barra arrastrándola pegada al cuerpo llevando los codos hacia atrás para eliminar impulso del hombro."
+  },
+  {
+    "id": 77,
+    "nombre": "Curl de Bíceps en Polea Baja con Cuerda",
+    "musculo": "biceps",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Polea",
+    "descripcion": "Curl neutro con cuerda manteniendo tensión continua en la parte braquial del brazo."
+  },
+  {
+    "id": 78,
+    "nombre": "Curl Araña Spider Curl",
+    "musculo": "biceps",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Barra",
+    "descripcion": "Tumbado boca abajo en banco inclinado realizando flexión de bíceps aislada en la vertical."
+  },
+  {
+    "id": 79,
+    "nombre": "Curl Zottman",
+    "musculo": "biceps",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Mancuernas",
+    "descripcion": "Subes la mancuerna en agarre supino y rotas la muñeca arriba para bajar en pronación trabajando antebrazo."
+  },
+  {
+    "id": 80,
+    "nombre": "Extensiones de Tríceps tras Nuca con Mancuerna",
+    "musculo": "triceps",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Mancuernas",
+    "descripcion": "Sentado sosteniendo una mancuerna pesada con ambas manos por detrás de la cabeza y extendiendo arriba."
+  },
+  {
+    "id": 81,
+    "nombre": "Press de Banca Agarre Cerrado",
+    "musculo": "triceps",
+    "objetivo": "Fuerza",
+    "equipamiento": "Barra",
+    "descripcion": "Press de banca con manos a la anchura de hombros para derivar el máximo esfuerzo al tríceps."
+  },
+  {
+    "id": 82,
+    "nombre": "Extensiones en Polea con Cuerda por Encima de la Cabeza",
+    "musculo": "triceps",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Polea",
+    "descripcion": "De espalda a la polea alta extendiendo la cuerda hacia adelante sobre la cabeza para máximo estiramiento de la cabeza larga."
+  },
+  {
+    "id": 83,
+    "nombre": "Sentadilla Frontal con Barra",
+    "musculo": "cuadriceps",
+    "objetivo": "Fuerza",
+    "equipamiento": "Barra",
+    "descripcion": "Barra apoyada sobre los deltoides anteriores al frente con codos altos. Mayor énfasis en cuádriceps y postura erguida."
+  },
+  {
+    "id": 84,
+    "nombre": "Prensa Horizontal de Piernas",
+    "musculo": "cuadriceps",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Máquina",
+    "descripcion": "Empuje de piernas en plano horizontal con control en la fase concéntrica y excéntrica."
+  },
+  {
+    "id": 85,
+    "nombre": "Zancadas Caminando con Mancuernas",
+    "musculo": "gluteos",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Mancuernas",
+    "descripcion": "Avanza dando pasos largos y profundos manteniendo el equilibrio y tensión en glúteos y muslos."
+  },
+  {
+    "id": 86,
+    "nombre": "Sentadilla Sissy con Peso Corporal",
+    "musculo": "cuadriceps",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Peso corporal",
+    "descripcion": "Inclina el torso atrás doblando rodillas al frente para lograr un estiramiento extremo del recto femoral."
+  },
+  {
+    "id": 87,
+    "nombre": "Peso Muerto Sumo",
+    "musculo": "gluteos",
+    "objetivo": "Fuerza",
+    "equipamiento": "Barra",
+    "descripcion": "Postura muy abierta de pies con manos por dentro de las piernas. Mayor trabajo de aductores y glúteos."
+  },
+  {
+    "id": 88,
+    "nombre": "Curl Femoral Sentado",
+    "musculo": "gluteos",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Máquina",
+    "descripcion": "Sentado flexionando las piernas hacia abajo para aislar los isquiotibiales en rango acortado."
+  },
+  {
+    "id": 89,
     "nombre": "Patada de Glúteo en Polea",
     "musculo": "gluteos",
     "objetivo": "Hipertrofia",
     "equipamiento": "Polea",
-    "urlimage": "https://example.com/patada_gluteo.jpg"
-  },
-  {
-    "id": 19,
-    "nombre": "Press Arnold",
-    "musculo": "hombros",
-    "objetivo": "Hipertrofia",
-    "equipamiento": "Mancuernas"
-  },
-  {
-    "id": 20,
-    "nombre": "Cruces en Polea",
-    "musculo": "pecho",
-    "objetivo": "Hipertrofia",
-    "equipamiento": "Polea"
-  },
-  {
-    "id": 21,
-    "nombre": "Curl Concentrado",
-    "musculo": "biceps",
-    "objetivo": "Hipertrofia",
-    "equipamiento": "Mancuerna"
-  },
-  {
-    "id": 22,
-    "nombre": "Extensiones de muñeca con mancuerna",
-    "musculo": "antebrazo",
-    "objetivo": "Hipertrofia",
-    "equipamiento": "Mancuerna"
-  },
-  {
-    "id": 23,
-    "nombre": "Vacío abdominal",
-    "musculo": "cintura",
-    "objetivo": "Hipertrofia",
-    "equipamiento": "Peso corporal"
-  },
-  {
-    "id": 24,
-    "nombre": "Puente de glúteo a una pierna",
-    "musculo": "cadera",
-    "objetivo": "Hipertrofia",
-    "equipamiento": "Peso corporal"
-  },
-  {
-    "id": 25,
-    "nombre": "Zancadas (Lunges)",
-    "musculo": "cuadriceps",
-    "objetivo": "Hipertrofia",
-    "equipamiento": "Mancuernas"
-  },
-  {
-    "id": 26,
-    "nombre": "Saltos al cajón",
-    "musculo": "gemelos",
-    "objetivo": "Hipertrofia",
-    "equipamiento": "Cajón"
-  },
-  {
-    "id": 27,
-    "nombre": "Abducción de cadera",
-    "musculo": "gluteos",
-    "objetivo": "Hipertrofia",
-    "equipamiento": "Máquina"
-  },
-  {
-    "id": 28,
-    "nombre": "Elevaciones frontales",
-    "musculo": "hombros",
-    "objetivo": "Hipertrofia",
-    "equipamiento": "Mancuernas"
-  },
-  {
-    "id": 29,
-    "nombre": "Press Inclinado con mancuernas",
-    "musculo": "pecho",
-    "objetivo": "Hipertrofia",
-    "equipamiento": "Mancuernas"
-  },
-  {
-    "id": 30,
-    "nombre": "Curl Predicador",
-    "musculo": "biceps",
-    "objetivo": "Hipertrofia",
-    "equipamiento": "Barra EZ"
-  },
-  {
-    "id": 31,
-    "nombre": "Press Militar Pesado",
-    "musculo": "hombros",
-    "objetivo": "Fuerza",
-    "equipamiento": "Barra",
-    "urlimage": "https://example.com/press_militar_fuerza.jpg"
-  },
-  {
-    "id": 32,
-    "nombre": "Push Press",
-    "musculo": "hombros",
-    "objetivo": "Fuerza",
-    "equipamiento": "Barra"
-  },
-  {
-    "id": 33,
-    "nombre": "Press de Banca con Pausa",
-    "musculo": "pecho",
-    "objetivo": "Fuerza",
-    "equipamiento": "Barra"
-  },
-  {
-    "id": 34,
-    "nombre": "Press con Agarre Cerrado",
-    "musculo": "pecho",
-    "objetivo": "Fuerza",
-    "equipamiento": "Barra",
-    "urlimage": "https://example.com/press_cerrado.jpg"
-  },
-  {
-    "id": 35,
-    "nombre": "Curl con Barra Pesado",
-    "musculo": "biceps",
-    "objetivo": "Fuerza",
-    "equipamiento": "Barra"
-  },
-  {
-    "id": 36,
-    "nombre": "Curl de Bíceps con Fat Gripz",
-    "musculo": "biceps",
-    "objetivo": "Fuerza",
-    "equipamiento": "Mancuernas"
-  },
-  {
-    "id": 37,
-    "nombre": "Curl de Muñeca con Barra Pesado",
-    "musculo": "antebrazo",
-    "objetivo": "Fuerza",
-    "equipamiento": "Barra"
-  },
-  {
-    "id": 38,
-    "nombre": "Sujeción de Platos/Discos",
-    "musculo": "antebrazo",
-    "objetivo": "Fuerza",
-    "equipamiento": "Discos"
-  },
-  {
-    "id": 39,
-    "nombre": "Plancha con peso sobre espalda",
-    "musculo": "cintura",
-    "objetivo": "Fuerza",
-    "equipamiento": "Disco"
-  },
-  {
-    "id": 40,
-    "nombre": "Paseo del Granjero",
-    "musculo": "cintura",
-    "objetivo": "Fuerza",
-    "equipamiento": "Mancuernas Pesadas"
-  },
-  {
-    "id": 41,
-    "nombre": "Peso Muerto Convencional",
-    "musculo": "cadera",
-    "objetivo": "Fuerza",
-    "equipamiento": "Barra"
-  },
-  {
-    "id": 42,
-    "nombre": "Hip Thrust Pesado",
-    "musculo": "cadera",
-    "objetivo": "Fuerza",
-    "equipamiento": "Barra"
-  },
-  {
-    "id": 43,
-    "nombre": "Sentadilla Trasera (Low Bar)",
-    "musculo": "cuadriceps",
-    "objetivo": "Fuerza",
-    "equipamiento": "Barra"
-  },
-  {
-    "id": 44,
-    "nombre": "Sentadilla Frontal",
-    "musculo": "cuadriceps",
-    "objetivo": "Fuerza",
-    "equipamiento": "Barra"
-  },
-  {
-    "id": 45,
-    "nombre": "Elevación de Talones de pie con peso",
-    "musculo": "gemelos",
-    "objetivo": "Fuerza",
-    "equipamiento": "Barra"
-  },
-  {
-    "id": 46,
-    "nombre": "Donkey Calf Raise con peso",
-    "musculo": "gemelos",
-    "objetivo": "Fuerza",
-    "equipamiento": "Máquina"
-  },
-  {
-    "id": 47,
-    "nombre": "Sentadilla Búlgara con carga máxima",
-    "musculo": "gluteos",
-    "objetivo": "Fuerza",
-    "equipamiento": "Mancuernas"
-  },
-  {
-    "id": 48,
-    "nombre": "Sumo Deadlift",
-    "musculo": "gluteos",
-    "objetivo": "Fuerza",
-    "equipamiento": "Barra"
-  },
-  {
-    "id": 49,
-    "nombre": "Press Z con barra",
-    "musculo": "hombros",
-    "objetivo": "Fuerza",
-    "equipamiento": "Barra"
-  },
-  {
-    "id": 50,
-    "nombre": "Dips (Fondos) con lastre",
-    "musculo": "pecho",
-    "objetivo": "Fuerza",
-    "equipamiento": "Cinturón de lastre"
-  },
-  {
-    "id": 51,
-    "nombre": "Curl de Bíceps estilo Pendlay",
-    "musculo": "biceps",
-    "objetivo": "Fuerza",
-    "equipamiento": "Barra"
-  },
-  {
-    "id": 52,
-    "nombre": "Extensiones de muñeca con barra",
-    "musculo": "antebrazo",
-    "objetivo": "Fuerza",
-    "equipamiento": "Barra"
-  },
-  {
-    "id": 53,
-    "nombre": "Sentadilla Zercher",
-    "musculo": "cintura",
-    "objetivo": "Fuerza",
-    "equipamiento": "Barra"
-  },
-  {
-    "id": 54,
-    "nombre": "Peso Muerto con Piernas Rígidas",
-    "musculo": "cadera",
-    "objetivo": "Fuerza",
-    "equipamiento": "Barra"
-  },
-  {
-    "id": 55,
-    "nombre": "Zancadas pesadas con barra",
-    "musculo": "cuadriceps",
-    "objetivo": "Fuerza",
-    "equipamiento": "Barra"
-  },
-  {
-    "id": 56,
-    "nombre": "Saltos al cajón con lastre",
-    "musculo": "gemelos",
-    "objetivo": "Fuerza",
-    "equipamiento": "Chaleco lastrado"
-  },
-  {
-    "id": 57,
-    "nombre": "Puente de glúteo con barra (Max)",
-    "musculo": "gluteos",
-    "objetivo": "Fuerza",
-    "equipamiento": "Barra"
-  },
-  {
-    "id": 58,
-    "nombre": "Press de hombro tras nuca",
-    "musculo": "hombros",
-    "objetivo": "Fuerza",
-    "equipamiento": "Barra"
-  },
-  {
-    "id": 59,
-    "nombre": "Press de banca con agarre ancho",
-    "musculo": "pecho",
-    "objetivo": "Fuerza",
-    "equipamiento": "Barra"
-  },
-  {
-    "id": 60,
-    "nombre": "Curl martillo pesado",
-    "musculo": "biceps",
-    "objetivo": "Fuerza",
-    "equipamiento": "Mancuernas"
-  },
-  {
-    "id": 61,
-    "nombre": "Press Militar con poco peso y altas repeticiones",
-    "musculo": "hombros",
-    "objetivo": "Resistencia",
-    "equipamiento": "Mancuernas",
-    "urlimage": "https://example.com/press_militar_resistencia.jpg"
-  },
-  {
-    "id": 62,
-    "nombre": "Elevaciones laterales rápidas",
-    "musculo": "hombros",
-    "objetivo": "Resistencia",
-    "equipamiento": "Mancuernas"
-  },
-  {
-    "id": 63,
-    "nombre": "Flexiones de pecho (Push-ups)",
-    "musculo": "pecho",
-    "objetivo": "Resistencia",
-    "equipamiento": "Peso corporal"
-  },
-  {
-    "id": 64,
-    "nombre": "Press de banca con banda elástica",
-    "musculo": "pecho",
-    "objetivo": "Resistencia",
-    "equipamiento": "Bandas"
-  },
-  {
-    "id": 65,
-    "nombre": "Curl de bíceps con banda elástica",
-    "musculo": "biceps",
-    "objetivo": "Resistencia",
-    "equipamiento": "Bandas"
-  },
-  {
-    "id": 66,
-    "nombre": "Curl de bíceps 21s",
-    "musculo": "biceps",
-    "objetivo": "Resistencia",
-    "equipamiento": "Barra"
-  },
-  {
-    "id": 67,
-    "nombre": "Curl de antebrazo con poco peso (infinitas reps)",
-    "musculo": "antebrazo",
-    "objetivo": "Resistencia",
-    "equipamiento": "Mancuerna"
-  },
-  {
-    "id": 68,
-    "nombre": "Sujeción de mancuernas (crono)",
-    "musculo": "antebrazo",
-    "objetivo": "Resistencia",
-    "equipamiento": "Mancuernas"
-  },
-  {
-    "id": 69,
-    "nombre": "Plancha abdominal (mantención)",
-    "musculo": "cintura",
-    "objetivo": "Resistencia",
-    "equipamiento": "Peso corporal"
-  },
-  {
-    "id": 70,
-    "nombre": "Mountain Climbers",
-    "musculo": "cintura",
-    "objetivo": "Resistencia",
-    "equipamiento": "Peso corporal"
-  },
-  {
-    "id": 71,
-    "nombre": "Sentadilla al aire (Air squats)",
-    "musculo": "cadera",
-    "objetivo": "Resistencia",
-    "equipamiento": "Peso corporal"
-  },
-  {
-    "id": 72,
-    "nombre": "Puente de glúteo sin peso (altas repeticiones)",
-    "musculo": "cadera",
-    "objetivo": "Resistencia",
-    "equipamiento": "Peso corporal"
-  },
-  {
-    "id": 73,
-    "nombre": "Zancadas con desplazamiento",
-    "musculo": "cuadriceps",
-    "objetivo": "Resistencia",
-    "equipamiento": "Peso corporal"
-  },
-  {
-    "id": 74,
-    "nombre": "Step-ups (subida al cajón)",
-    "musculo": "cuadriceps",
-    "objetivo": "Resistencia",
-    "equipamiento": "Cajón"
-  },
-  {
-    "id": 75,
-    "nombre": "Elevación de talones de pie (cuerpo)",
-    "musculo": "gemelos",
-    "objetivo": "Resistencia",
-    "equipamiento": "Peso corporal"
-  },
-  {
-    "id": 76,
-    "nombre": "Saltos a la comba (cuerda)",
-    "musculo": "gemelos",
-    "objetivo": "Resistencia",
-    "equipamiento": "Cuerda"
-  },
-  {
-    "id": 77,
-    "nombre": "Hip thrust a una pierna (sin peso)",
-    "musculo": "gluteos",
-    "objetivo": "Resistencia",
-    "equipamiento": "Peso corporal"
-  },
-  {
-    "id": 78,
-    "nombre": "Patada de glúteo sin peso (altas reps)",
-    "musculo": "gluteos",
-    "objetivo": "Resistencia",
-    "equipamiento": "Peso corporal"
-  },
-  {
-    "id": 79,
-    "nombre": "Press militar con banda elástica",
-    "musculo": "hombros",
-    "objetivo": "Resistencia",
-    "equipamiento": "Bandas"
-  },
-  {
-    "id": 80,
-    "nombre": "Flexiones diamante",
-    "musculo": "pecho",
-    "objetivo": "Resistencia",
-    "equipamiento": "Peso corporal"
-  },
-  {
-    "id": 81,
-    "nombre": "Curl de bíceps alterno continuo",
-    "musculo": "biceps",
-    "objetivo": "Resistencia",
-    "equipamiento": "Mancuernas"
-  },
-  {
-    "id": 82,
-    "nombre": "Extensiones de muñeca continuas",
-    "musculo": "antebrazo",
-    "objetivo": "Resistencia",
-    "equipamiento": "Mancuerna"
-  },
-  {
-    "id": 83,
-    "nombre": "Bicycle Crunches",
-    "musculo": "cintura",
-    "objetivo": "Resistencia",
-    "equipamiento": "Peso corporal"
-  },
-  {
-    "id": 84,
-    "nombre": "Swing con Kettlebell (ligero)",
-    "musculo": "cadera",
-    "objetivo": "Resistencia",
-    "equipamiento": "Kettlebell"
-  },
-  {
-    "id": 85,
-    "nombre": "Sentadilla con salto (Jump squats)",
-    "musculo": "cuadriceps",
-    "objetivo": "Resistencia",
-    "equipamiento": "Peso corporal"
-  },
-  {
-    "id": 86,
-    "nombre": "Correr (carrera continua)",
-    "musculo": "gemelos",
-    "objetivo": "Resistencia",
-    "equipamiento": "Ninguno"
-  },
-  {
-    "id": 87,
-    "nombre": "Abducción de cadera lateral (banda)",
-    "musculo": "gluteos",
-    "objetivo": "Resistencia",
-    "equipamiento": "Bandas"
-  },
-  {
-    "id": 88,
-    "nombre": "Elevación frontal alternada (rápida)",
-    "musculo": "hombros",
-    "objetivo": "Resistencia",
-    "equipamiento": "Mancuernas"
-  },
-  {
-    "id": 89,
-    "nombre": "Flexiones con manos elevadas",
-    "musculo": "pecho",
-    "objetivo": "Resistencia",
-    "equipamiento": "Peso corporal"
+    "descripcion": "Sujeta la correa al tobillo y empuja la pierna hacia atrás contrayendo el glúteo mayor."
   },
   {
     "id": 90,
-    "nombre": "Curl de bíceps tipo martillo rápido",
-    "musculo": "biceps",
-    "objetivo": "Resistencia",
-    "equipamiento": "Mancuernas"
+    "nombre": "Puente de Glúteo en Suelo con Mancuerna",
+    "musculo": "gluteos",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Mancuernas",
+    "descripcion": "Tumbado boca arriba elevando la cadera con mancuerna sobre la pelvis."
   },
   {
     "id": 91,
-    "nombre": "Dominadas (Pull-ups)",
-    "musculo": "espalda",
+    "nombre": "Elevación de Talones en Prensa de Piernas",
+    "musculo": "gemelos",
     "objetivo": "Hipertrofia",
-    "equipamiento": "Barra fija",
-    "urlimage": "https://example.com/dominadas.jpg"
+    "equipamiento": "Máquina",
+    "descripcion": "Coloca las puntas de los pies en el borde de la prensa y realiza flexión plantar."
   },
   {
     "id": 92,
-    "nombre": "Remo con Barra",
-    "musculo": "espalda",
-    "objetivo": "Fuerza",
-    "equipamiento": "Barra"
+    "nombre": "Crunch Abdominal en Polea Alta",
+    "musculo": "abdomen",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Polea",
+    "descripcion": "De rodillas sujetando la cuerda alta y flexionando la columna hacia el suelo contrayendo el abdomen."
   },
   {
     "id": 93,
-    "nombre": "Jalón al Pecho",
-    "musculo": "espalda",
+    "nombre": "Elevación de Rodillas en Banco Romano",
+    "musculo": "abdomen",
     "objetivo": "Hipertrofia",
-    "equipamiento": "Máquina"
+    "equipamiento": "Peso corporal",
+    "descripcion": "Apoya antebrazos en las almohadillas y sube las rodillas al Pecho flexibilizando la pelvis."
   },
   {
     "id": 94,
-    "nombre": "Remo en Polea Baja",
-    "musculo": "espalda",
-    "objetivo": "Hipertrofia",
-    "equipamiento": "Polea"
+    "nombre": "Twist Ruso con Disco",
+    "musculo": "abdomen",
+    "objetivo": "Resistencia",
+    "equipamiento": "Peso corporal",
+    "descripcion": "Sentado con pies elevados rotando el torso de lado a lado sujetando un disco para oblicuos."
   },
   {
     "id": 95,
-    "nombre": "Remo con Mancuerna a una mano",
+    "nombre": "Encogimientos de Trapecio con Mancuernas",
     "musculo": "espalda",
     "objetivo": "Hipertrofia",
-    "equipamiento": "Mancuerna"
+    "equipamiento": "Mancuernas",
+    "descripcion": "Elevación de hombros pura sujetando mancuernas a los lados."
   },
   {
     "id": 96,
-    "nombre": "Peso Muerto con Barra",
+    "nombre": "Remo Pendlay",
     "musculo": "espalda",
     "objetivo": "Fuerza",
-    "equipamiento": "Barra"
+    "equipamiento": "Barra",
+    "descripcion": "Remo con barra apoyando el peso en el suelo en cada repetición partiendo de postura 90° estricta."
   },
   {
     "id": 97,
-    "nombre": "Remo Invertido",
-    "musculo": "espalda",
-    "objetivo": "Resistencia",
-    "equipamiento": "Barra fija"
+    "nombre": "Press Inclinado de Pecho en Polea",
+    "musculo": "pecho",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Polea",
+    "descripcion": "Empuje en banco inclinado utilizando poleas bajas para tensión continua."
   },
   {
     "id": 98,
-    "nombre": "Face Pulls",
-    "musculo": "espalda",
+    "nombre": "Flexiones Declinadas",
+    "musculo": "pecho",
     "objetivo": "Hipertrofia",
-    "equipamiento": "Polea"
+    "equipamiento": "Peso corporal",
+    "descripcion": "Pies elevados en banco haciendo flexiones para enfatizar el pecho superior."
   },
   {
     "id": 99,
-    "nombre": "Superman (lumbar)",
+    "nombre": "Dominadas Neutras",
     "musculo": "espalda",
-    "objetivo": "Resistencia",
-    "equipamiento": "Peso corporal"
+    "objetivo": "Fuerza",
+    "equipamiento": "Peso corporal",
+    "descripcion": "Dominadas con palmas enfrentadas, la posición más cómoda y fuerte para el hombro."
   },
   {
     "id": 100,
-    "nombre": "Remo con Banda Elástica",
-    "musculo": "espalda",
-    "objetivo": "Resistencia",
-    "equipamiento": "Bandas"
+    "nombre": "Prensa Unilateral de Piernas",
+    "musculo": "cuadriceps",
+    "objetivo": "Hipertrofia",
+    "equipamiento": "Máquina",
+    "descripcion": "Empuje de prensa trabajando una pierna a la vez para corregir desbalances de fuerza."
   },
   {
     "id": 101,
-    "nombre": "Press de Banca Inclinado con Barra",
+    "nombre": "Press de Banca Pesado con Barra",
     "musculo": "pecho",
     "objetivo": "Fuerza",
+    "descripcion": "Press plano con barra enfocado en rangos de fuerza pura (3 a 5 repeticiones). Mantén el arco lumbar natural y apoya pies con firmeza.",
     "equipamiento": "Barra"
   },
   {
     "id": 102,
-    "nombre": "Press de Banca Declinado con Barra",
+    "nombre": "Press Inclinado con Carga Máxima",
     "musculo": "pecho",
     "objetivo": "Fuerza",
+    "descripcion": "Trabajo de empuje pesado en banco a 30° para maximizar fuerza en la zona superior pectoral y tríceps.",
     "equipamiento": "Barra"
   },
   {
     "id": 103,
-    "nombre": "Press Hack Sled",
-    "musculo": "cuadriceps",
-    "objetivo": "Fuerza",
-    "equipamiento": "Máquina"
+    "nombre": "Aperturas en Polea Baja",
+    "musculo": "pecho",
+    "objetivo": "Hipertrofia",
+    "descripcion": "Movimiento de aislamiento que junta las manos arriba al centro con tensión constante durante toda la trayectoria.",
+    "equipamiento": "Polea"
   },
   {
     "id": 104,
-    "nombre": "Prensa de Piernas 45° (Leg Press Pesado)",
-    "musculo": "cuadriceps",
-    "objetivo": "Fuerza",
-    "equipamiento": "Máquina"
+    "nombre": "Cruce de Poleas con Cuerda",
+    "musculo": "pecho",
+    "objetivo": "Hipertrofia",
+    "descripcion": "Cruza las cuerdas al frente contrayendo activamente los pectorales con máximo bombeo al final de la rutina.",
+    "equipamiento": "Polea"
   },
   {
     "id": 105,
-    "nombre": "Press Arnold con Mancuernas",
-    "musculo": "hombros",
-    "objetivo": "Hipertrofia",
-    "equipamiento": "Mancuernas"
+    "nombre": "Jalón al Pecho Abierto Pesado",
+    "musculo": "espalda",
+    "objetivo": "Fuerza",
+    "descripcion": "Jalón con barra ancha traccionando fuerte al esternón para ensanchar el dorsal ancho.",
+    "equipamiento": "Polea"
   },
   {
     "id": 106,
-    "nombre": "Cruce de Poleas Alta a Baja",
-    "musculo": "pecho",
+    "nombre": "Remo Unilateral en Polea",
+    "musculo": "espalda",
     "objetivo": "Hipertrofia",
+    "descripcion": "Tracción a una mano en polea permitiendo mayor recorrido y contracción del dorsal unilateral.",
     "equipamiento": "Polea"
   },
   {
     "id": 107,
-    "nombre": "Cruce de Poleas Baja a Alta",
-    "musculo": "pecho",
+    "nombre": "Remo Horizontal en Máquina con Agarre Ancho",
+    "musculo": "espalda",
     "objetivo": "Hipertrofia",
-    "equipamiento": "Polea"
+    "descripcion": "Remo guiado en máquina con agarre prono ancho para estimular trapecios medios y deltoides posterior.",
+    "equipamiento": "Máquina"
   },
   {
     "id": 108,
-    "nombre": "Jalón al Pecho Agarre Neutro / V",
+    "nombre": "Remo al Pecho en Máquina Smith",
     "musculo": "espalda",
-    "objetivo": "Fuerza",
-    "equipamiento": "Polea"
+    "objetivo": "Hipertrofia",
+    "descripcion": "Remo con inclinación de torso apoyado en la barra guiada Smith para tensión constante.",
+    "equipamiento": "Máquina"
   },
   {
     "id": 109,
-    "nombre": "Jalón al Pecho Agarre Supino",
-    "musculo": "espalda",
-    "objetivo": "Hipertrofia",
-    "equipamiento": "Polea"
+    "nombre": "Press Militar con Barra por Delante",
+    "musculo": "hombros",
+    "objetivo": "Fuerza",
+    "descripcion": "Press de hombros estricto de pie con barra olímpica pesada para desarrollo masivo de la cintura escapular.",
+    "equipamiento": "Barra"
   },
   {
     "id": 110,
-    "nombre": "Remo en Polea Baja con Agarre V",
-    "musculo": "espalda",
-    "objetivo": "Fuerza",
-    "equipamiento": "Polea"
+    "nombre": "Press de Hombros Unilateral con Mancuerna",
+    "musculo": "hombros",
+    "objetivo": "Hipertrofia",
+    "descripcion": "Empuje a una mano de pie obligando al core a estabilizar el cuerpo mientras trabaja el deltoides.",
+    "equipamiento": "Mancuernas"
   },
   {
     "id": 111,
-    "nombre": "Extensiones de Tríceps en Polea Alta con Cuerda",
-    "musculo": "triceps",
+    "nombre": "Remo al Cuello con Polea",
+    "musculo": "hombros",
     "objetivo": "Hipertrofia",
+    "descripcion": "Tracción vertical con barra corta en polea baja elevando codos hacia afuera.",
     "equipamiento": "Polea"
   },
   {
     "id": 112,
-    "nombre": "Extensiones de Tríceps en Polea Alta con Barra Recta",
-    "musculo": "triceps",
-    "objetivo": "Fuerza",
+    "nombre": "Pájaros en Polea Cruzada",
+    "musculo": "hombros",
+    "objetivo": "Hipertrofia",
+    "descripcion": "Cruza los cables frente a ti y abre los brazos a los lados para aislar la cabeza posterior del hombro.",
     "equipamiento": "Polea"
   },
   {
     "id": 113,
-    "nombre": "Curl de Bíceps en Polea Baja con Barra",
+    "nombre": "Curl de Bíceps en Polea con Barra Recta",
     "musculo": "biceps",
     "objetivo": "Hipertrofia",
+    "descripcion": "Flexión de codos constante con polea baja evitando los puntos muertos de tensión de las mancuernas.",
     "equipamiento": "Polea"
   },
   {
     "id": 114,
-    "nombre": "Curl Martillo en Polea Baja con Cuerda",
+    "nombre": "Curl de Bíceps en Máquina Guiada",
     "musculo": "biceps",
     "objetivo": "Hipertrofia",
-    "equipamiento": "Polea"
+    "descripcion": "Máquina de bicep Scott guiada para mantener tensión estricta sin trampas.",
+    "equipamiento": "Máquina"
   },
   {
     "id": 115,
-    "nombre": "Patada de Glúteo en Polea Baja",
-    "musculo": "gluteos",
+    "nombre": "Pushdown de Tríceps con Barra V",
+    "musculo": "triceps",
     "objetivo": "Hipertrofia",
+    "descripcion": "Extensiones de tríceps en polea con maneral en V para mayor comodidad en muñecas.",
     "equipamiento": "Polea"
   },
   {
     "id": 116,
-    "nombre": "Abducción de Cadera en Polea Baja",
-    "musculo": "gluteos",
+    "nombre": "Extensiones de Tríceps Unilateral en Polea",
+    "musculo": "triceps",
     "objetivo": "Hipertrofia",
+    "descripcion": "Extensión a una mano con cable alto sin agarre para aislamiento puro.",
     "equipamiento": "Polea"
   },
   {
     "id": 117,
-    "nombre": "Elevaciones Laterales en Polea Baja",
-    "musculo": "hombros",
-    "objetivo": "Hipertrofia",
-    "equipamiento": "Polea"
+    "nombre": "Sentadilla Hack Pesada",
+    "musculo": "cuadriceps",
+    "objetivo": "Fuerza",
+    "descripcion": "Sentadilla asistida en máquina Hack cargada con peso para desarrollo de cuadríceps en rango seguro.",
+    "equipamiento": "Máquina"
   },
   {
     "id": 118,
-    "nombre": "Press Francés con Barra Z (Skullcrushers)",
-    "musculo": "triceps",
+    "nombre": "Prensa de Piernas Inclinada Pesada",
+    "musculo": "cuadriceps",
     "objetivo": "Fuerza",
-    "equipamiento": "Barra"
+    "descripcion": "Carga máxima en prensa 45° trabajando con series pesadas de fuerza.",
+    "equipamiento": "Máquina"
   },
   {
     "id": 119,
-    "nombre": "Press Inclinado con Mancuernas Pesado",
-    "musculo": "pecho",
-    "objetivo": "Fuerza",
+    "nombre": "Peso Muerto Rumano con Mancuernas Pesadas",
+    "musculo": "gluteos",
+    "objetivo": "Hipertrofia",
+    "descripcion": "Bisagra de cadera profunda sosteniendo dos mancuernas grandes sintiendo gran estiramiento isquiotibial.",
     "equipamiento": "Mancuernas"
   },
   {
     "id": 120,
-    "nombre": "Hip Thrust Pesado con Barra",
+    "nombre": "Hip Thrust Pesado en Máquina",
     "musculo": "gluteos",
     "objetivo": "Fuerza",
-    "equipamiento": "Barra"
-  },
-  {
-    "id": 121,
-    "nombre": "Aperturas para Pecho en Polea (Cruce de Poleas Horizontal)",
-    "musculo": "pecho",
-    "objetivo": "Hipertrofia",
-    "equipamiento": "Polea"
-  },
-  {
-    "id": 122,
-    "nombre": "Remo Remo T o Remo Pesado en Máquina / Barra",
-    "musculo": "espalda",
-    "objetivo": "Fuerza",
-    "equipamiento": "Barra"
-  },
-  {
-    "id": 123,
-    "nombre": "Elevaciones Laterales en Máquina (Brazos en L)",
-    "musculo": "hombros",
-    "objetivo": "Hipertrofia",
+    "descripcion": "Extensión de cadera máxima con soporte guiado en máquina de Hip Thrust para máxima hipertrofia de glúteos.",
     "equipamiento": "Máquina"
-  },
-  {
-    "id": 124,
-    "nombre": "Aperturas Invertidas para Espalda / Deltoides Posterior (Peck Deck Invertido / Polea)",
-    "musculo": "espalda",
-    "objetivo": "Hipertrofia",
-    "equipamiento": "Máquina"
-  },
-  {
-    "id": 125,
-    "nombre": "Abducciones en Máquina para Cadera",
-    "musculo": "gluteos",
-    "objetivo": "Hipertrofia",
-    "equipamiento": "Máquina"
-  },
-  {
-    "id": 126,
-    "nombre": "Extensiones de Tríceps en Polea con Cuerda (Agarre de Bolas)",
-    "musculo": "triceps",
-    "objetivo": "Hipertrofia",
-    "equipamiento": "Polea"
   }
 ]

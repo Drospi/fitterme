@@ -1,8 +1,9 @@
 import { useTheme } from "@/context/ThemeContext";
-import { addMeal } from "@/store/meals";
+import { addMeal, MealCategory } from "@/store/meals";
 import { getGlobalStyles } from "@/styles/global";
 import * as Haptics from "expo-haptics";
-import { useState } from "react";
+import { useRouter } from "expo-router";
+import React, { useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -11,35 +12,39 @@ import {
   View,
 } from "react-native";
 
-export default function AddMealScreen() {
+export default function EditMealScreen() {
   const { colors } = useTheme();
   const globalStyles = getGlobalStyles(colors);
+  const router = useRouter();
 
   const [name, setName] = useState("");
+  const [category, setCategory] = useState<MealCategory>("Almuerzo");
   const [calories, setCalories] = useState("");
   const [protein, setProtein] = useState("");
   const [carbs, setCarbs] = useState("");
   const [fat, setFat] = useState("");
 
-  const handleAddMeal = () => {
-    console.log({ name, calories, protein, carbs, fat });
-    addMeal({
+  const handleAddMeal = async () => {
+    await addMeal({
       name,
-      calories: parseInt(calories),
-      protein: parseInt(protein),
-      carbs: parseInt(carbs),
-      fat: parseInt(fat),
+      category,
+      calories: parseInt(calories) || 0,
+      protein: parseInt(protein) || 0,
+      carbs: parseInt(carbs) || 0,
+      fat: parseInt(fat) || 0,
+      icon: "restaurant",
     });
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    router.back();
   };
 
   return (
     <View style={globalStyles.container}>
-      <Text style={globalStyles.title}>Edit Meal</Text>
+      <Text style={globalStyles.title}>Editar Comida</Text>
 
       <TextInput
         style={globalStyles.input}
-        placeholder="Meal name"
+        placeholder="Nombre de la comida"
         placeholderTextColor={colors.textSecondary}
         value={name}
         onChangeText={setName}
@@ -47,7 +52,7 @@ export default function AddMealScreen() {
 
       <TextInput
         style={globalStyles.input}
-        placeholder="Calories"
+        placeholder="Calorías"
         placeholderTextColor={colors.textSecondary}
         keyboardType="numeric"
         value={calories}
@@ -57,7 +62,7 @@ export default function AddMealScreen() {
       <View style={styles.row}>
         <TextInput
           style={[globalStyles.input, styles.rowInput]}
-          placeholder="Protein (g)"
+          placeholder="Proteína (g)"
           placeholderTextColor={colors.textSecondary}
           keyboardType="numeric"
           value={protein}
@@ -65,7 +70,7 @@ export default function AddMealScreen() {
         />
         <TextInput
           style={[globalStyles.input, styles.rowInput]}
-          placeholder="Carbos (g)"
+          placeholder="Carbohidratos (g)"
           placeholderTextColor={colors.textSecondary}
           keyboardType="numeric"
           value={carbs}
@@ -73,7 +78,7 @@ export default function AddMealScreen() {
         />
         <TextInput
           style={[globalStyles.input, styles.rowInput]}
-          placeholder="Fat (g)"
+          placeholder="Grasa (g)"
           placeholderTextColor={colors.textSecondary}
           keyboardType="numeric"
           value={fat}
@@ -82,7 +87,7 @@ export default function AddMealScreen() {
       </View>
 
       <TouchableOpacity style={globalStyles.button} onPress={handleAddMeal}>
-        <Text style={globalStyles.buttonText}>Add Meal</Text>
+        <Text style={globalStyles.buttonText}>Guardar Cambios</Text>
       </TouchableOpacity>
     </View>
   );

@@ -88,12 +88,14 @@ export const updateRoutine = async (
   return updatedRoutine;
 };
 
-export const deleteRoutine = async (id: string): Promise<void> => {
+export const deleteRoutine = async (id: string | number): Promise<void> => {
   const Routines = await getRoutines();
-  const filtered = Routines.filter((Routine) => Routine.id !== id);
+  const targetIdStr = String(id);
+  const filtered = Routines.filter((r) => String(r.id) !== targetIdStr);
   await AsyncStorage.setItem(ROUTINES_KEY, JSON.stringify(filtered));
 };
 
 export const clearAllRoutines = async (): Promise<void> => {
+  await AsyncStorage.setItem(ROUTINES_KEY, JSON.stringify([]));
   await AsyncStorage.removeItem(ROUTINES_KEY);
 };

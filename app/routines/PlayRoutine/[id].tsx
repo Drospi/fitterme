@@ -1,5 +1,12 @@
 import ExerciseItem from "@/components/ExcerciseItem";
 import { useTheme } from "@/context/ThemeContext";
+import {
+  formatWeightText,
+  getSettings,
+  toDisplayWeight,
+  toStoredKg,
+  UserSettings,
+} from "@/store/conf";
 import { getExerciseIdByExerciseName } from "@/store/excercise";
 import {
   addExerciseLog,
@@ -10,9 +17,13 @@ import { addRoutineSession } from "@/store/historyRoutine";
 import { getRoutineById } from "@/store/routines";
 import { getGlobalStyles } from "@/styles/global";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import * as Haptics from "expo-haptics";
 import { useFocusEffect, useLocalSearchParams } from "expo-router";
-import { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
+import Toast from "react-native-toast-message";
 import {
+  KeyboardAvoidingView,
+  Platform,
   ScrollView,
   Text,
   TextInput,
@@ -26,6 +37,13 @@ const PlayRoutineScreen = () => {
   const { colors } = useTheme();
   const globalStyles = getGlobalStyles(colors);
   const { id } = useLocalSearchParams<{ id: string }>();
+
+  const [userSettings, setUserSettings] = useState<UserSettings>({
+    unit: "kg",
+    weightIncrement: 2.5,
+    defaultRestTimer: 90,
+  });
+
   const [routineData, setRoutineData] = useState({
     id: "",
     name: "",
@@ -66,10 +84,20 @@ const PlayRoutineScreen = () => {
   const [isActiveTimer, setIsActiveTimer] = useState(true);
   const [isRoutineCompleted, setIsRoutineCompleted] = useState(false);
 
+  const [repActual, setRepActual] = useState(0);
+  const [pesoActual, setPesoActual] = useState(0);
+
   const loadRoutine = async () => {
     const data = await getRoutineById(id);
     setRoutineData(data);
   };
+
+  useFocusEffect(
+    useCallback(() => {
+      getSettings().then((s) => setUserSettings(s));
+      loadRoutine();
+    }, [id])
+  );
 
   useEffect(() => {
     let interval: any = null;
@@ -90,8 +118,9 @@ const PlayRoutineScreen = () => {
     const loadPR = async () => {
       const ejercicio = routineData.exercises[ejercicioActual];
       if (ejercicio) {
-        setRepActual(ejercicio.reps ?? 0);
-        setPesoActual(ejercicio.peso ?? 0);
+        setRepActual(ejercicio.reps ?? 10);
+        const initialWeightKg = ejercicio.peso ?? 10;
+        setPesoActual(toDisplayWeight(initialWeightKg, userSettings.unit));
 
         const pb = await getPersonalBest(ejercicio.id);
         setPersonalBest(pb);
@@ -99,67 +128,30 @@ const PlayRoutineScreen = () => {
     };
 
     loadPR();
-  }, [routineData, ejercicioActual]);
+  }, [routineData, ejercicioActual, userSettings.unit]);
 
-  useFocusEffect(
-    useCallback(() => {
-      loadRoutine();
-    }, [id]),
-  );
-  const [repActual, setRepActual] = useState(0);
-  const [pesoActual, setPesoActual] = useState(0);
-
-  useEffect(() => {
-    const ejercicio = routineData.exercises[ejercicioActual];
-
-    if (ejercicio) {
-      setRepActual(ejercicio.reps ?? 0);
-      setPesoActual(ejercicio.peso ?? 0);
-    }
-  }, [routineData, ejercicioActual]);
-
-  if (routineData.id === "") {
-    return (
-      <View style={globalStyles.container}>
-        <Text>Cargando rutina...</Text>
-      </View>
-    );
-  }
-  const formatTime = (timer: number) => {
-    return new Date(timer * 1000).toISOString().substr(11, 8);
-  };
-
-  const handleAddSerie = () => {
-    const newExercises = [...routineData.exercises];
-
-    newExercises[ejercicioActual] = {
-      ...newExercises[ejercicioActual],
-      series: (newExercises[ejercicioActual].series || 0) + 1,
-    };
-
-    setRoutineData({
-      ...routineData,
-      exercises: newExercises,
-    });
-  };
+  const [newRecordsCount, setNewRecordsCount] = useState(0);
 
   const handleNextExercise = async () => {
     if (seriesCompletadas.length > 0) {
-      console.log(
-        "Intentando guardar:",
-        routineData.exercises[ejercicioActual].nombre,
-      );
-      console.log("Series a guardar:", seriesCompletadas);
       const currentExerciseName = routineData.exercises[ejercicioActual].nombre;
       const currentExerciseId =
         await getExerciseIdByExerciseName(currentExerciseName);
       if (currentExerciseId !== null) {
+        // Verificar si se logro un nuevo récord en este ejercicio
+        const isNewPR = seriesCompletadas.some((set) => {
+          if (!personalBest) return true;
+          return (
+            set.peso > personalBest.peso ||
+            (set.peso === personalBest.peso && set.reps > personalBest.reps)
+          );
+        });
+
+        if (isNewPR) {
+          setNewRecordsCount((prev) => prev + 1);
+        }
+
         await addExerciseLog(currentExerciseId, seriesCompletadas);
-      } else {
-        console.error(
-          "No se encontró ID para el ejercicio:",
-          currentExerciseName,
-        );
       }
     }
 
@@ -192,28 +184,106 @@ const PlayRoutineScreen = () => {
   };
 
   const handleCompleteSerie = () => {
+    // Convertir peso ingresado a KG para almacenamiento consistente
+    const weightInKg = toStoredKg(pesoActual, userSettings.unit);
+
     setSeriesCompletadas((prev) => [
       ...prev,
-      { reps: repActual, peso: pesoActual },
+      { reps: repActual, peso: weightInKg },
     ]);
     const currentExercise = routineData.exercises[ejercicioActual];
-    const newSet = { reps: repActual, peso: pesoActual };
+    const newSet = { reps: repActual, peso: weightInKg };
     setPerformedSets((prev) => ({
       ...prev,
       [currentExercise.id]: [...(prev[currentExercise.id] || []), newSet],
     }));
     setSerieActual((prev) => prev + 1);
-    setTotalTonelaje((prev) => prev + pesoActual * repActual);
+    setTotalTonelaje((prev) => prev + weightInKg * repActual);
     setTotalSeries((prev) => prev + 1);
 
     if (
-      pesoActual > mejorPesoEjercicio ||
-      (pesoActual === mejorPesoEjercicio && repActual > mejorRepEjercicio)
+      weightInKg > mejorPesoEjercicio ||
+      (weightInKg === mejorPesoEjercicio && repActual > mejorRepEjercicio)
     ) {
-      setMejorPesoEjercicio(pesoActual);
+      setMejorPesoEjercicio(weightInKg);
       setMejorRepEjercicio(repActual);
     }
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
   };
+
+  const handleSkipSerie = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    setSerieActual((prev) => prev + 1);
+    Toast.show({
+      type: "info",
+      text1: "Serie Omitida",
+      text2: `Serie ${serieActual + 1} de ${routineData.exercises[ejercicioActual].nombre} fue omitida.`,
+    });
+  };
+
+  const handleSkipExercise = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    const skippedName = routineData.exercises[ejercicioActual]?.nombre || "Ejercicio";
+
+    setSeriesCompletadas([]);
+
+    if (ejercicioActual < routineData.exercises.length - 1) {
+      setEjercicioActual((prev) => prev + 1);
+      setSerieActual(0);
+      setMejorRepEjercicio(0);
+      setMejorPesoEjercicio(0);
+      Toast.show({
+        type: "info",
+        text1: "Ejercicio Omitido",
+        text2: `${skippedName} fue omitido.`,
+      });
+    } else {
+      setIsActiveTimer(false);
+      setIsRoutineCompleted(true);
+      handleFinishRoutine();
+    }
+  };
+
+  const handleAddSerie = () => {
+    const newExercises = [...routineData.exercises];
+    newExercises[ejercicioActual] = {
+      ...newExercises[ejercicioActual],
+      series: (newExercises[ejercicioActual].series || 0) + 1,
+    };
+
+    setRoutineData({
+      ...routineData,
+      exercises: newExercises,
+    });
+  };
+
+  const handleMoveUpcomingExercise = (upcomingIndex: number, direction: "up" | "down") => {
+    const realIndex = ejercicioActual + 1 + upcomingIndex;
+    const targetIndex = direction === "up" ? realIndex - 1 : realIndex + 1;
+
+    if (targetIndex <= ejercicioActual || targetIndex >= routineData.exercises.length) return;
+
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    setRoutineData((prev) => {
+      const newExercises = [...prev.exercises];
+      const temp = newExercises[realIndex];
+      newExercises[realIndex] = newExercises[targetIndex];
+      newExercises[targetIndex] = temp;
+      return { ...prev, exercises: newExercises };
+    });
+  };
+
+  const formatTime = (timer: number) => {
+    return new Date(timer * 1000).toISOString().substr(11, 8);
+  };
+
+  if (routineData.id === "") {
+    return (
+      <View style={globalStyles.container}>
+        <Text style={{ color: colors.text }}>Cargando rutina...</Text>
+      </View>
+    );
+  }
 
   if (isRoutineCompleted) {
     return (
@@ -222,6 +292,7 @@ const PlayRoutineScreen = () => {
         timer={timer}
         tonelaje={totalTonelaje}
         series={totalSeries}
+        newRecordsCount={newRecordsCount}
       />
     );
   }
@@ -242,296 +313,364 @@ const PlayRoutineScreen = () => {
   }
 
   return (
-    <ScrollView
-      style={globalStyles.container}
-      showsVerticalScrollIndicator={false}
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 0}
     >
-      <View style={globalStyles.header}>
-        <View>
-          <Text
-            style={{
-              fontSize: 20,
-              fontWeight: "bold",
-              color: colors.primary,
-            }}
-          >
-            ENTRENAMIENTO ACTIVO
-          </Text>
-          <Text style={globalStyles.title}>
-            {routineData.name.length > 18
-              ? routineData.name.slice(0, 18) + "..."
-              : routineData.name}
-          </Text>
-        </View>
-        <View
-          style={[
-            globalStyles.card,
-            {
-              alignItems: "center",
-              borderRadius: 30,
-              justifyContent: "center",
-            },
-          ]}
-        >
-          <Ionicons
-            name="timer-outline"
-            size={24}
-            color={colors.primary}
-          ></Ionicons>
-          <Text
-            style={[globalStyles.title, { fontSize: 16, alignSelf: "center" }]}
-          >
-            {formatTime(timer)}
-          </Text>
-        </View>
-      </View>
-      <View style={globalStyles.card}>
-        <View
-          style={{
-            flexDirection: "row",
-            gap: 10,
-          }}
-        >
-          <View style={{ gap: 10, marginBottom: 20 }}>
-            <Text style={globalStyles.title}>
-              {routineData.exercises[ejercicioActual].nombre}
-            </Text>
-
-            <Text style={globalStyles.textSecondary}>
-              {routineData.exercises[ejercicioActual].objetivo} -{" "}
-              {routineData.exercises[ejercicioActual].equipamiento}
-            </Text>
-            <View
+      <ScrollView
+        style={globalStyles.container}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+        contentContainerStyle={{ paddingBottom: 150 }}
+      >
+        <View style={globalStyles.header}>
+          <View>
+            <Text
               style={{
-                padding: 10,
-                borderRadius: 10,
-                backgroundColor: colors.background,
-                width: 100,
-                alignItems: "center",
+                fontSize: 14,
+                fontWeight: "bold",
+                color: colors.primary,
+                letterSpacing: 1,
               }}
             >
-              <Text style={{ color: colors.primary }}>
-                {routineData.exercises[ejercicioActual].musculo
-                  .slice(0, 1)
-                  .toUpperCase() +
-                  routineData.exercises[ejercicioActual].musculo.slice(1)}
-              </Text>
-            </View>
+              ENTRENAMIENTO ACTIVO
+            </Text>
+            <Text style={globalStyles.title}>
+              {routineData.name.length > 18
+                ? routineData.name.slice(0, 18) + "..."
+                : routineData.name}
+            </Text>
+          </View>
+          <View
+            style={[
+              globalStyles.card,
+              {
+                alignItems: "center",
+                borderRadius: 30,
+                justifyContent: "center",
+                paddingHorizontal: 16,
+                paddingVertical: 8,
+              },
+            ]}
+          >
+            <Ionicons name="timer-outline" size={22} color={colors.primary} />
+            <Text style={[globalStyles.title, { fontSize: 15, alignSelf: "center", marginTop: 2 }]}>
+              {formatTime(timer)}
+            </Text>
           </View>
         </View>
-        <View
-          style={{
-            gap: 10,
-            alignItems: "flex-start",
-            justifyContent: "space-between",
-          }}
-        >
-          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            <View
-              style={{
-                flexDirection: "row",
-                gap: 10,
-              }}
-            >
-              {routineData?.exercises?.[0]?.series ? (
-                Array.from({
+
+        <View style={globalStyles.card}>
+          <View style={{ flexDirection: "row", gap: 10 }}>
+            <View style={{ gap: 8, marginBottom: 15 }}>
+              <Text style={globalStyles.title}>
+                {routineData.exercises[ejercicioActual].nombre}
+              </Text>
+
+              <Text style={globalStyles.textSecondary}>
+                {routineData.exercises[ejercicioActual].objetivo} -{" "}
+                {routineData.exercises[ejercicioActual].equipamiento}
+              </Text>
+              <View
+                style={{
+                  paddingHorizontal: 12,
+                  paddingVertical: 4,
+                  borderRadius: 8,
+                  backgroundColor: colors.background,
+                  alignSelf: "flex-start",
+                }}
+              >
+                <Text style={{ color: colors.primary, fontWeight: "bold", fontSize: 12 }}>
+                  {routineData.exercises[ejercicioActual].musculo.toUpperCase()}
+                </Text>
+              </View>
+            </View>
+          </View>
+
+          {/* Series Pointers */}
+          <View style={{ gap: 10, alignItems: "flex-start", marginBottom: 15 }}>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+              <View style={{ flexDirection: "row", gap: 10 }}>
+                {Array.from({
                   length: routineData.exercises[ejercicioActual].series,
                 }).map((_, i) => (
                   <View
-                    style={[
-                      globalStyles.card,
-                      {
-                        height: 50,
-                        width: 50,
-                        borderRadius: "100%",
-                        backgroundColor:
-                          i === serieActual
-                            ? colors.primary
-                            : colors.background,
-                      },
-                    ]}
                     key={i}
+                    style={{
+                      height: 44,
+                      width: 44,
+                      borderRadius: 22,
+                      backgroundColor:
+                        i === serieActual ? colors.primary : colors.background,
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
                   >
                     <Text
-                      style={[
-                        globalStyles.cardText,
-                        {
-                          color:
-                            i === serieActual
-                              ? colors.neutral
-                              : colors.textSecondary,
-                          alignSelf: "center",
-                        },
-                      ]}
+                      style={{
+                        fontWeight: "bold",
+                        fontSize: 16,
+                        color:
+                          i === serieActual ? colors.background : colors.textSecondary,
+                      }}
                     >
                       {i + 1}
                     </Text>
                   </View>
-                ))
-              ) : (
-                <Text>Cargando series...</Text>
-              )}
+                ))}
+              </View>
+            </ScrollView>
+            <Text style={globalStyles.textSecondary}>
+              Serie Actual: {serieActual + 1} /{" "}
+              {routineData.exercises[ejercicioActual].series}
+            </Text>
+          </View>
+
+          {/* Input Controls */}
+          <View style={{ gap: 15, marginVertical: 10 }}>
+            {/* Control Peso */}
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <Text style={globalStyles.cardText}>
+                PESO ({userSettings.unit.toUpperCase()})
+              </Text>
+
+              <View style={{ flexDirection: "row", gap: 10, alignItems: "center" }}>
+                <TouchableOpacity
+                  onPress={() =>
+                    setPesoActual(
+                      Math.max(0, Math.round((pesoActual - userSettings.weightIncrement) * 10) / 10)
+                    )
+                  }
+                >
+                  <Ionicons name="remove-circle" size={34} color={colors.primary} />
+                </TouchableOpacity>
+
+                <TextInput
+                  placeholder="0"
+                  placeholderTextColor={colors.textSecondary}
+                  keyboardType="numeric"
+                  selectTextOnFocus={true}
+                  value={pesoActual.toString()}
+                  style={[
+                    globalStyles.input,
+                    {
+                      backgroundColor: colors.background,
+                      textAlign: "center",
+                      fontSize: 22,
+                      fontWeight: "bold",
+                      marginBottom: 0,
+                      height: 48,
+                      width: 110,
+                    },
+                  ]}
+                  onChangeText={(text) => {
+                    if (text === "") {
+                      setPesoActual(0);
+                    } else {
+                      const parsed = parseFloat(text);
+                      if (!isNaN(parsed)) setPesoActual(parsed);
+                    }
+                  }}
+                />
+
+                <TouchableOpacity
+                  onPress={() =>
+                    setPesoActual(
+                      Math.round((pesoActual + userSettings.weightIncrement) * 10) / 10
+                    )
+                  }
+                >
+                  <Ionicons name="add-circle" size={34} color={colors.primary} />
+                </TouchableOpacity>
+              </View>
             </View>
-          </ScrollView>
-          <Text style={globalStyles.textSecondary}>
-            Serie Actual {serieActual + 1} /{" "}
-            {routineData?.exercises?.[ejercicioActual]?.series}
+
+            {/* Control Reps */}
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <Text style={globalStyles.cardText}>REPETICIONES</Text>
+              <View style={{ flexDirection: "row", gap: 10, alignItems: "center" }}>
+                <TouchableOpacity
+                  onPress={() => setRepActual(Math.max(1, repActual - 1))}
+                >
+                  <Ionicons name="remove-circle" size={34} color={colors.primary} />
+                </TouchableOpacity>
+
+                <TextInput
+                  placeholder="10"
+                  placeholderTextColor={colors.textSecondary}
+                  keyboardType="numeric"
+                  selectTextOnFocus={true}
+                  value={repActual ? repActual.toString() : ""}
+                  style={[
+                    globalStyles.input,
+                    {
+                      backgroundColor: colors.background,
+                      textAlign: "center",
+                      fontSize: 22,
+                      fontWeight: "bold",
+                      marginBottom: 0,
+                      height: 48,
+                      width: 110,
+                    },
+                  ]}
+                  onChangeText={(text) => {
+                    if (text === "") {
+                      setRepActual(0);
+                    } else {
+                      const parsed = parseInt(text, 10);
+                      if (!isNaN(parsed)) setRepActual(parsed);
+                    }
+                  }}
+                />
+
+                <TouchableOpacity onPress={() => setRepActual(repActual + 1)}>
+                  <Ionicons name="add-circle" size={34} color={colors.primary} />
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+
+          <Text style={[globalStyles.cardText, { marginTop: 10, color: colors.secondary, fontWeight: "600" }]}>
+            🏆 Mejor serie:{" "}
+            {personalBest
+              ? formatWeightText(personalBest.peso, userSettings.unit) + ` x ${personalBest.reps} reps`
+              : "Sin registro previo"}
           </Text>
-        </View>
-        <View style={{ gap: 10 }}>
-          <View
-            style={{
-              gap: 10,
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "space-between",
-            }}
-          >
-            <Text style={globalStyles.cardText}>PESO (KG)</Text>
 
-            <View
-              style={{
-                flexDirection: "row",
-                gap: 10,
-                alignItems: "center",
-                justifyContent: "space-between",
-              }}
-            >
-              <Ionicons
-                name="remove-circle"
-                onPress={() => setPesoActual(Math.max(0, pesoActual - 2.5))}
-                size={32}
-                color={colors.primary}
-              />
-              <TextInput
-                placeholder="4"
-                placeholderTextColor={colors.textSecondary}
-                keyboardType="numeric"
-                value={pesoActual.toString() ?? pesoActual.toString() ?? ""}
-                style={[
-                  globalStyles.input,
-                  {
-                    backgroundColor: colors.background,
-                    textAlign: "center",
-                    fontSize: 24,
-                    marginBottom: 10,
-                    height: 50,
-                    paddingVertical: 0,
-                    width: 150,
-                  },
-                ]}
-                onChangeText={(text) => {
-                  if (text === "") {
-                    setPesoActual(0);
-                  } else {
-                    const parsed = parseInt(text, 10);
-                    if (!isNaN(parsed)) {
-                      setPesoActual(parsed);
-                    }
-                  }
-                }}
-              />
-              <Ionicons
-                name="add-circle"
-                onPress={() => setPesoActual(pesoActual + 2.5)}
-                size={32}
-                color={colors.primary}
-              />
-            </View>
-          </View>
-          <View
-            style={{
-              gap: 10,
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "space-between",
-            }}
+          <TouchableOpacity
+            style={[globalStyles.button, { marginTop: 15 }]}
+            onPress={handleCompleteSerie}
           >
-            <Text style={globalStyles.cardText}>REPS</Text>
-            <View
-              style={{
-                flexDirection: "row",
-                gap: 10,
-                alignItems: "center",
-                justifyContent: "space-between",
-              }}
-            >
-              <Ionicons
-                name="remove-circle"
-                size={32}
-                onPress={() => setRepActual(Math.max(0, repActual - 1))}
-                color={colors.primary}
-              />
+            <Text style={globalStyles.buttonText}>Completar Serie</Text>
+          </TouchableOpacity>
 
-              <TextInput
-                placeholder="10"
-                placeholderTextColor="#666"
-                keyboardType="numeric"
-                value={repActual ? repActual.toString() : ""}
-                style={[
-                  globalStyles.input,
-                  {
-                    backgroundColor: colors.background,
-                    textAlign: "center",
-                    fontSize: 24,
-                    marginBottom: 10,
-                    height: 50,
-                    paddingVertical: 0,
-                    width: 150,
-                  },
-                ]}
-                onChangeText={(text) => {
-                  if (text === "") {
-                    setRepActual(0);
-                  } else {
-                    const parsed = parseInt(text, 10);
-                    if (!isNaN(parsed)) {
-                      setRepActual(parsed);
-                    }
-                  }
-                }}
-              />
-              <Ionicons
-                name="add-circle"
-                size={32}
-                color={colors.primary}
-                onPress={() => setRepActual(repActual + 1)}
-              />
-            </View>
+          {/* Botones de Omitir / Saltar */}
+          <View style={{ flexDirection: "row", gap: 10, marginTop: 12 }}>
+            <TouchableOpacity
+              style={{
+                flex: 1,
+                backgroundColor: colors.surface,
+                borderColor: colors.textSecondary + "40",
+                borderWidth: 1,
+                borderRadius: 10,
+                paddingVertical: 10,
+                alignItems: "center",
+                flexDirection: "row",
+                justifyContent: "center",
+                gap: 6,
+              }}
+              onPress={handleSkipSerie}
+            >
+              <Ionicons name="play-skip-forward-outline" size={16} color={colors.textSecondary} />
+              <Text style={{ color: colors.text, fontSize: 13, fontWeight: "600" }}>
+                Saltar Serie
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={{
+                flex: 1,
+                backgroundColor: colors.surface,
+                borderColor: colors.delete + "50",
+                borderWidth: 1,
+                borderRadius: 10,
+                paddingVertical: 10,
+                alignItems: "center",
+                flexDirection: "row",
+                justifyContent: "center",
+                gap: 6,
+              }}
+              onPress={handleSkipExercise}
+            >
+              <Ionicons name="play-forward-outline" size={16} color={colors.delete} />
+              <Text style={{ color: colors.delete, fontSize: 13, fontWeight: "600" }}>
+                Saltar Ejercicio
+              </Text>
+            </TouchableOpacity>
           </View>
         </View>
-        <Text style={globalStyles.cardText}>
-          Mejor serie:{" "}
-          {personalBest
-            ? `${personalBest.peso}kg x ${personalBest.reps} reps`
-            : "Sin registro previo"}
-        </Text>
-        <TouchableOpacity
-          style={globalStyles.button}
-          onPress={() => handleCompleteSerie()}
-        >
-          <Text style={globalStyles.buttonText}>Completar Serie</Text>
-        </TouchableOpacity>
-      </View>
 
-      <View
-        style={[
-          globalStyles.card,
-          { opacity: 0.5, marginTop: 20, marginBottom: 100 },
-        ]}
-      >
-        <Text style={globalStyles.title}>Proximos Ejercicios</Text>
-        {routineData.exercises.slice(ejercicioActual + 1).map((ex) => (
-          <View key={ex.id}>
-            <ExerciseItem
-              excerciseInfo={ex}
-              onCheck={() => {}}
-              isCheckedFather={false}
-            />
+        {/* Próximos Ejercicios Reordenables */}
+        {routineData.exercises.slice(ejercicioActual + 1).length > 0 && (
+          <View style={[globalStyles.card, { marginTop: 20 }]}>
+            <Text style={[globalStyles.title, { fontSize: 18, marginBottom: 12 }]}>
+              Próximos Ejercicios ({routineData.exercises.length - (ejercicioActual + 1)})
+            </Text>
+
+            {routineData.exercises.slice(ejercicioActual + 1).map((ex, relIdx) => {
+              const isFirst = relIdx === 0;
+              const isLast =
+                relIdx === routineData.exercises.slice(ejercicioActual + 1).length - 1;
+              return (
+                <View
+                  key={ex.id}
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    gap: 10,
+                    marginBottom: 8,
+                  }}
+                >
+                  <View style={{ flex: 1 }}>
+                    <ExerciseItem
+                      excerciseInfo={ex}
+                      onCheck={() => {}}
+                      isCheckedFather={false}
+                    />
+                  </View>
+
+                  {/* Controles de Reordenamiento */}
+                  <View style={{ flexDirection: "column", gap: 4 }}>
+                    <TouchableOpacity
+                      disabled={isFirst}
+                      onPress={() => handleMoveUpcomingExercise(relIdx, "up")}
+                      style={{
+                        opacity: isFirst ? 0.3 : 1,
+                        backgroundColor: colors.surface,
+                        padding: 8,
+                        borderRadius: 8,
+                        borderWidth: 1,
+                        borderColor: colors.primary + "40",
+                      }}
+                    >
+                      <Ionicons name="chevron-up" size={18} color={colors.primary} />
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                      disabled={isLast}
+                      onPress={() => handleMoveUpcomingExercise(relIdx, "down")}
+                      style={{
+                        opacity: isLast ? 0.3 : 1,
+                        backgroundColor: colors.surface,
+                        padding: 8,
+                        borderRadius: 8,
+                        borderWidth: 1,
+                        borderColor: colors.primary + "40",
+                      }}
+                    >
+                      <Ionicons name="chevron-down" size={18} color={colors.primary} />
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              );
+            })}
           </View>
-        ))}
-      </View>
-    </ScrollView>
+        )}
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 

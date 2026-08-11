@@ -1,12 +1,12 @@
 import ExerciseItem from "@/components/ExcerciseItem";
 import Step2FilterButton from "@/components/Step2FilterButton";
 import { useTheme } from "@/context/ThemeContext";
-import dataExcercises from "@/data/exercises.json";
+import { ExerciseCatalogItem, getAllExercises } from "@/store/excercise";
 import { getGlobalStyles } from "@/styles/global";
 import { Ionicons } from "@expo/vector-icons";
-import { useState } from "react";
+import { useFocusEffect, useRouter } from "expo-router";
+import React, { useCallback, useState } from "react";
 import {
-  Dimensions,
   ScrollView,
   Text,
   TextInput,
@@ -14,38 +14,39 @@ import {
   View,
 } from "react-native";
 
-type ExerciseType = {
-  id: number;
-  nombre: string;
-  musculo: string;
-  objetivo: string;
-  equipamiento: string;
-  urlimage?: string;
-  series?: number;
-  reps?: number;
-  peso?: number;
-};
-
 type Props = {
   next: () => void;
   back: () => void;
   data: {
-    exercises: ExerciseType[];
+    exercises: ExerciseCatalogItem[];
   };
-  updateData: (newData: Partial<{ exercises: ExerciseType[] }>) => void;
+  updateData: (newData: Partial<{ exercises: ExerciseCatalogItem[] }>) => void;
 };
 
 export default function Step2({ next, back, data, updateData }: Props) {
   const { colors } = useTheme();
   const globalStyles = getGlobalStyles(colors);
+  const router = useRouter();
 
   const [search, setSearch] = useState("");
   const [muscleSelected, setMuscleSelected] = useState("");
-  const [exercises, setExercises] = useState<ExerciseType[]>(
+  const [catalog, setCatalog] = useState<ExerciseCatalogItem[]>([]);
+  const [exercises, setExercises] = useState<ExerciseCatalogItem[]>(
     data.exercises ?? [],
   );
 
-  const handleSelect = (exerciseToAdd: ExerciseType) => {
+  const loadCatalog = async () => {
+    const list = await getAllExercises();
+    setCatalog(list);
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      loadCatalog();
+    }, [])
+  );
+
+  const handleSelect = (exerciseToAdd: ExerciseCatalogItem) => {
     let newExercises;
     const exists = exercises.find((e) => e.id === exerciseToAdd.id);
 
@@ -59,14 +60,14 @@ export default function Step2({ next, back, data, updateData }: Props) {
     updateData({ exercises: newExercises });
   };
 
-  const filteredExercises = dataExcercises
+  const filteredExercises = catalog
     .filter((exercise) => {
       if (muscleSelected === "Todos" || muscleSelected === "") return true;
 
-      const m = exercise.musculo.toLowerCase();
+      const m = (exercise.musculo || "").toLowerCase();
 
       if (muscleSelected === "Brazos")
-        return ["biceps", "triceps", "antebrazos", "hombros"].includes(m);
+        return ["biceps", "triceps", "antebrazo", "hombros"].includes(m);
 
       if (muscleSelected === "Espalda")
         return ["espalda", "hombros"].includes(m);
@@ -75,7 +76,7 @@ export default function Step2({ next, back, data, updateData }: Props) {
         return ["pierna", "gemelos", "gluteos", "cuadriceps"].includes(m);
 
       if (muscleSelected === "Abdomen")
-        return ["cadera", "cintura"].includes(m);
+        return ["cadera", "cintura", "abdomen"].includes(m);
 
       return m === muscleSelected.toLowerCase();
     })
@@ -89,10 +90,32 @@ export default function Step2({ next, back, data, updateData }: Props) {
       }}
     >
       {/* 1. Cabecera */}
-      <Ionicons name="arrow-back" size={32} onPress={back} color={colors.text} />
-      <Text style={[globalStyles.title, { marginVertical: 10 }]}>
-        Paso 2: Ejercicios
-      </Text>
+      <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginVertical: 10 }}>
+        <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+          <Ionicons name="arrow-back" size={28} onPress={back} color={colors.text} />
+          <Text style={[globalStyles.title, { fontSize: 22, marginVertical: 0 }]}>
+            Paso 2: Ejercicios
+          </Text>
+        </View>
+
+        <TouchableOpacity
+          onPress={() => router.push("/exercises/add" as any)}
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            gap: 4,
+            backgroundColor: colors.primary,
+            paddingHorizontal: 12,
+            paddingVertical: 6,
+            borderRadius: 16,
+          }}
+        >
+          <Ionicons name="add-circle" size={18} color={colors.background} />
+          <Text style={{ color: colors.background, fontWeight: "bold", fontSize: 12 }}>
+            Crear Ejercicio
+          </Text>
+        </TouchableOpacity>
+      </View>
 
       {/* 2. Buscador */}
       <View
@@ -143,13 +166,13 @@ export default function Step2({ next, back, data, updateData }: Props) {
         Ejercicios seleccionados ({exercises.length})
       </Text>
 
-      {/* 4. Lista de ejercicios que ocupa todo el espacio scrollable disponible */}
+      {/* 4. Lista de ejercicios */}
       <ScrollView
         showsVerticalScrollIndicator={false}
         style={{ flex: 1 }}
         contentContainerStyle={{ paddingBottom: 15 }}
       >
-        {filteredExercises.map((excercise: ExerciseType) => (
+        {filteredExercises.map((excercise: ExerciseCatalogItem) => (
           <ExerciseItem
             key={excercise.id}
             excerciseInfo={excercise}
@@ -159,7 +182,7 @@ export default function Step2({ next, back, data, updateData }: Props) {
         ))}
       </ScrollView>
 
-      {/* 5. Botón Siguiente anclado permanentemente en la parte inferior */}
+      {/* 5. Botón Siguiente */}
       <View style={{ paddingTop: 10, paddingBottom: 20, backgroundColor: colors.background, width: "100%" }}>
         <TouchableOpacity
           onPress={next}

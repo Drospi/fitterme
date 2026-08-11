@@ -113,7 +113,7 @@ export default function Step3({ back, data, updateData, saveRoutine }: Props) {
             <View style={{ flexDirection: "row", gap: 20 }}>
               <Image
                 style={{ width: 60, height: 60, borderRadius: 10 }}
-                source={getExerciseImage(exercise.id)}
+                source={getExerciseImage(exercise.id, exercise.urlimage)}
               />
               <View style={{ flex: 1 }}>
                 <Text style={globalStyles.cardTitle}>{exercise.nombre}</Text>

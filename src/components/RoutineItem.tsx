@@ -3,8 +3,10 @@ import { deleteRoutine } from "@/store/routines";
 import { getGlobalStyles } from "@/styles/global";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import * as Haptics from "expo-haptics";
-import { useRouter } from "expo-router"; // Importamos useRouter
-import { Alert, Text, TouchableOpacity, View } from "react-native";
+import { useRouter } from "expo-router";
+import React from "react";
+import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import Toast from "react-native-toast-message";
 
 type RoutineItemProps = {
   id: string;
@@ -27,22 +29,28 @@ type RoutineItemProps = {
 export default function RoutineItem({
   id,
   name,
-  exercises,
+  category,
+  exercises = [],
   onDelete,
 }: RoutineItemProps) {
   const { colors } = useTheme();
   const globalStyles = getGlobalStyles(colors);
   const router = useRouter();
-  const allMuscles = exercises.map((ex) => ex.musculo);
 
+  const allMuscles = exercises.map((ex) => ex.musculo);
   const uniqueMuscles = [...new Set(allMuscles)];
 
-  console.log("Exercises in RoutineItem:", exercises);
+  const totalSeries = exercises.reduce(
+    (total, exercise) => total + (exercise.series || 0),
+    0
+  );
+  const estimatedTime = totalSeries * 3;
 
   const handleDelete = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     Alert.alert(
       "Eliminar Rutina",
-      `¿Estás seguro de que quieres eliminar "${name}"?`,
+      `¿Estás seguro de eliminar "${name}"?`,
       [
         { text: "Cancelar", style: "cancel" },
         {
@@ -52,36 +60,97 @@ export default function RoutineItem({
             await deleteRoutine(id);
             onDelete();
             Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+            Toast.show({
+              type: "success",
+              text1: "Rutina Eliminada",
+              text2: `"${name}" se ha eliminado del catálogo.`,
+            });
           },
         },
-      ],
+      ]
     );
   };
 
+  const handleEdit = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    router.push({
+      pathname: "/routines/EditRoutine/[id]",
+      params: { id: id },
+    });
+  };
+
+  const handlePlay = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    router.push({
+      pathname: "/routines/PlayRoutine/[id]",
+      params: { id: id },
+    });
+  };
+
   return (
-    <TouchableOpacity style={globalStyles.card}>
-      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-        <Text style={[globalStyles.cardTitle, { fontSize: 24 }]}>{name}</Text>
-        <View style={{ flexDirection: "row", gap: 10 }}>
-          <Ionicons
-            name="pencil-outline"
-            size={24}
-            color={colors.secondary}
-            onPress={() =>
-              router.push({
-                pathname: "/routines/EditRoutine/[id]",
-                params: { id: id },
-              })
-            }
-          />
-          <Ionicons
-            name="trash"
-            size={24}
-            color={colors.delete}
+    <View
+      style={[
+        globalStyles.card,
+        {
+          marginVertical: 6,
+          padding: 16,
+          borderRadius: 16,
+          backgroundColor: colors.surface,
+          borderWidth: 1,
+          borderColor: colors.primary + "25",
+        },
+      ]}
+    >
+      {/* Fila Superior: Título y Botones de Acción */}
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "flex-start",
+          marginBottom: 10,
+        }}
+      >
+        <TouchableOpacity style={{ flex: 1, paddingRight: 10 }} onPress={handlePlay}>
+          <Text style={[globalStyles.cardTitle, { fontSize: 20, fontWeight: "bold" }]}>
+            {name}
+          </Text>
+          {category ? (
+            <Text style={{ fontSize: 11, fontWeight: "600", color: colors.primary, marginTop: 2 }}>
+              🎯 {category.toUpperCase()}
+            </Text>
+          ) : null}
+        </TouchableOpacity>
+
+        {/* Botones de Acción Ordenados */}
+        <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+          <TouchableOpacity
+            onPress={handleEdit}
+            style={[
+              styles.iconBtn,
+              { backgroundColor: colors.primary + "18" },
+            ]}
+          >
+            <Ionicons name="create-outline" size={20} color={colors.primary} />
+          </TouchableOpacity>
+
+          <TouchableOpacity
             onPress={handleDelete}
-          />
+            style={[
+              styles.iconBtn,
+              { backgroundColor: colors.delete + "18" },
+            ]}
+          >
+            <Ionicons name="trash-outline" size={20} color={colors.delete} />
+          </TouchableOpacity>
         </View>
       </View>
+
+      {/* Info: Ejercicios, Tiempo y Series */}
+      <Text style={[globalStyles.cardText, { fontSize: 13, marginBottom: 12, color: colors.textSecondary }]}>
+        {exercises.length} Ejercicios • {totalSeries} Series • ~{estimatedTime} min
+      </Text>
+
+      {/* Etiquetas de Grupos Musculares y Botón Iniciar */}
       <View
         style={{
           flexDirection: "row",
@@ -89,49 +158,54 @@ export default function RoutineItem({
           alignItems: "center",
         }}
       >
-        <View>
-          <Text style={globalStyles.cardText}>
-            {exercises.length} ejercicios •{" "}
-            {exercises.reduce((total, exercise) => total + exercise.series, 0) *
-              3}{" "}
-            min •{" "}
-            {exercises.reduce((total, exercise) => total + exercise.series, 0)}{" "}
-            series
-          </Text>
-          <View
-            style={{ marginTop: 10, display: "flex", flexDirection: "row" }}
-          >
-            {uniqueMuscles.map((musculo, index) => (
-              <Text
-                key={index}
-                style={{
-                  color: colors.text,
-                  backgroundColor: colors.background,
-                  borderColor: colors.primary,
-                  padding: 5,
-                  paddingHorizontal: 15,
-                  borderRadius: 5,
-                  marginBottom: 5,
-                  marginRight: 5,
-                }}
-              >
+        <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 6, flex: 1, paddingRight: 10 }}>
+          {uniqueMuscles.map((musculo, index) => (
+            <View
+              key={index}
+              style={{
+                backgroundColor: colors.background,
+                paddingHorizontal: 10,
+                paddingVertical: 4,
+                borderRadius: 8,
+                borderWidth: 1,
+                borderColor: colors.primary + "40",
+              }}
+            >
+              <Text style={{ fontSize: 11, fontWeight: "600", color: colors.text }}>
                 {musculo.charAt(0).toUpperCase() + musculo.slice(1)}
               </Text>
-            ))}
-          </View>
+            </View>
+          ))}
         </View>
-        <Ionicons
-          name="play-circle"
-          onPress={() =>
-            router.push({
-              pathname: "/routines/PlayRoutine/[id]",
-              params: { id: id },
-            })
-          }
-          size={48}
-          color={colors.primary}
-        />
+
+        <TouchableOpacity
+          onPress={handlePlay}
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            gap: 6,
+            backgroundColor: colors.primary,
+            paddingHorizontal: 14,
+            paddingVertical: 10,
+            borderRadius: 12,
+          }}
+        >
+          <Ionicons name="play" size={18} color={colors.background} />
+          <Text style={{ color: colors.background, fontWeight: "bold", fontSize: 13 }}>
+            Iniciar
+          </Text>
+        </TouchableOpacity>
       </View>
-    </TouchableOpacity>
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  iconBtn: {
+    width: 36,
+    height: 36,
+    borderRadius: 10,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+});

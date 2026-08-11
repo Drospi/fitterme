@@ -65,6 +65,7 @@ export default function TabLayout() {
         name="measures"
         options={{
           title: "All Measures",
+          href: null,
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="bar-chart" size={size} color={color} />
           ),

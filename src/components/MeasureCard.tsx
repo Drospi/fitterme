@@ -72,7 +72,14 @@ const MeasureCard = ({
           justifyContent: "space-between",
         }}
       >
-        <View style={{ flexDirection: "row", alignItems: "center", gap: 10, flex: 1 }}>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            gap: 10,
+            flex: 1,
+          }}
+        >
           <View
             style={{
               alignItems: "center",
@@ -94,8 +101,13 @@ const MeasureCard = ({
             >
               {name}
             </Text>
-            <Text style={[globalStyles.cardText, { color: colors.textSecondary }]}>
-              Anterior: <Text style={{ fontWeight: "bold", color: colors.text }}>{previousText}</Text>
+            <Text
+              style={[globalStyles.cardText, { color: colors.textSecondary }]}
+            >
+              Anterior:{" "}
+              <Text style={{ fontWeight: "bold", color: colors.text }}>
+                {previousText}
+              </Text>
             </Text>
           </View>
         </View>
@@ -104,7 +116,7 @@ const MeasureCard = ({
           <Popover
             isVisible={showPopover}
             onRequestClose={() => setShowPopover(false)}
-            from={(
+            from={
               <TouchableOpacity
                 onPress={() => setShowPopover(true)}
                 style={{
@@ -115,25 +127,52 @@ const MeasureCard = ({
                   borderColor: colors.primary + "40",
                 }}
               >
-                <Ionicons name="information-circle-outline" size={22} color={colors.primary} />
+                <Ionicons
+                  name="information-circle-outline"
+                  size={22}
+                  color={colors.primary}
+                />
               </TouchableOpacity>
-            )}
+            }
           >
             <View
               style={{
                 padding: 16,
                 maxWidth: 280,
                 backgroundColor: colors.background,
-                borderRadius: 12,
+                borderWidth: 0,
               }}
             >
-              <View style={{ flexDirection: "row", alignItems: "center", gap: 8, marginBottom: 8 }}>
-                <Ionicons name="help-circle-outline" size={20} color={colors.primary} />
-                <Text style={{ fontWeight: "bold", fontSize: 16, color: colors.text }}>
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  gap: 8,
+                  marginBottom: 8,
+                }}
+              >
+                <Ionicons
+                  name="help-circle-outline"
+                  size={20}
+                  color={colors.primary}
+                />
+                <Text
+                  style={{
+                    fontWeight: "bold",
+                    fontSize: 16,
+                    color: colors.text,
+                  }}
+                >
                   ¿Cómo medir {name}?
                 </Text>
               </View>
-              <Text style={{ color: colors.textSecondary, fontSize: 13, lineHeight: 18 }}>
+              <Text
+                style={{
+                  color: colors.textSecondary,
+                  fontSize: 13,
+                  lineHeight: 18,
+                }}
+              >
                 {instructions}
               </Text>
             </View>

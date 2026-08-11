@@ -1,9 +1,11 @@
 import { useTheme } from "@/context/ThemeContext";
+import { getSettings, toDisplayWeight, UserSettings } from "@/store/conf";
+import { getExerciseIdByExerciseName } from "@/store/excercise";
 import { getRoutineSession, RoutineSession } from "@/store/historyRoutine";
 import { getGlobalStyles } from "@/styles/global";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { useLocalSearchParams, useRouter } from "expo-router";
-import { useEffect, useState } from "react";
+import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
+import React, { useCallback, useState } from "react";
 import { ScrollView, Text, View } from "react-native";
 
 const DetailsRoutineScreen = () => {
@@ -13,17 +15,28 @@ const DetailsRoutineScreen = () => {
   const { id } = useLocalSearchParams<{ id: string }>();
 
   const [session, setSession] = useState<RoutineSession | null>(null);
+  const [userSettings, setUserSettings] = useState<UserSettings>({
+    unit: "kg",
+    weightIncrement: 2.5,
+    defaultRestTimer: 90,
+  });
 
   const loadSession = async () => {
+    const s = await getSettings();
+    setUserSettings(s);
     const data = await getRoutineSession(id);
     setSession(data);
   };
 
-  useEffect(() => {
-    loadSession();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      loadSession();
+    }, [id])
+  );
 
   if (!session) return <Text style={globalStyles.cardText}> Cargando...</Text>;
+
+  const displayTotalVolume = toDisplayWeight(session.totalVolume, userSettings.unit);
 
   return (
     <ScrollView style={[globalStyles.container, { padding: 15 }]}>
@@ -47,7 +60,11 @@ const DetailsRoutineScreen = () => {
             val: (session.duration / 60).toFixed(0),
             label: "MIN",
           },
-          { icon: "barbell", val: session.totalVolume, label: "KG" },
+          {
+            icon: "barbell",
+            val: displayTotalVolume.toLocaleString(),
+            label: userSettings.unit.toUpperCase(),
+          },
           {
             icon: "repeat",
             val: session.exercises.reduce((acc, e) => acc + e.sets.length, 0),
@@ -124,12 +141,21 @@ const DetailsRoutineScreen = () => {
             </View>
             <Ionicons
               name="information-circle-outline"
-              onPress={() =>
-                router.push({
-                  pathname: "/exercises/DetailsExercise/[id]",
-                  params: { id: exercise.exerciseName },
-                })
-              }
+              onPress={async () => {
+                const exId = (exercise as any).id || (exercise as any).exerciseId;
+                if (exId) {
+                  router.push({
+                    pathname: "/exercises/DetailsExercise/[id]",
+                    params: { id: String(exId) },
+                  });
+                } else {
+                  const resolvedId = await getExerciseIdByExerciseName(exercise.exerciseName);
+                  router.push({
+                    pathname: "/exercises/DetailsExercise/[id]",
+                    params: { id: resolvedId ? String(resolvedId) : exercise.exerciseName },
+                  });
+                }
+              }}
               size={32}
               color={colors.textSecondary}
             />
@@ -143,7 +169,7 @@ const DetailsRoutineScreen = () => {
               marginBottom: 5,
             }}
           >
-            {["SERIE", "PESO", "REPS", "HITO"].map((h) => (
+            {["SERIE", `PESO (${userSettings.unit.toUpperCase()})`, "REPS", "HITO"].map((h) => (
               <Text
                 key={h}
                 style={{
@@ -174,6 +200,7 @@ const DetailsRoutineScreen = () => {
                   set.peso === bestSetInExercise.peso &&
                   set.reps === bestSetInExercise.reps &&
                   set.peso > 0;
+                const displaySetWeight = toDisplayWeight(set.peso, userSettings.unit);
                 return (
                   <View
                     key={`${exercise.exerciseName}-${setIndex}`}
@@ -198,7 +225,7 @@ const DetailsRoutineScreen = () => {
                         color: colors.text,
                       }}
                     >
-                      {set.peso} <Text style={{ fontSize: 10 }}>kg</Text>
+                      {displaySetWeight} <Text style={{ fontSize: 10 }}>{userSettings.unit}</Text>
                     </Text>
                     <Text
                       style={{
