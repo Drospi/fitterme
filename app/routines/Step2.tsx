@@ -1,7 +1,7 @@
 import ExerciseItem from "@/components/ExcerciseItem";
 import Step2FilterButton from "@/components/Step2FilterButton";
 import { useTheme } from "@/context/ThemeContext";
-import { ExerciseCatalogItem, getAllExercises } from "@/store/excercise";
+import { ExerciseCatalogItem, getAllExercises, getExerciseCategory } from "@/store/excercise";
 import { getGlobalStyles } from "@/styles/global";
 import { Ionicons } from "@expo/vector-icons";
 import { useFocusEffect, useRouter } from "expo-router";
@@ -63,6 +63,11 @@ export default function Step2({ next, back, data, updateData }: Props) {
   const filteredExercises = catalog
     .filter((exercise) => {
       if (muscleSelected === "Todos" || muscleSelected === "") return true;
+
+      const cat = getExerciseCategory(exercise);
+      if (muscleSelected === "Gym") return cat === "Gym";
+      if (muscleSelected === "Cardio") return cat === "Cardio";
+      if (muscleSelected === "Peso corporal") return cat === "Peso corporal";
 
       const m = (exercise.musculo || "").toLowerCase();
 
@@ -149,7 +154,7 @@ export default function Step2({ next, back, data, updateData }: Props) {
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={{ gap: 10, alignItems: "center" }}
         >
-          {["Todos", "Pecho", "Brazos", "Espalda", "Pierna", "Abdomen"].map(
+          {["Todos", "Gym", "Cardio", "Peso corporal", "Pecho", "Brazos", "Espalda", "Pierna", "Abdomen"].map(
             (name) => (
               <Step2FilterButton
                 key={name}

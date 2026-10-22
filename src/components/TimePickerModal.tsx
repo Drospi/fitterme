@@ -1,30 +1,16 @@
+import DateTimePicker from "@react-native-community/datetimepicker";
+import React, { useState, useEffect } from "react";
+import { Platform, View, Modal, TouchableOpacity, Text, StyleSheet } from "react-native";
 import { useTheme } from "@/context/ThemeContext";
 import { getGlobalStyles } from "@/styles/global";
-import Ionicons from "@expo/vector-icons/Ionicons";
-import * as Haptics from "expo-haptics";
-import React, { useEffect, useState } from "react";
-import {
-  Modal,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
 
 type Props = {
   visible: boolean;
   onClose: () => void;
-  onSelectTime: (timeString: string) => void; // Formato "HH:MM"
+  onSelectTime: (timeString: string) => void;
   initialTime?: string;
   title?: string;
 };
-
-const HOURS = Array.from({ length: 24 }, (_, i) => String(i).padStart(2, "0"));
-const MINUTES = [
-  "00", "05", "10", "15", "20", "25",
-  "30", "35", "40", "45", "50", "55"
-];
 
 export default function TimePickerModal({
   visible,
@@ -36,194 +22,78 @@ export default function TimePickerModal({
   const { colors } = useTheme();
   const globalStyles = getGlobalStyles(colors);
 
-  const [selectedHour, setSelectedHour] = useState("08");
-  const [selectedMinute, setSelectedMinute] = useState("30");
+  const [date, setDate] = useState(new Date());
 
   useEffect(() => {
     if (initialTime && initialTime.includes(":")) {
       const [h, m] = initialTime.split(":");
-      if (HOURS.includes(h)) setSelectedHour(h);
-      if (m) {
-        // Ajustar al minuto más cercano de la lista
-        const mNum = parseInt(m, 10);
-        const closestMin = MINUTES.reduce((prev, curr) =>
-          Math.abs(parseInt(curr, 10) - mNum) < Math.abs(parseInt(prev, 10) - mNum) ? curr : prev
-        );
-        setSelectedMinute(closestMin);
-      }
+      const d = new Date();
+      d.setHours(parseInt(h, 10));
+      d.setMinutes(parseInt(m, 10));
+      setDate(d);
     }
   }, [initialTime, visible]);
 
-  const handleConfirm = () => {
-    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-    const finalTime = `${selectedHour}:${selectedMinute}`;
-    onSelectTime(finalTime);
-    onClose();
+  if (!visible) return null;
+
+  const onChange = (event: any, selectedDate?: Date) => {
+    if (Platform.OS === "android") {
+      if (event.type === "set" && selectedDate) {
+        const hh = String(selectedDate.getHours()).padStart(2, "0");
+        const mm = String(selectedDate.getMinutes()).padStart(2, "0");
+        onSelectTime(`${hh}:${mm}`);
+      }
+      onClose(); // Cerrar independientemente de si se seleccionó o se canceló
+    } else {
+      // Para iOS solo actualizamos el estado, el botón confirmar hace el guardado
+      if (selectedDate) setDate(selectedDate);
+    }
   };
 
-  const isPM = parseInt(selectedHour, 10) >= 12;
-  const hour12 = parseInt(selectedHour, 10) % 12 || 12;
+  if (Platform.OS === "android") {
+    // Android usa el "reloj de sala" nativo como un Dialog, no requiere Modal extra
+    return (
+      <DateTimePicker
+        value={date}
+        mode="time"
+        is24Hour={true}
+        display="default" // "default" on Android 11+ is "clock" mode (el reloj de sala redondo)
+        onChange={onChange}
+      />
+    );
+  }
 
+  // iOS UI: spinner mode within a Modal
   return (
-    <Modal
-      visible={visible}
-      animationType="fade"
-      transparent={true}
-      onRequestClose={onClose}
-    >
-      <View style={styles.overlay}>
-        <View
-          style={[
-            globalStyles.card,
-            {
-              width: "90%",
-              maxWidth: 360,
-              padding: 20,
-              backgroundColor: colors.surface,
-              borderRadius: 24,
-              borderWidth: 1.5,
-              borderColor: colors.primary + "40",
-            },
-          ]}
-        >
-          {/* Header */}
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-              marginBottom: 15,
-            }}
-          >
-            <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
-              <Ionicons name="time-outline" size={24} color={colors.primary} />
-              <Text style={[globalStyles.cardTitle, { fontSize: 18, fontWeight: "bold", marginBottom: 0 }]}>
-                {title}
-              </Text>
-            </View>
-            <TouchableOpacity onPress={onClose} style={{ padding: 4 }}>
-              <Ionicons name="close" size={24} color={colors.textSecondary} />
+    <Modal visible={visible} transparent animationType="slide">
+      <View style={styles.iosOverlay}>
+        <View style={[styles.iosContainer, { backgroundColor: colors.surface }]}>
+          <View style={[styles.iosHeader, { borderBottomColor: colors.neutral }]}>
+            <TouchableOpacity onPress={onClose}>
+              <Text style={{ color: colors.textSecondary, fontSize: 16 }}>Cancelar</Text>
+            </TouchableOpacity>
+            <Text style={{ fontWeight: "bold", fontSize: 16, color: colors.text }}>{title}</Text>
+            <TouchableOpacity
+              onPress={() => {
+                const hh = String(date.getHours()).padStart(2, "0");
+                const mm = String(date.getMinutes()).padStart(2, "0");
+                onSelectTime(`${hh}:${mm}`);
+                onClose();
+              }}
+            >
+              <Text style={{ color: colors.primary, fontWeight: "bold", fontSize: 16 }}>Hecho</Text>
             </TouchableOpacity>
           </View>
-
-          {/* Reloj Digital Preview grande */}
-          <View
-            style={{
-              alignItems: "center",
-              justifyContent: "center",
-              backgroundColor: colors.background,
-              paddingVertical: 14,
-              borderRadius: 16,
-              marginBottom: 16,
-              borderWidth: 1,
-              borderColor: colors.primary + "30",
-            }}
-          >
-            <Text style={{ fontSize: 38, fontWeight: "bold", color: colors.primary, letterSpacing: 2 }}>
-              {selectedHour}:{selectedMinute}
-            </Text>
-            <Text style={{ fontSize: 12, color: colors.textSecondary, fontWeight: "600", marginTop: 2 }}>
-              {hour12}:{selectedMinute} {isPM ? "PM" : "AM"} (Formato 24h: {selectedHour}:{selectedMinute})
-            </Text>
+          <View style={{ backgroundColor: colors.surface }}>
+            <DateTimePicker
+              value={date}
+              mode="time"
+              is24Hour={true}
+              display="spinner"
+              onChange={onChange}
+              textColor={colors.text} // Importante en iOS para el modo oscuro
+            />
           </View>
-
-          {/* Selector de Hora (00 a 23) */}
-          <View style={{ marginBottom: 14 }}>
-            <Text style={{ fontSize: 12, fontWeight: "bold", color: colors.textSecondary, marginBottom: 6 }}>
-              HORA
-            </Text>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={{ gap: 6, paddingVertical: 2 }}
-            >
-              {HOURS.map((h) => {
-                const isSelected = selectedHour === h;
-                return (
-                  <TouchableOpacity
-                    key={h}
-                    style={{
-                      width: 44,
-                      height: 42,
-                      borderRadius: 12,
-                      backgroundColor: isSelected ? colors.primary : colors.background,
-                      alignItems: "center",
-                      justifyContent: "center",
-                      borderWidth: 1,
-                      borderColor: isSelected ? colors.primary : colors.textSecondary + "30",
-                    }}
-                    onPress={() => {
-                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                      setSelectedHour(h);
-                    }}
-                  >
-                    <Text
-                      style={{
-                        fontSize: 15,
-                        fontWeight: "bold",
-                        color: isSelected ? colors.background : colors.text,
-                      }}
-                    >
-                      {h}
-                    </Text>
-                  </TouchableOpacity>
-                );
-              })}
-            </ScrollView>
-          </View>
-
-          {/* Selector de Minutos */}
-          <View style={{ marginBottom: 20 }}>
-            <Text style={{ fontSize: 12, fontWeight: "bold", color: colors.textSecondary, marginBottom: 6 }}>
-              MINUTOS
-            </Text>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={{ gap: 6, paddingVertical: 2 }}
-            >
-              {MINUTES.map((m) => {
-                const isSelected = selectedMinute === m;
-                return (
-                  <TouchableOpacity
-                    key={m}
-                    style={{
-                      width: 44,
-                      height: 42,
-                      borderRadius: 12,
-                      backgroundColor: isSelected ? colors.secondary : colors.background,
-                      alignItems: "center",
-                      justifyContent: "center",
-                      borderWidth: 1,
-                      borderColor: isSelected ? colors.secondary : colors.textSecondary + "30",
-                    }}
-                    onPress={() => {
-                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                      setSelectedMinute(m);
-                    }}
-                  >
-                    <Text
-                      style={{
-                        fontSize: 15,
-                        fontWeight: "bold",
-                        color: isSelected ? colors.background : colors.text,
-                      }}
-                    >
-                      {m}
-                    </Text>
-                  </TouchableOpacity>
-                );
-              })}
-            </ScrollView>
-          </View>
-
-          {/* Botón de Confirmar */}
-          <TouchableOpacity
-            style={[globalStyles.button, { marginTop: 4 }]}
-            onPress={handleConfirm}
-          >
-            <Text style={globalStyles.buttonText}>Confirmar Hora ({selectedHour}:{selectedMinute})</Text>
-          </TouchableOpacity>
         </View>
       </View>
     </Modal>
@@ -231,10 +101,21 @@ export default function TimePickerModal({
 }
 
 const styles = StyleSheet.create({
-  overlay: {
+  iosOverlay: {
     flex: 1,
-    backgroundColor: "rgba(0,0,0,0.65)",
-    justifyContent: "center",
+    justifyContent: "flex-end",
+    backgroundColor: "rgba(0,0,0,0.5)",
+  },
+  iosContainer: {
+    borderTopLeftRadius: 16,
+    borderTopRightRadius: 16,
+    paddingBottom: 40,
+  },
+  iosHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
     alignItems: "center",
+    padding: 16,
+    borderBottomWidth: StyleSheet.hairlineWidth,
   },
 });

@@ -1,7 +1,8 @@
 import MeasureCard from "@/components/MeasureCard";
 import { useTheme } from "@/context/ThemeContext";
-import { addMeasure, getMeasures, Measure } from "@/store/measures";
+import { addMeasure, getLatestSanitizedMeasure, getMeasures, Measure } from "@/store/measures";
 import { getGlobalStyles } from "@/styles/global";
+import Toast from "react-native-toast-message";
 
 import * as Haptics from "expo-haptics";
 import { useFocusEffect, useRouter } from "expo-router";
@@ -34,6 +35,7 @@ export default function MeasuresScreen() {
   const [peso, setPeso] = useState(70);
   const [altura, setAltura] = useState(170);
 
+  const [precision, setPrecision] = useState<number>(0.1);
   const [previousMeasures, setPreviousMeasures] = useState<Partial<Measure>>({});
 
   const route = useRouter();
@@ -58,17 +60,25 @@ export default function MeasuresScreen() {
         peso,
         altura,
       });
-      route.dismissAll();
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      Toast.show({
+        type: "success",
+        text1: "Medidas Guardadas",
+        text2: "Tus medidas corporales se han registrado con éxito.",
+      });
+      route.back();
     } catch (error) {
-      alert("Error al guardar");
+      Toast.show({
+        type: "error",
+        text1: "Error al guardar",
+        text2: "No se pudieron guardar las medidas.",
+      });
     }
   };
 
   const loadMeasures = async () => {
-    const data = await getMeasures();
-    if (data && data.length > 0) {
-      const latest = data[0];
+    const latest = await getLatestSanitizedMeasure();
+    if (latest) {
       setCuello(latest.cuello || 38);
       setPecho(latest.pecho || 95);
       setHombros(latest.hombros || 110);
@@ -85,8 +95,7 @@ export default function MeasuresScreen() {
       setPeso(latest.peso || 70);
       setAltura(latest.altura || 170);
 
-      const prev = data.length > 1 ? data[1] : data[0];
-      setPreviousMeasures(prev);
+      setPreviousMeasures(latest);
     }
   };
 
@@ -114,11 +123,64 @@ export default function MeasuresScreen() {
         </Text>
       </View>
 
+      <View
+        style={[
+          globalStyles.card,
+          {
+            marginBottom: 15,
+            padding: 12,
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+          },
+        ]}
+      >
+        <View style={{ flex: 1, marginRight: 10 }}>
+          <Text style={{ fontSize: 13, fontWeight: "bold", color: colors.text }}>
+            Precisión de ajuste
+          </Text>
+          <Text style={{ fontSize: 11, color: colors.textSecondary }}>
+            Incrementos al presionar +/-
+          </Text>
+        </View>
+
+        <View style={{ flexDirection: "row", gap: 6 }}>
+          {[0.1, 0.5, 1.0].map((step) => (
+            <TouchableOpacity
+              key={step}
+              onPress={() => {
+                Haptics.selectionAsync();
+                setPrecision(step);
+              }}
+              style={{
+                paddingHorizontal: 10,
+                paddingVertical: 6,
+                borderRadius: 8,
+                backgroundColor: precision === step ? colors.primary : colors.background,
+                borderWidth: 1,
+                borderColor: precision === step ? colors.primary : colors.textSecondary + "30",
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: 12,
+                  fontWeight: "bold",
+                  color: precision === step ? colors.background : colors.text,
+                }}
+              >
+                ±{step}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      </View>
+
       <MeasureCard
         name="Cuello"
         measure={cuello}
         previousMeasure={previousMeasures.cuello}
         setMeasure={setCuello}
+        precision={precision}
         instructions="Mide alrededor de la parte media del cuello, justo por debajo de la manzana de Adán. Mantén la cabeza erguida en posición relajada."
       />
       <MeasureCard
@@ -126,6 +188,7 @@ export default function MeasuresScreen() {
         measure={pecho}
         previousMeasure={previousMeasures.pecho}
         setMeasure={setPecho}
+        precision={precision}
         instructions="Pasa la cinta alrededor del tórax a la altura de los pezones (parte más prominente). Mide al final de una exhalación normal con el torso erguido."
       />
       <MeasureCard
@@ -133,6 +196,7 @@ export default function MeasuresScreen() {
         measure={espalda}
         previousMeasure={previousMeasures.espalda}
         setMeasure={setEspalda}
+        precision={precision}
         instructions="Coloca la cinta métrica justo por debajo de las axilas, rodeando la parte superior de la espalda sobre los dorsales (lats) con los brazos relajados."
       />
       <MeasureCard
@@ -140,6 +204,7 @@ export default function MeasuresScreen() {
         measure={hombros}
         previousMeasure={previousMeasures.hombros}
         setMeasure={setHombros}
+        precision={precision}
         instructions="Mide alrededor de la parte más ancha de los hombros, envolviendo ambos deltoides con los brazos pegados al cuerpo en posición erguida."
       />
       <MeasureCard
@@ -147,6 +212,7 @@ export default function MeasuresScreen() {
         measure={biceps}
         previousMeasure={previousMeasures.biceps}
         setMeasure={setBiceps}
+        precision={precision}
         instructions="Mide en el punto de mayor circunferencia del brazo. Flexiona el codo a 90° y contrae el bíceps al máximo para una medición precisa."
       />
       <MeasureCard
@@ -154,6 +220,7 @@ export default function MeasuresScreen() {
         measure={antebrazo}
         previousMeasure={previousMeasures.antebrazo}
         setMeasure={setAntebrazo}
+        precision={precision}
         instructions="Extiende el brazo y cierra el puño. Mide alrededor de la zona más gruesa del antebrazo, aproximadamente 2 cm por debajo del codo."
       />
       <MeasureCard
@@ -161,6 +228,7 @@ export default function MeasuresScreen() {
         measure={cintura}
         previousMeasure={previousMeasures.cintura}
         setMeasure={setCintura}
+        precision={precision}
         instructions="Mide en el punto más estrecho del abdomen (justo por encima del ombligo). Mide al final de una exhalación relajada sin contraer el abdomen."
       />
       <MeasureCard
@@ -168,6 +236,7 @@ export default function MeasuresScreen() {
         measure={cadera}
         previousMeasure={previousMeasures.cadera}
         setMeasure={setCadera}
+        precision={precision}
         instructions="Junta los pies y mide alrededor de la parte más prominente de los glúteos y la cadera con la cinta métrica perfectamente horizontal."
       />
       <MeasureCard
@@ -175,6 +244,7 @@ export default function MeasuresScreen() {
         measure={cuadriceps}
         previousMeasure={previousMeasures.cuadriceps}
         setMeasure={setCuadriceps}
+        precision={precision}
         instructions="De pie con el peso distribuido por igual, mide en la parte media del muslo (punto medio entre la cadera y la rodilla) en la zona de mayor volumen."
       />
       <MeasureCard
@@ -182,6 +252,7 @@ export default function MeasuresScreen() {
         measure={gemelos}
         previousMeasure={previousMeasures.gemelos}
         setMeasure={setGemelos}
+        precision={precision}
         instructions="De pie, mide alrededor de la circunferencia más ancha de la pantorrilla, asegurándote de que la cinta esté nivelada."
       />
       <MeasureCard
@@ -189,6 +260,7 @@ export default function MeasuresScreen() {
         measure={gluteos}
         previousMeasure={previousMeasures.gluteos}
         setMeasure={setGluteos}
+        precision={precision}
         instructions="Mide alrededor de la parte con mayor volumen de los glúteos vista de perfil, manteniendo los pies juntos."
       />
 

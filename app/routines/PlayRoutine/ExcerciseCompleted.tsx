@@ -1,7 +1,8 @@
 import { useTheme } from "@/context/ThemeContext";
+import { getSettings, toDisplayWeight, UserSettings } from "@/store/conf";
 import { getGlobalStyles } from "@/styles/global";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 
 type ExerciseType = {
@@ -46,6 +47,16 @@ const ExcerciseCompleted = ({
 }: Props) => {
   const { colors } = useTheme();
   const globalStyles = getGlobalStyles(colors);
+
+  const [userSettings, setUserSettings] = useState<UserSettings>({
+    unit: "kg",
+    weightIncrement: 2.5,
+    defaultRestTimer: 90,
+  });
+
+  useEffect(() => {
+    getSettings().then((s) => setUserSettings(s));
+  }, []);
   return (
     <View
       style={[
@@ -136,7 +147,9 @@ const ExcerciseCompleted = ({
                 color: colors.secondary,
               }}
             >
-              {mejorPesoEjercicio} kg x {mejorRepEjercicio} reps
+              {mejorPesoEjercicio <= 0
+                ? `Corporal x ${mejorRepEjercicio} reps`
+                : `${toDisplayWeight(mejorPesoEjercicio, userSettings.unit)} ${userSettings.unit} x ${mejorRepEjercicio} reps`}
             </Text>
           </View>
         </View>

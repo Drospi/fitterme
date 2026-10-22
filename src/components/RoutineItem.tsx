@@ -1,11 +1,12 @@
+import ThemeConfirmModal from "@/components/ThemeConfirmModal";
 import { useTheme } from "@/context/ThemeContext";
 import { deleteRoutine } from "@/store/routines";
 import { getGlobalStyles } from "@/styles/global";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import * as Haptics from "expo-haptics";
 import { useRouter } from "expo-router";
-import React from "react";
-import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import React, { useState } from "react";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Toast from "react-native-toast-message";
 
 type RoutineItemProps = {
@@ -37,6 +38,8 @@ export default function RoutineItem({
   const globalStyles = getGlobalStyles(colors);
   const router = useRouter();
 
+  const [showConfirmDelete, setShowConfirmDelete] = useState(false);
+
   const allMuscles = exercises.map((ex) => ex.musculo);
   const uniqueMuscles = [...new Set(allMuscles)];
 
@@ -46,29 +49,16 @@ export default function RoutineItem({
   );
   const estimatedTime = totalSeries * 3;
 
-  const handleDelete = () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    Alert.alert(
-      "Eliminar Rutina",
-      `¿Estás seguro de eliminar "${name}"?`,
-      [
-        { text: "Cancelar", style: "cancel" },
-        {
-          text: "Eliminar",
-          style: "destructive",
-          onPress: async () => {
-            await deleteRoutine(id);
-            onDelete();
-            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-            Toast.show({
-              type: "success",
-              text1: "Rutina Eliminada",
-              text2: `"${name}" se ha eliminado del catálogo.`,
-            });
-          },
-        },
-      ]
-    );
+  const confirmDeleteRoutine = async () => {
+    setShowConfirmDelete(false);
+    await deleteRoutine(id);
+    onDelete();
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    Toast.show({
+      type: "success",
+      text1: "Rutina Eliminada",
+      text2: `"${name}" se ha eliminado del catálogo.`,
+    });
   };
 
   const handleEdit = () => {
@@ -116,7 +106,7 @@ export default function RoutineItem({
           </Text>
           {category ? (
             <Text style={{ fontSize: 11, fontWeight: "600", color: colors.primary, marginTop: 2 }}>
-              🎯 {category.toUpperCase()}
+              {category.toUpperCase()}
             </Text>
           ) : null}
         </TouchableOpacity>
@@ -134,7 +124,10 @@ export default function RoutineItem({
           </TouchableOpacity>
 
           <TouchableOpacity
-            onPress={handleDelete}
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+              setShowConfirmDelete(true);
+            }}
             style={[
               styles.iconBtn,
               { backgroundColor: colors.delete + "18" },
@@ -196,6 +189,18 @@ export default function RoutineItem({
           </Text>
         </TouchableOpacity>
       </View>
+
+      {/* Modal de Confirmacion con estilo Dark/Light */}
+      <ThemeConfirmModal
+        visible={showConfirmDelete}
+        title="Eliminar Rutina"
+        message={`¿Estás seguro de eliminar "${name}" del catálogo?`}
+        confirmText="Eliminar"
+        cancelText="Cancelar"
+        isDestructive={true}
+        onConfirm={confirmDeleteRoutine}
+        onCancel={() => setShowConfirmDelete(false)}
+      />
     </View>
   );
 }

@@ -1,4 +1,5 @@
 import { useTheme } from "@/context/ThemeContext";
+import { getExerciseCategory } from "@/store/excercise";
 import { getGlobalStyles } from "@/styles/global";
 import { getExerciseImage } from "@/utils/imageMap";
 import Ionicons from "@expo/vector-icons/Ionicons";
@@ -84,9 +85,19 @@ export default function ExcerciseItem({
               </View>
             )}
           </View>
-          <Text style={[globalStyles.cardText, { fontSize: 12 }]}>
-            {excerciseInfo.musculo} • {excerciseInfo.equipamiento}
-          </Text>
+          {(() => {
+            const cat = getExerciseCategory(excerciseInfo as any);
+            return (
+              <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
+                <Text style={{ fontSize: 11, color: colors.primary, fontWeight: "bold" }}>
+                  {cat === "Cardio" ? "🏃 Cardio" : cat === "Peso corporal" ? "🤸 Peso corporal" : "🏋️ Gym"}
+                </Text>
+                <Text style={[globalStyles.cardText, { fontSize: 11 }]}>
+                  • {excerciseInfo.musculo}
+                </Text>
+              </View>
+            );
+          })()}
         </View>
       </TouchableOpacity>
 

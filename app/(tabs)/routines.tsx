@@ -1,13 +1,21 @@
 import AIRoutineGeneratorModal from "@/components/AIRoutineGeneratorModal";
 import RoutineItem from "@/components/RoutineItem";
 import { useTheme } from "@/context/ThemeContext";
+import { isAIConfigured } from "@/store/aiConfig";
 import { clearAllRoutines, getRoutines, Routine } from "@/store/routines";
 import { getGlobalStyles } from "@/styles/global";
 import { Ionicons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
 import { Link, useFocusEffect } from "expo-router";
 import React, { useCallback, useState } from "react";
-import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  Alert,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import Toast from "react-native-toast-message";
 
 export default function AllRoutinesScreen() {
@@ -15,10 +23,13 @@ export default function AllRoutinesScreen() {
   const globalStyles = getGlobalStyles(colors);
   const [Routines, setRoutines] = useState<Routine[]>([]);
   const [isAIGeneratorVisible, setIsAIGeneratorVisible] = useState(false);
+  const [isAIActive, setIsAIActive] = useState(false);
 
   const loadRoutines = async () => {
     const data = await getRoutines();
     setRoutines(data);
+    const aiStatus = await isAIConfigured();
+    setIsAIActive(aiStatus);
   };
 
   const handleClearAll = async () => {
@@ -41,7 +52,7 @@ export default function AllRoutinesScreen() {
             });
           },
         },
-      ]
+      ],
     );
   };
 
@@ -61,28 +72,30 @@ export default function AllRoutinesScreen() {
       </View>
 
       <View style={{ flexDirection: "column", gap: 10, marginTop: 15 }}>
-        {/* Botón Destacado: Generar Rutina con IA */}
-        <TouchableOpacity
-          style={StyleSheet.flatten([
-            globalStyles.button,
-            {
-              marginTop: 0,
-              backgroundColor: colors.surface,
-              borderColor: colors.primary,
-              borderWidth: 1.5,
-              flexDirection: "row",
-              justifyContent: "center",
-              alignItems: "center",
-              gap: 8,
-            },
-          ])}
-          onPress={() => setIsAIGeneratorVisible(true)}
-        >
-          <Ionicons name="sparkles" size={20} color={colors.primary} />
-          <Text style={[globalStyles.buttonText, { color: colors.primary }]}>
-            🤖 Generar Rutina con IA (Sobrecarga Progresiva)
-          </Text>
-        </TouchableOpacity>
+        {/* Botón Destacado: Generar Rutina con IA (Visible solo si la API de IA está configurada) */}
+        {isAIActive && (
+          <TouchableOpacity
+            style={StyleSheet.flatten([
+              globalStyles.button,
+              {
+                marginTop: 0,
+                backgroundColor: colors.surface,
+                borderColor: colors.primary,
+                borderWidth: 1.5,
+                flexDirection: "row",
+                justifyContent: "center",
+                alignItems: "center",
+                gap: 8,
+              },
+            ])}
+            onPress={() => setIsAIGeneratorVisible(true)}
+          >
+            <Ionicons name="sparkles" size={20} color={colors.primary} />
+            <Text style={[globalStyles.buttonText, { color: colors.primary }]}>
+              Generar Rutina con IA (Sobrecarga Progresiva)
+            </Text>
+          </TouchableOpacity>
+        )}
 
         <Link href={"/routines/PlayFreeRoutine" as any} push asChild>
           <TouchableOpacity
@@ -100,7 +113,7 @@ export default function AllRoutinesScreen() {
           >
             <Ionicons name="flash" size={20} color={colors.background} />
             <Text style={globalStyles.buttonText}>
-              ⚡ Iniciar Entrenamiento Libre
+              Iniciar Entrenamiento Libre
             </Text>
           </TouchableOpacity>
         </Link>
@@ -126,13 +139,30 @@ export default function AllRoutinesScreen() {
 
       <View style={{ marginTop: 30, marginBottom: 80 }}>
         {Routines.length === 0 ? (
-          <View style={[globalStyles.card, { alignItems: "center", paddingVertical: 20 }]}>
-            <Ionicons name="barbell-outline" size={40} color={colors.textSecondary} />
+          <View
+            style={[
+              globalStyles.card,
+              { alignItems: "center", paddingVertical: 20 },
+            ]}
+          >
+            <Ionicons
+              name="barbell-outline"
+              size={40}
+              color={colors.textSecondary}
+            />
             <Text style={[globalStyles.cardText, { marginTop: 8 }]}>
               No tienes rutinas creadas todavía.
             </Text>
-            <Text style={{ fontSize: 12, color: colors.textSecondary, textAlign: "center", marginTop: 4 }}>
-              Usa el generador IA para crear entrenamientos optimizados basados en tus músculos e historial de récords.
+            <Text
+              style={{
+                fontSize: 12,
+                color: colors.textSecondary,
+                textAlign: "center",
+                marginTop: 4,
+              }}
+            >
+              Usa el generador IA para crear entrenamientos optimizados basados
+              en tus músculos e historial de récords.
             </Text>
           </View>
         ) : (

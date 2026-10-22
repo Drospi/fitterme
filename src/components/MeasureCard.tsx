@@ -12,6 +12,7 @@ type Props = {
   measureType?: string;
   setMeasure: (measure: number) => void;
   instructions?: string;
+  precision?: number;
 };
 
 const MeasureCard = ({
@@ -21,6 +22,7 @@ const MeasureCard = ({
   measureType,
   setMeasure,
   instructions,
+  precision = 0.1,
 }: Props) => {
   const { colors } = useTheme();
   const globalStyles = getGlobalStyles(colors);
@@ -35,8 +37,9 @@ const MeasureCard = ({
   }, [measure]);
 
   const startAdjusting = (increment: number) => {
+    const step = increment * precision;
     const updateValue = () => {
-      const nextVal = Math.max(0, measureRef.current + increment);
+      const nextVal = Math.max(0, Math.round((measureRef.current + step) * 10) / 10);
       measureRef.current = nextVal;
       setMeasure(nextVal);
     };
@@ -116,6 +119,15 @@ const MeasureCard = ({
           <Popover
             isVisible={showPopover}
             onRequestClose={() => setShowPopover(false)}
+            popoverStyle={{
+              backgroundColor: colors.surface,
+              borderRadius: 16,
+              borderWidth: 0,
+              borderColor: "transparent",
+              shadowColor: "transparent",
+              shadowOpacity: 0,
+              elevation: 0,
+            }}
             from={
               <TouchableOpacity
                 onPress={() => setShowPopover(true)}
@@ -123,8 +135,7 @@ const MeasureCard = ({
                   padding: 8,
                   backgroundColor: colors.surface,
                   borderRadius: 20,
-                  borderWidth: 1,
-                  borderColor: colors.primary + "40",
+                  borderWidth: 0,
                 }}
               >
                 <Ionicons
@@ -139,8 +150,10 @@ const MeasureCard = ({
               style={{
                 padding: 16,
                 maxWidth: 280,
-                backgroundColor: colors.background,
+                backgroundColor: colors.surface,
+                borderRadius: 16,
                 borderWidth: 0,
+                borderColor: "transparent",
               }}
             >
               <View
@@ -200,18 +213,35 @@ const MeasureCard = ({
           />
         </TouchableOpacity>
 
-        <Text style={globalStyles.cardText}>
-          <Text
-            style={{
-              fontWeight: "bold",
-              color: colors.secondary,
-              fontSize: 24,
-            }}
-          >
-            {measure}
-          </Text>{" "}
-          {measureType ?? "cm"}
-        </Text>
+        <View style={{ alignItems: "center" }}>
+          <View style={{ flexDirection: "row", alignItems: "baseline", gap: 4 }}>
+            <Text
+              style={[
+                globalStyles.cardTitle,
+                {
+                  fontWeight: "bold",
+                  color: colors.secondary,
+                  fontSize: 32,
+                  textAlign: "center",
+                },
+              ]}
+            >
+              {Number.isInteger(measure) ? measure.toString() : measure.toFixed(1)}
+            </Text>
+            <Text
+              style={{
+                fontSize: 16,
+                color: colors.textSecondary,
+                fontWeight: "600",
+              }}
+            >
+              {measureType ?? "cm"}
+            </Text>
+          </View>
+          <Text style={{ fontSize: 11, color: colors.textSecondary, marginTop: 2 }}>
+            Paso: ±{precision} cm
+          </Text>
+        </View>
 
         <TouchableOpacity
           onPressIn={() => startAdjusting(+1)}

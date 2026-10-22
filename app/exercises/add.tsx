@@ -19,6 +19,7 @@ import {
 } from "react-native";
 
 const MUSCLES = [
+  "cardio",
   "pecho",
   "espalda",
   "hombros",
@@ -31,7 +32,7 @@ const MUSCLES = [
   "abdomen",
 ];
 
-const OBJECTIVES = ["Hipertrofia", "Fuerza", "Resistencia"];
+const CATEGORIES = ["Gym", "Cardio", "Peso corporal"] as const;
 
 const EQUIPMENT = [
   "Mancuernas",
@@ -49,7 +50,7 @@ export default function AddCustomExerciseScreen() {
 
   const [nombre, setNombre] = useState("");
   const [musculo, setMusculo] = useState("pecho");
-  const [objetivo, setObjetivo] = useState("Hipertrofia");
+  const [categoria, setCategoria] = useState<string>("Gym");
   const [equipamiento, setEquipamiento] = useState("Mancuernas");
   const [descripcion, setDescripcion] = useState("");
   const [imageUri, setImageUri] = useState<string | null>(null);
@@ -123,7 +124,8 @@ export default function AddCustomExerciseScreen() {
     await addCustomExercise({
       nombre: nombre.trim(),
       musculo,
-      objetivo,
+      objetivo: categoria,
+      category: categoria,
       equipamiento,
       descripcion: descripcion.trim() || undefined,
       urlimage: imageUri || undefined,
@@ -236,20 +238,22 @@ export default function AddCustomExerciseScreen() {
         })}
       </View>
 
-      {/* Objetivo */}
+      {/* Categoría del Ejercicio */}
       <Text style={[globalStyles.textSecondary, { marginBottom: 8 }]}>
-        Objetivo Primario
+        Categoría del Ejercicio
       </Text>
       <View style={{ flexDirection: "row", gap: 8, marginBottom: 15 }}>
-        {OBJECTIVES.map((obj) => {
-          const isSelected = objetivo === obj;
+        {CATEGORIES.map((cat) => {
+          const isSelected = categoria === cat;
+          const icon = cat === "Gym" ? "🏋️ " : cat === "Cardio" ? "🏃 " : "🤸 ";
           return (
             <TouchableOpacity
-              key={obj}
-              onPress={() => setObjetivo(obj)}
+              key={cat}
+              onPress={() => setCategoria(cat)}
               style={{
                 flex: 1,
                 paddingVertical: 10,
+                paddingHorizontal: 4,
                 borderRadius: 16,
                 alignItems: "center",
                 backgroundColor: isSelected ? colors.primary : colors.surface,
@@ -258,11 +262,12 @@ export default function AddCustomExerciseScreen() {
               <Text
                 style={{
                   fontWeight: "bold",
-                  fontSize: 13,
+                  fontSize: 12,
                   color: isSelected ? colors.background : colors.text,
+                  textAlign: "center",
                 }}
               >
-                {obj}
+                {icon}{cat}
               </Text>
             </TouchableOpacity>
           );

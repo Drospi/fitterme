@@ -1,6 +1,7 @@
 import { useTheme } from "@/context/ThemeContext";
 import { getGlobalStyles } from "@/styles/global";
 import { Ionicons } from "@expo/vector-icons";
+import * as Haptics from "expo-haptics";
 import React from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 
@@ -20,8 +21,11 @@ export default function CalendarToday({ onPress }: Props) {
 
   return (
     <TouchableOpacity
-      activeOpacity={0.7}
-      onPress={onPress}
+      activeOpacity={0.8}
+      onPress={() => {
+        Haptics.selectionAsync();
+        if (onPress) onPress();
+      }}
       style={[
         globalStyles.card,
         {
@@ -29,21 +33,25 @@ export default function CalendarToday({ onPress }: Props) {
           justifyContent: "space-between",
           alignItems: "center",
           paddingVertical: 14,
+          paddingHorizontal: 16,
+          borderWidth: 1,
+          borderColor: colors.neutral,
+          marginBottom: 0,
         },
       ]}
     >
       <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
-        <Ionicons name="calendar" size={24} color={colors.primary} />
-        <Text style={[globalStyles.text, { fontSize: 16, textTransform: "capitalize", fontWeight: "bold" }]}>
+        <Ionicons name="calendar" size={22} color={colors.primary} />
+        <Text style={[globalStyles.text, { fontSize: 15, textTransform: "capitalize", fontWeight: "bold" }]}>
           {currentDate}
         </Text>
       </View>
 
       <View style={{ flexDirection: "row", alignItems: "center", gap: 4 }}>
-        <Text style={{ fontSize: 12, color: colors.primary, fontWeight: "bold" }}>
+        <Text style={{ fontSize: 13, color: colors.primary, fontWeight: "bold" }}>
           Ver Calendario
         </Text>
-        <Ionicons name="chevron-forward" size={18} color={colors.primary} />
+        <Ionicons name="chevron-forward" size={16} color={colors.primary} />
       </View>
     </TouchableOpacity>
   );

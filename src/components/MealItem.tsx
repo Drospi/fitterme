@@ -1,10 +1,12 @@
+import ThemeConfirmModal from "@/components/ThemeConfirmModal";
 import { useTheme } from "@/context/ThemeContext";
 import { deleteMeal, logMealForToday, Meal } from "@/store/meals";
 import { getGlobalStyles } from "@/styles/global";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import * as Haptics from "expo-haptics";
 import React, { useState } from "react";
-import { Alert, Text, TouchableOpacity, View } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
+import Toast from "react-native-toast-message";
 
 type MealItemProps = {
   meal: Meal;
@@ -20,11 +22,23 @@ export default function MealItem({
   const { colors } = useTheme();
   const globalStyles = getGlobalStyles(colors);
   const [justLogged, setJustLogged] = useState(false);
+  const [showConfirmDelete, setShowConfirmDelete] = useState(false);
+
+  const isNeonLime =
+    colors.primary?.toLowerCase().includes("c8ff") ||
+    colors.primary?.toLowerCase() === "#c8ff00" ||
+    colors.primary?.toLowerCase() === "#52b788";
+  const onPrimaryColor = isNeonLime ? "#000000" : "#ffffff";
 
   const handleLogToday = async () => {
     await logMealForToday(meal);
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     setJustLogged(true);
+    Toast.show({
+      type: "success",
+      text1: "Comida Registrada",
+      text2: `Añadido "${meal.name}" (${meal.calories} kcal) a tu consumo de hoy.`,
+    });
     if (onLoggedToday) onLoggedToday();
 
     setTimeout(() => {
@@ -32,120 +46,132 @@ export default function MealItem({
     }, 2000);
   };
 
-  const handleLongPress = () => {
-    Alert.alert("Eliminar Comida", `¿Estás seguro de eliminar "${meal.name}" del catálogo?`, [
-      { text: "Cancelar", style: "cancel" },
-      {
-        text: "Eliminar",
-        style: "destructive",
-        onPress: async () => {
-          await deleteMeal(meal.id);
-          onDelete();
-        },
-      },
-    ]);
+  const confirmDelete = async () => {
+    setShowConfirmDelete(false);
+    await deleteMeal(meal.id);
+    onDelete();
+    Toast.show({
+      type: "success",
+      text1: "Comida Eliminada",
+      text2: `"${meal.name}" se eliminó del catálogo.`,
+    });
   };
 
   const iconName = meal.icon || "restaurant";
 
   return (
     <TouchableOpacity
-      style={[
-        globalStyles.card,
-        {
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: 12,
-        },
-      ]}
-      onLongPress={handleLongPress}
+      style={{
+        backgroundColor: colors.surface,
+        borderRadius: 16,
+        padding: 14,
+        marginBottom: 10,
+        borderWidth: 1.5,
+        borderColor: colors.cardBorder || "rgba(255,255,255,0.08)",
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+      }}
+      onLongPress={() => setShowConfirmDelete(true)}
       onPress={handleLogToday}
-      activeOpacity={0.8}
+      activeOpacity={0.85}
     >
       <View style={{ flexDirection: "row", alignItems: "center", gap: 12, flex: 1 }}>
-        {/* Icono de la comida */}
+        {/* Icono del alimento */}
         <View
           style={{
-            width: 48,
-            height: 48,
-            borderRadius: 24,
-            backgroundColor: colors.primary + "20",
+            width: 44,
+            height: 44,
+            borderRadius: 12,
+            backgroundColor: colors.background,
             alignItems: "center",
             justifyContent: "center",
             borderWidth: 1,
-            borderColor: colors.primary + "40",
+            borderColor: colors.cardBorder || "rgba(255,255,255,0.1)",
           }}
         >
-          <Ionicons name={iconName as any} size={24} color={colors.primary} />
+          <Ionicons name={iconName as any} size={22} color={colors.primary} />
         </View>
 
         <View style={{ flex: 1 }}>
-          <View style={{ flexDirection: "row", alignItems: "center", gap: 6, marginBottom: 2 }}>
-            <Text
-              style={[
-                globalStyles.cardTitle,
-                { fontSize: 16, fontWeight: "bold", marginBottom: 0 },
-              ]}
-              numberOfLines={1}
-            >
-              {meal.name}
-            </Text>
-            {meal.category ? (
-              <View
-                style={{
-                  backgroundColor: colors.surface,
-                  paddingHorizontal: 6,
-                  paddingVertical: 2,
-                  borderRadius: 4,
-                }}
-              >
-                <Text style={{ fontSize: 10, color: colors.textSecondary, fontWeight: "600" }}>
-                  {meal.category}
-                </Text>
-              </View>
-            ) : null}
-          </View>
-          <Text style={[globalStyles.cardText, { fontSize: 13 }]}>
-            <Text style={{ fontWeight: "bold", color: colors.primary }}>{meal.calories} kcal</Text> •{" "}
-            <Text style={{ color: colors.secondary }}>{meal.protein}g P</Text> •{" "}
-            <Text style={{ color: colors.delete }}>{meal.carbs}g C</Text> •{" "}
-            <Text style={{ color: colors.textSecondary }}>{meal.fat}g G</Text>
+          <Text
+            style={{
+              fontSize: 16,
+              fontWeight: "900",
+              color: colors.text,
+              letterSpacing: 0.3,
+            }}
+            numberOfLines={1}
+          >
+            {meal.name}
           </Text>
+
+          {/* Micro badges de macros */}
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 6, marginTop: 4, flexWrap: "wrap" }}>
+            <View
+              style={{
+                backgroundColor: colors.primary + "20",
+                paddingHorizontal: 6,
+                paddingVertical: 2,
+                borderRadius: 4,
+              }}
+            >
+              <Text style={{ fontSize: 10, fontWeight: "900", color: colors.primary }}>
+                {meal.calories} KCAL
+              </Text>
+            </View>
+
+            <Text style={{ fontSize: 11, color: colors.textSecondary, fontWeight: "700" }}>
+              {meal.protein}g P • {meal.carbs}g C • {meal.fat}g G
+            </Text>
+          </View>
         </View>
       </View>
 
-      {/* Botón para registrar que se comió hoy */}
+      {/* Botón táctil para registrar que se consumió hoy */}
       <TouchableOpacity
         style={{
           flexDirection: "row",
           alignItems: "center",
           gap: 4,
-          backgroundColor: justLogged ? colors.primary : colors.surface,
-          paddingHorizontal: 12,
-          paddingVertical: 8,
-          borderRadius: 20,
-          borderWidth: 1,
-          borderColor: justLogged ? colors.primary : colors.primary + "40",
+          backgroundColor: justLogged ? colors.primary : colors.background,
+          paddingHorizontal: 10,
+          paddingVertical: 7,
+          borderRadius: 12,
+          borderWidth: 1.5,
+          borderColor: justLogged ? colors.primary : colors.cardBorder || "rgba(255,255,255,0.1)",
           marginLeft: 8,
         }}
         onPress={handleLogToday}
       >
         <Ionicons
-          name={justLogged ? "checkmark-circle" : "add-circle-outline"}
-          size={18}
-          color={justLogged ? colors.background : colors.primary}
+          name={justLogged ? "checkmark-circle" : "add"}
+          size={16}
+          color={justLogged ? onPrimaryColor : colors.primary}
         />
         <Text
           style={{
-            fontSize: 12,
-            fontWeight: "bold",
-            color: justLogged ? colors.background : colors.primary,
+            fontSize: 11,
+            fontWeight: "900",
+            color: justLogged ? onPrimaryColor : colors.text,
+            letterSpacing: 0.4,
           }}
         >
-          {justLogged ? "¡Comido!" : "Comer Hoy"}
+          {justLogged ? "LISTO" : "+ COMER"}
         </Text>
       </TouchableOpacity>
+
+      {/* Modal de confirmación para eliminar */}
+      <ThemeConfirmModal
+        visible={showConfirmDelete}
+        title="Eliminar Alimento"
+        message={`¿Estás seguro de eliminar "${meal.name}" del catálogo?`}
+        confirmText="Eliminar"
+        cancelText="Cancelar"
+        isDestructive={true}
+        onConfirm={confirmDelete}
+        onCancel={() => setShowConfirmDelete(false)}
+      />
     </TouchableOpacity>
   );
 }

@@ -1,7 +1,10 @@
 import AIFoodScannerModal from "@/components/AIFoodScannerModal";
 import AllMeals from "@/components/AllMeals";
 import { useTheme } from "@/context/ThemeContext";
+import { isAIConfigured } from "@/store/aiConfig";
+import { getLatestGoal } from "@/store/goals";
 import {
+  addMeal,
   clearAllMeals,
   DailyMealLog,
   getDailyMealLogs,
@@ -13,17 +16,23 @@ import {
   MealCategory,
   removeConsumedMealToday,
 } from "@/store/meals";
-import { getLatestGoal } from "@/store/goals";
 import { getGlobalStyles } from "@/styles/global";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import * as Haptics from "expo-haptics";
-import { useFocusEffect } from "expo-router";
+import { useFocusEffect, useRouter } from "expo-router";
 import React, { useCallback, useState } from "react";
 import { Alert, ScrollView, Text, TouchableOpacity, View } from "react-native";
 
 export default function MealsScreen() {
   const { colors } = useTheme();
   const globalStyles = getGlobalStyles(colors);
+  const router = useRouter();
+
+  const isNeonLime =
+    colors.primary?.toLowerCase().includes("c8ff") ||
+    colors.primary?.toLowerCase() === "#c8ff00" ||
+    colors.primary?.toLowerCase() === "#52b788";
+  const onPrimaryColor = isNeonLime ? "#000000" : "#ffffff";
 
   const [meals, setMeals] = useState<Meal[]>([]);
   const [todayLog, setTodayLog] = useState<DailyMealLog>({
@@ -36,8 +45,9 @@ export default function MealsScreen() {
   });
   const [pastLogs, setPastLogs] = useState<DailyMealLog[]>([]);
 
-  // Estado para el Modal de Escaneo con IA
+  // Estado para el Modal de Escaneo con IA y habilitación de IA
   const [isAIScannerVisible, setIsAIScannerVisible] = useState(false);
+  const [isAIActive, setIsAIActive] = useState(false);
 
   const [targets, setTargets] = useState({
     calories: 2500,
@@ -64,9 +74,13 @@ export default function MealsScreen() {
     const allLogs = await getDailyMealLogs();
     const todayKey = getTodayDateKey();
     const history = allLogs.filter(
-      (l) => l.date !== todayKey && l.consumedMeals && l.consumedMeals.length > 0
+      (l) =>
+        l.date !== todayKey && l.consumedMeals && l.consumedMeals.length > 0,
     );
     setPastLogs(history);
+
+    const aiStatus = await isAIConfigured();
+    setIsAIActive(aiStatus);
   };
 
   const handleClearAll = async () => {
@@ -83,7 +97,7 @@ export default function MealsScreen() {
             loadData();
           },
         },
-      ]
+      ],
     );
   };
 
@@ -101,9 +115,24 @@ export default function MealsScreen() {
     carbs: number;
     fat: number;
     icon: string;
+    saveToCatalog?: boolean;
   }) => {
+    let mealId = `ai-temp-${Date.now()}`;
+    if (data.saveToCatalog) {
+      const persisted = await addMeal({
+        name: data.name,
+        category: data.category,
+        calories: data.calories,
+        protein: data.protein,
+        carbs: data.carbs,
+        fat: data.fat,
+        icon: data.icon,
+      });
+      mealId = persisted.id;
+    }
+
     const tempMeal: Meal = {
-      id: `ai-temp-${Date.now()}`,
+      id: mealId,
       name: data.name,
       category: data.category,
       calories: data.calories,
@@ -113,7 +142,6 @@ export default function MealsScreen() {
       icon: data.icon,
       createdAt: new Date().toISOString(),
     };
-
     await logMealForToday(tempMeal);
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     loadData();
@@ -127,83 +155,178 @@ export default function MealsScreen() {
 
   const consumedCalories = todayLog.totalCalories;
   const remainingCalories = Math.max(0, targets.calories - consumedCalories);
-  const caloriesPercent = Math.min(100, Math.round((consumedCalories / targets.calories) * 100));
+  const caloriesPercent = Math.min(
+    100,
+    Math.round((consumedCalories / targets.calories) * 100),
+  );
 
-  const proteinPercent = Math.min(100, Math.round((todayLog.totalProtein / targets.protein) * 100));
-  const carbsPercent = Math.min(100, Math.round((todayLog.totalCarbs / targets.carbs) * 100));
+  const proteinPercent = Math.min(
+    100,
+    Math.round((todayLog.totalProtein / targets.protein) * 100),
+  );
+  const carbsPercent = Math.min(
+    100,
+    Math.round((todayLog.totalCarbs / targets.carbs) * 100),
+  );
+  const fatPercent = Math.min(
+    100,
+    Math.round((todayLog.totalFat / targets.fat) * 100),
+  );
 
   return (
-    <ScrollView style={globalStyles.container}>
-      {/* Header */}
-      <View style={[globalStyles.header, { marginBottom: 15 }]}>
-        <Text style={globalStyles.title}>Comidas & Nutrición</Text>
-        <TouchableOpacity onPress={handleClearAll}>
-          <Text style={{ color: colors.delete, fontSize: 14, fontWeight: "bold" }}>
-            Reiniciar
+    <ScrollView
+      style={[globalStyles.container, { backgroundColor: colors.background }]}
+      showsVerticalScrollIndicator={false}
+      contentContainerStyle={{ paddingBottom: 50 }}
+    >
+      {/* Header Poster */}
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: 16,
+          marginTop: 6,
+        }}
+      >
+        <View>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 8, marginBottom: 4 }}>
+            <View
+              style={{
+                backgroundColor: colors.primary,
+                paddingHorizontal: 8,
+                paddingVertical: 3,
+                borderRadius: 5,
+              }}
+            >
+              <Text style={{ fontSize: 10, fontWeight: "900", color: onPrimaryColor, letterSpacing: 0.8 }}>
+                NUTRICIÓN & DIETA ▶
+              </Text>
+            </View>
+          </View>
+          <Text
+            style={{
+              fontSize: 26,
+              fontWeight: "900",
+              color: colors.text,
+              letterSpacing: 0.5,
+              textTransform: "uppercase",
+            }}
+          >
+            COMIDAS DIARIAS
+          </Text>
+        </View>
+
+        <TouchableOpacity
+          onPress={handleClearAll}
+          style={{
+            paddingHorizontal: 10,
+            paddingVertical: 6,
+            borderRadius: 8,
+            backgroundColor: colors.surface,
+            borderWidth: 1,
+            borderColor: colors.cardBorder || "rgba(255,255,255,0.08)",
+          }}
+        >
+          <Text style={{ color: colors.delete, fontSize: 11, fontWeight: "900", letterSpacing: 0.4 }}>
+            REINICIAR
           </Text>
         </TouchableOpacity>
       </View>
 
-      {/* Botón Destacado: Escanear Comida con IA */}
-      <TouchableOpacity
+      {/* Botón Destacado: Escanear Comida con IA (Visible solo si la API de IA está configurada) */}
+      {isAIActive && (
+        <TouchableOpacity
+          style={{
+            backgroundColor: colors.surface,
+            borderRadius: 18,
+            padding: 16,
+            marginBottom: 16,
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+            borderWidth: 1.5,
+            borderColor: colors.primary + "60",
+          }}
+          activeOpacity={0.85}
+          onPress={() => setIsAIScannerVisible(true)}
+        >
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 12, flex: 1 }}>
+            <View
+              style={{
+                width: 44,
+                height: 44,
+                borderRadius: 12,
+                backgroundColor: colors.primary,
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Ionicons name="sparkles" size={22} color={onPrimaryColor} />
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={{ fontSize: 16, fontWeight: "900", color: colors.text, textTransform: "uppercase" }}>
+                Escanear Comida con IA
+              </Text>
+              <Text style={{ fontSize: 12, color: colors.textSecondary, marginTop: 2 }}>
+                Calcula calorías y macros por foto con Gemini
+              </Text>
+            </View>
+          </View>
+          <Ionicons name="arrow-forward" size={20} color={colors.primary} />
+        </TouchableOpacity>
+      )}
+
+      {/* Card de Métricas Diarias Principal - Estilo Póster */}
+      <View
         style={{
           backgroundColor: colors.surface,
-          borderRadius: 16,
-          padding: 16,
+          borderRadius: 20,
+          padding: 20,
           marginBottom: 16,
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "space-between",
           borderWidth: 1.5,
-          borderColor: colors.primary + "60",
+          borderColor: colors.cardBorder || "rgba(255,255,255,0.1)",
         }}
-        onPress={() => setIsAIScannerVisible(true)}
       >
-        <View style={{ flexDirection: "row", alignItems: "center", gap: 12, flex: 1 }}>
+        <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+          <Text style={{ fontSize: 11, fontWeight: "900", color: colors.textSecondary, letterSpacing: 1.2 }}>
+            ENERGÍA DIARIA • RESTANTE
+          </Text>
           <View
             style={{
-              width: 44,
-              height: 44,
-              borderRadius: 22,
-              backgroundColor: colors.primary,
-              alignItems: "center",
-              justifyContent: "center",
+              backgroundColor: colors.primary + "20",
+              paddingHorizontal: 8,
+              paddingVertical: 3,
+              borderRadius: 5,
             }}
           >
-            <Ionicons name="sparkles" size={24} color={colors.background} />
-          </View>
-          <View style={{ flex: 1 }}>
-            <Text style={{ fontSize: 16, fontWeight: "bold", color: colors.text }}>
-              📸 Escanear Comida con IA
-            </Text>
-            <Text style={{ fontSize: 12, color: colors.textSecondary }}>
-              Detecta calorías y macros por foto sin guardar la imagen
+            <Text style={{ fontSize: 11, fontWeight: "900", color: colors.primary }}>
+              {caloriesPercent}%
             </Text>
           </View>
         </View>
-        <Ionicons name="chevron-forward" size={22} color={colors.primary} />
-      </TouchableOpacity>
 
-      {/* Card de Métricas Diarias Principal */}
-      <View style={[globalStyles.card, { alignItems: "center" }]}>
-        <Text style={[globalStyles.cardText, { letterSpacing: 1, fontSize: 12 }]}>
-          CALORÍAS RESTANTES (HOY)
-        </Text>
-        <Text style={{ fontSize: 44, fontWeight: "bold", color: colors.primary, marginVertical: 4 }}>
-          {remainingCalories}
-        </Text>
-        <Text style={globalStyles.cardText}>
-          de {targets.calories} kcal objetivo
+        <Text
+          style={{
+            fontSize: 52,
+            fontWeight: "900",
+            color: colors.primary,
+            marginVertical: 4,
+            letterSpacing: -1,
+          }}
+        >
+          {remainingCalories}{" "}
+          <Text style={{ fontSize: 20, fontWeight: "800", color: colors.textSecondary }}>KCAL</Text>
         </Text>
 
         {/* Barra de progreso de calorías */}
         <View
           style={{
-            height: 12,
+            height: 10,
             width: "100%",
-            marginTop: 15,
+            marginTop: 10,
             backgroundColor: colors.background,
-            borderRadius: 6,
+            borderRadius: 5,
             overflow: "hidden",
           }}
         >
@@ -212,62 +335,57 @@ export default function MealsScreen() {
               height: "100%",
               backgroundColor: colors.primary,
               width: `${caloriesPercent}%`,
-              borderRadius: 6,
+              borderRadius: 5,
             }}
           />
         </View>
 
         <View
           style={{
-            marginTop: 16,
+            marginTop: 14,
             width: "100%",
             justifyContent: "space-between",
             flexDirection: "row",
           }}
         >
-          <Text style={globalStyles.cardText}>
-            Consumidas:{" "}
-            <Text style={{ fontWeight: "bold", color: colors.primary }}>
-              {consumedCalories} kcal
-            </Text>
+          <Text style={{ fontSize: 12, color: colors.textSecondary, fontWeight: "700" }}>
+            CONSUMIDAS: <Text style={{ color: colors.primary, fontWeight: "900" }}>{consumedCalories} kcal</Text>
           </Text>
-          <Text style={globalStyles.cardText}>
-            Objetivo:{" "}
-            <Text style={{ fontWeight: "bold", color: colors.text }}>
-              {targets.calories} kcal
-            </Text>
+          <Text style={{ fontSize: 12, color: colors.textSecondary, fontWeight: "700" }}>
+            OBJETIVO: <Text style={{ color: colors.text, fontWeight: "900" }}>{targets.calories} kcal</Text>
           </Text>
         </View>
       </View>
 
-      {/* Tarjetas de Macronutrientes (Proteína y Carbs) */}
-      <View style={{ flexDirection: "row", gap: 12, marginBottom: 20 }}>
+      {/* Grid de Macronutrientes: Proteína, Carbos, Grasa */}
+      <View style={{ flexDirection: "row", gap: 10, marginBottom: 20 }}>
         {/* Proteína */}
-        <View style={[globalStyles.card, { flex: 1 }]}>
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "space-between",
-              marginBottom: 6,
-            }}
-          >
-            <Text style={[globalStyles.cardText, { fontSize: 13 }]}>Proteína</Text>
-            <Ionicons name="nutrition" size={20} color={colors.secondary} />
-          </View>
-          <Text style={{ fontSize: 32, fontWeight: "bold", color: colors.text }}>
+        <View
+          style={{
+            flex: 1,
+            backgroundColor: colors.surface,
+            borderRadius: 16,
+            padding: 14,
+            borderWidth: 1.5,
+            borderColor: colors.cardBorder || "rgba(255,255,255,0.08)",
+          }}
+        >
+          <Text style={{ fontSize: 10, fontWeight: "900", color: colors.secondary, letterSpacing: 0.8 }}>
+            PROTEÍNA
+          </Text>
+          <Text style={{ fontSize: 22, fontWeight: "900", color: colors.text, marginTop: 4 }}>
             {todayLog.totalProtein}g
           </Text>
-          <Text style={[globalStyles.cardText, { fontSize: 12, color: colors.textSecondary }]}>
-            / {targets.protein}g
+          <Text style={{ fontSize: 10, color: colors.textSecondary, fontWeight: "700", marginTop: 1 }}>
+            / {targets.protein}g ({proteinPercent}%)
           </Text>
           <View
             style={{
-              height: 8,
+              height: 5,
               width: "100%",
-              marginTop: 10,
+              marginTop: 8,
               backgroundColor: colors.background,
-              borderRadius: 4,
+              borderRadius: 3,
               overflow: "hidden",
             }}
           >
@@ -282,65 +400,117 @@ export default function MealsScreen() {
         </View>
 
         {/* Carbohidratos */}
-        <View style={[globalStyles.card, { flex: 1 }]}>
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "space-between",
-              marginBottom: 6,
-            }}
-          >
-            <Text style={[globalStyles.cardText, { fontSize: 13 }]}>Carbohidratos</Text>
-            <Ionicons name="flame" size={20} color={colors.delete} />
-          </View>
-          <Text style={{ fontSize: 32, fontWeight: "bold", color: colors.text }}>
+        <View
+          style={{
+            flex: 1,
+            backgroundColor: colors.surface,
+            borderRadius: 16,
+            padding: 14,
+            borderWidth: 1.5,
+            borderColor: colors.cardBorder || "rgba(255,255,255,0.08)",
+          }}
+        >
+          <Text style={{ fontSize: 10, fontWeight: "900", color: colors.flame || "#ff7a00", letterSpacing: 0.8 }}>
+            CARBOS
+          </Text>
+          <Text style={{ fontSize: 22, fontWeight: "900", color: colors.text, marginTop: 4 }}>
             {todayLog.totalCarbs}g
           </Text>
-          <Text style={[globalStyles.cardText, { fontSize: 12, color: colors.textSecondary }]}>
-            / {targets.carbs}g
+          <Text style={{ fontSize: 10, color: colors.textSecondary, fontWeight: "700", marginTop: 1 }}>
+            / {targets.carbs}g ({carbsPercent}%)
           </Text>
           <View
             style={{
-              height: 8,
+              height: 5,
               width: "100%",
-              marginTop: 10,
+              marginTop: 8,
               backgroundColor: colors.background,
-              borderRadius: 4,
+              borderRadius: 3,
               overflow: "hidden",
             }}
           >
             <View
               style={{
                 height: "100%",
-                backgroundColor: colors.delete,
+                backgroundColor: colors.flame || "#ff7a00",
                 width: `${carbsPercent}%`,
+              }}
+            />
+          </View>
+        </View>
+
+        {/* Grasas */}
+        <View
+          style={{
+            flex: 1,
+            backgroundColor: colors.surface,
+            borderRadius: 16,
+            padding: 14,
+            borderWidth: 1.5,
+            borderColor: colors.cardBorder || "rgba(255,255,255,0.08)",
+          }}
+        >
+          <Text style={{ fontSize: 10, fontWeight: "900", color: colors.fat || "#c084fc", letterSpacing: 0.8 }}>
+            GRASAS
+          </Text>
+          <Text style={{ fontSize: 22, fontWeight: "900", color: colors.text, marginTop: 4 }}>
+            {todayLog.totalFat}g
+          </Text>
+          <Text style={{ fontSize: 10, color: colors.textSecondary, fontWeight: "700", marginTop: 1 }}>
+            / {targets.fat}g ({fatPercent}%)
+          </Text>
+          <View
+            style={{
+              height: 5,
+              width: "100%",
+              marginTop: 8,
+              backgroundColor: colors.background,
+              borderRadius: 3,
+              overflow: "hidden",
+            }}
+          >
+            <View
+              style={{
+                height: "100%",
+                backgroundColor: colors.fat || "#c084fc",
+                width: `${fatPercent}%`,
               }}
             />
           </View>
         </View>
       </View>
 
-      {/* Card de Consumo Registrado Hoy (si el usuario ha comido al menos 1 alimento hoy) */}
+      {/* Card de Consumo Registrado Hoy */}
       {todayLog.consumedMeals.length > 0 ? (
-        <View style={[globalStyles.card, { marginBottom: 20 }]}>
+        <View
+          style={{
+            backgroundColor: colors.surface,
+            borderRadius: 18,
+            padding: 16,
+            marginBottom: 20,
+            borderWidth: 1.5,
+            borderColor: colors.cardBorder || "rgba(255,255,255,0.08)",
+          }}
+        >
           <View
             style={{
               flexDirection: "row",
               justifyContent: "space-between",
               alignItems: "center",
-              marginBottom: 12,
+              marginBottom: 14,
             }}
           >
             <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
-              <Ionicons name="restaurant-outline" size={22} color={colors.primary} />
-              <Text style={[globalStyles.cardTitle, { fontSize: 18, fontWeight: "bold", marginBottom: 0 }]}>
-                Registrado Hoy ({todayLog.consumedMeals.length})
+              <Ionicons name="restaurant-outline" size={20} color={colors.primary} />
+              <Text style={{ fontSize: 16, fontWeight: "900", color: colors.text }}>
+                REGISTRADO HOY ({todayLog.consumedMeals.length})
               </Text>
             </View>
-            <Text style={{ fontSize: 12, fontWeight: "bold", color: colors.primary }}>
-              Total: {todayLog.totalCalories} kcal
-            </Text>
+            <View style={{ backgroundColor: colors.primary + "20", paddingHorizontal: 8, paddingVertical: 3, borderRadius: 5 }}>
+              <Text style={{ fontSize: 11, fontWeight: "900", color: colors.primary }}>
+                {todayLog.totalCalories} KCAL
+              </Text>
+            </View>
           </View>
 
           <View style={{ gap: 8 }}>
@@ -352,17 +522,23 @@ export default function MealsScreen() {
                   justifyContent: "space-between",
                   alignItems: "center",
                   backgroundColor: colors.background,
-                  padding: 10,
-                  borderRadius: 10,
+                  padding: 12,
+                  borderRadius: 12,
+                  borderWidth: 1,
+                  borderColor: colors.cardBorder || "rgba(255,255,255,0.06)",
                 }}
               >
                 <View style={{ flexDirection: "row", alignItems: "center", gap: 10, flex: 1 }}>
-                  <Ionicons name={(item.icon || "restaurant") as any} size={20} color={colors.primary} />
+                  <Ionicons
+                    name={(item.icon || "restaurant") as any}
+                    size={20}
+                    color={colors.primary}
+                  />
                   <View style={{ flex: 1 }}>
-                    <Text style={{ fontWeight: "bold", color: colors.text, fontSize: 14 }}>
+                    <Text style={{ fontWeight: "900", color: colors.text, fontSize: 14 }}>
                       {item.name}
                     </Text>
-                    <Text style={{ fontSize: 11, color: colors.textSecondary }}>
+                    <Text style={{ fontSize: 11, color: colors.textSecondary, marginTop: 2, fontWeight: "600" }}>
                       {item.timestamp} • {item.calories} kcal ({item.protein}g P / {item.carbs}g C / {item.fat}g G)
                     </Text>
                   </View>
@@ -371,61 +547,97 @@ export default function MealsScreen() {
                 <TouchableOpacity
                   onPress={() => handleRemoveTodayItem(item.id)}
                   style={{ padding: 4 }}
+                  hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
                 >
-                  <Ionicons name="close-circle-outline" size={22} color={colors.delete} />
+                  <Ionicons name="close-circle-outline" size={20} color={colors.delete} />
                 </TouchableOpacity>
               </View>
             ))}
           </View>
         </View>
       ) : (
-        <View style={[globalStyles.card, { marginBottom: 20, alignItems: "center", paddingVertical: 16 }]}>
+        <View
+          style={{
+            backgroundColor: colors.surface,
+            borderRadius: 18,
+            padding: 20,
+            marginBottom: 20,
+            alignItems: "center",
+            borderWidth: 1,
+            borderColor: colors.cardBorder || "rgba(255,255,255,0.06)",
+          }}
+        >
           <Ionicons name="fast-food-outline" size={32} color={colors.textSecondary} />
-          <Text style={[globalStyles.cardText, { marginTop: 6, textAlign: "center" }]}>
-            No has registrado ninguna comida hoy.
+          <Text style={{ fontSize: 15, fontWeight: "900", color: colors.text, marginTop: 8 }}>
+            SIN REGISTROS HOY
           </Text>
-          <Text style={{ fontSize: 12, color: colors.textSecondary, textAlign: "center" }}>
-            Toca "Comer Hoy" o usa el escáner con IA para registrar tu consumo.
+          <Text style={{ fontSize: 12, color: colors.textSecondary, textAlign: "center", marginTop: 4 }}>
+            Selecciona "+ Comer" en el catálogo o usa el escáner IA para sumar calorías.
           </Text>
         </View>
       )}
 
-      {/* Card de Historial de Días Anteriores (si existen registros pasados) */}
-      {pastLogs.length > 0 ? (
-        <View style={[globalStyles.card, { marginBottom: 20 }]}>
-          <View style={{ flexDirection: "row", alignItems: "center", gap: 8, marginBottom: 12 }}>
-            <Ionicons name="calendar-outline" size={22} color={colors.secondary} />
-            <Text style={[globalStyles.cardTitle, { fontSize: 18, fontWeight: "bold", marginBottom: 0 }]}>
-              Historial de Días Anteriores
-            </Text>
+      {/* Historial previo */}
+      {pastLogs.length > 0 && (
+        <View
+          style={{
+            backgroundColor: colors.surface,
+            borderRadius: 18,
+            padding: 16,
+            marginBottom: 20,
+            borderWidth: 1.5,
+            borderColor: colors.cardBorder || "rgba(255,255,255,0.08)",
+          }}
+        >
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+              marginBottom: 12,
+            }}
+          >
+            <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+              <Ionicons name="calendar-outline" size={20} color={colors.secondary} />
+              <Text style={{ fontSize: 16, fontWeight: "900", color: colors.text }}>
+                HISTORIAL RECIENTE
+              </Text>
+            </View>
+            <TouchableOpacity onPress={() => router.push("/reports/mealsHistory" as any)}>
+              <Text style={{ color: colors.primary, fontWeight: "900", fontSize: 12 }}>
+                VER TODOS ▶
+              </Text>
+            </TouchableOpacity>
           </View>
 
-          <View style={{ gap: 10 }}>
-            {pastLogs.map((log) => (
+          <View style={{ gap: 8 }}>
+            {pastLogs.slice(0, 3).map((log) => (
               <View
                 key={log.date}
                 style={{
                   backgroundColor: colors.background,
                   padding: 12,
-                  borderRadius: 10,
+                  borderRadius: 12,
+                  borderWidth: 1,
+                  borderColor: colors.cardBorder || "rgba(255,255,255,0.06)",
                 }}
               >
                 <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 4 }}>
-                  <Text style={{ fontWeight: "bold", color: colors.text, fontSize: 14 }}>
-                    📅 {log.date}
+                  <Text style={{ fontWeight: "900", color: colors.text, fontSize: 14 }}>
+                    {log.date}
                   </Text>
-                  <Text style={{ fontWeight: "bold", color: colors.primary, fontSize: 14 }}>
-                    {log.totalCalories} kcal
+                  <Text style={{ fontWeight: "900", color: colors.primary, fontSize: 14 }}>
+                    {log.totalCalories} KCAL
                   </Text>
                 </View>
-                <Text style={{ fontSize: 12, color: colors.textSecondary }}>
-                  {log.consumedMeals.length} comidas • {log.totalProtein}g Proteína • {log.totalCarbs}g Carbs • {log.totalFat}g Grasa
+                <Text style={{ fontSize: 11, color: colors.textSecondary, fontWeight: "600" }}>
+                  {log.consumedMeals.length} comidas • {log.totalProtein}g P • {log.totalCarbs}g C • {log.totalFat}g G
                 </Text>
               </View>
             ))}
           </View>
         </View>
-      ) : null}
+      )}
 
       {/* Catálogo de Comidas */}
       <AllMeals onLogConsumed={loadData} />

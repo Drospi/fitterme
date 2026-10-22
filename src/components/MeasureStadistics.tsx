@@ -1,14 +1,18 @@
 import { useTheme } from "@/context/ThemeContext";
 import { DEFAULT_GOAL, getLatestGoal, Goals } from "@/store/goals";
-import { getMeasures } from "@/store/measures";
+import { getLatestSanitizedMeasure } from "@/store/measures";
 import { getGlobalStyles } from "@/styles/global";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useFocusEffect } from "expo-router";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 import FitnessAdvisor from "./FitnessAdvisor";
 
-export default function MeasuresStadistics() {
+interface Props {
+  refreshTrigger?: number;
+}
+
+export default function MeasuresStadistics({ refreshTrigger }: Props = {}) {
   const { colors } = useTheme();
   const globalStyles = getGlobalStyles(colors);
 
@@ -22,38 +26,40 @@ export default function MeasuresStadistics() {
     if (!datos) return;
 
     const esHombre = (datos.sexo || "masculino").toLowerCase() === "masculino";
-    const alturaCm = datos.altura;
-    const cuello = datos.cuello;
-    const cintura = datos.cintura;
-    const cadera = datos.cadera;
+    const alturaCm = datos.altura || 170;
+    const cuello = datos.cuello || 0;
+    const cintura = datos.cintura || 0;
+    const cadera = datos.cadera || 0;
 
     let pctGrasa = 0;
 
-    if (esHombre && cintura > cuello) {
-      pctGrasa =
-        86.01 * Math.log10(cintura - cuello) -
-        70.041 * Math.log10(alturaCm) +
-        36.76;
-    } else if (!esHombre && cintura + cadera > cuello) {
-      pctGrasa =
-        163.205 * Math.log10(cintura + cadera - cuello) -
-        97.684 * Math.log10(alturaCm) -
-        78.387;
+    if (cuello > 0 && cintura > 0) {
+      if (esHombre && cintura > cuello) {
+        pctGrasa =
+          86.01 * Math.log10(cintura - cuello) -
+          70.041 * Math.log10(alturaCm) +
+          36.76;
+      } else if (!esHombre && cadera > 0 && cintura + cadera > cuello) {
+        pctGrasa =
+          163.205 * Math.log10(cintura + cadera - cuello) -
+          97.684 * Math.log10(alturaCm) -
+          78.387;
+      }
     }
 
     const grasaFinal = Math.max(0, parseFloat(pctGrasa.toFixed(1)));
     setGrasa(grasaFinal);
-    const mm = ((100 - grasaFinal) / 100) * datos.peso;
+    const peso = datos.peso || 70;
+    const mm = ((100 - grasaFinal) / 100) * peso;
     setMasaMagra(parseFloat(mm.toFixed(1)));
-    setPesoActual(datos.peso);
+    setPesoActual(peso);
   };
 
   const loadData = async () => {
     const userGoals = await getLatestGoal();
     setGoals(userGoals);
 
-    const data = await getMeasures();
-    const latestMeasure = data[0];
+    const latestMeasure = await getLatestSanitizedMeasure();
 
     if (latestMeasure) {
       calcularComposicion(latestMeasure);
@@ -66,6 +72,10 @@ export default function MeasuresStadistics() {
       loadData();
     }, []),
   );
+
+  useEffect(() => {
+    loadData();
+  }, [refreshTrigger]);
 
   // Mensajes alentadores personalizados
   const diffPeso =
@@ -135,7 +145,7 @@ export default function MeasuresStadistics() {
         <View
           style={[
             globalStyles.card,
-            { backgroundColor: colors.surface, marginBottom: 100 },
+            { backgroundColor: colors.surface },
           ]}
         >
           <View
@@ -146,11 +156,6 @@ export default function MeasuresStadistics() {
               marginBottom: 10,
             }}
           >
-            <Ionicons
-              name="trophy-outline"
-              size={20}
-              color={colors.secondary}
-            />
             <Text
               style={[
                 globalStyles.cardTitle,

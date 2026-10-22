@@ -1,65 +1,180 @@
 import { useTheme } from "@/context/ThemeContext";
-import { addMeasure, getMeasures } from "@/store/measures";
+import { addMeasure, getLatestSanitizedMeasure, getMeasures } from "@/store/measures";
+import { getUserProfile, saveUserProfile } from "@/store/userProfile";
 import { getGlobalStyles } from "@/styles/global";
 import { Ionicons } from "@expo/vector-icons";
+import * as Haptics from "expo-haptics";
 import { Image } from "expo-image";
+import * as ImagePicker from "expo-image-picker";
 import { useFocusEffect, useRouter } from "expo-router";
 import { useCallback, useRef, useState } from "react";
-import { ScrollView, Text, TouchableOpacity, View } from "react-native";
+import {
+  Alert,
+  ScrollView,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import Toast from "react-native-toast-message";
 
 const PersonalData = () => {
-  const route = useRouter();
+  const router = useRouter();
   const { colors } = useTheme();
   const globalStyles = getGlobalStyles(colors);
 
+  const [name, setName] = useState("Atleta");
+  const [photoUri, setPhotoUri] = useState<string | null>(null);
   const [weight, setWeight] = useState(65);
   const [height, setHeight] = useState(170);
   const [age, setAge] = useState(18);
   const [sex, setSex] = useState("Masculino");
 
+  const handlePickImage = () => {
+    Alert.alert(
+      "Foto de Perfil",
+      "Selecciona una opción para tu foto de perfil",
+      [
+        {
+          text: "📷 Tomar Foto",
+          onPress: async () => {
+            try {
+              const permission = await ImagePicker.requestCameraPermissionsAsync();
+              if (!permission.granted) {
+                Toast.show({
+                  type: "error",
+                  text1: "Permiso denegado",
+                  text2: "Se requiere permiso de acceso a la cámara.",
+                });
+                return;
+              }
+              const res = await ImagePicker.launchCameraAsync({
+                mediaTypes: ["images"],
+                allowsEditing: true,
+                aspect: [1, 1],
+                quality: 0.8,
+              });
+              if (!res.canceled && res.assets?.[0]) {
+                setPhotoUri(res.assets[0].uri);
+              }
+            } catch (err) {
+              console.error("Error al tomar foto:", err);
+            }
+          },
+        },
+        {
+          text: "🖼️ Elegir de la Galería",
+          onPress: async () => {
+            try {
+              const permission =
+                await ImagePicker.requestMediaLibraryPermissionsAsync();
+              if (!permission.granted) {
+                Toast.show({
+                  type: "error",
+                  text1: "Permiso denegado",
+                  text2: "Se requiere permiso de acceso a la galería.",
+                });
+                return;
+              }
+              const res = await ImagePicker.launchImageLibraryAsync({
+                mediaTypes: ["images"],
+                allowsEditing: true,
+                aspect: [1, 1],
+                quality: 0.8,
+              });
+              if (!res.canceled && res.assets?.[0]) {
+                setPhotoUri(res.assets[0].uri);
+              }
+            } catch (err) {
+              console.error("Error al seleccionar foto:", err);
+            }
+          },
+        },
+        ...(photoUri
+          ? [
+              {
+                text: "🗑️ Eliminar Foto",
+                style: "destructive" as const,
+                onPress: () => setPhotoUri(null),
+              },
+            ]
+          : []),
+        {
+          text: "Cancelar",
+          style: "cancel" as const,
+        },
+      ]
+    );
+  };
+
   const handleSave = async () => {
     try {
+      // 1. Guardar perfil de usuario (nombre y foto)
+      await saveUserProfile({
+        name: name.trim() || "Atleta",
+        photoUri: photoUri,
+      });
+
+      // 2. Guardar medidas corporales conservando las medidas corporales válidas más recientes
+      const latest = await getLatestSanitizedMeasure();
+
       const nuevaMedida = {
-        name: "Measures",
+        name: name.trim() || "Measures",
         edad: age,
         sexo: sex,
         peso: weight,
         altura: height,
-        cuello: 0,
-        hombros: 0,
-        pecho: 0,
-        biceps: 0,
-        cintura: 0,
-        cadera: 0,
-        muslo: 0,
-        pantorrilla: 0,
-        grasaCorporal: 0,
-        antebrazo: 0,
-        cuadriceps: 0,
-        gemelos: 0,
-        gluteos: 0,
-        espalda: 0,
+        cuello: latest?.cuello || 0,
+        hombros: latest?.hombros || 0,
+        pecho: latest?.pecho || 0,
+        biceps: latest?.biceps || 0,
+        cintura: latest?.cintura || 0,
+        cadera: latest?.cadera || 0,
+        antebrazo: latest?.antebrazo || 0,
+        cuadriceps: latest?.cuadriceps || 0,
+        gemelos: latest?.gemelos || 0,
+        gluteos: latest?.gluteos || 0,
+        espalda: latest?.espalda || 0,
       };
 
       await addMeasure(nuevaMedida);
-      route.dismissAll();
+
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      Toast.show({
+        type: "success",
+        text1: "Perfil Actualizado",
+        text2: "Tus datos personales y perfil se guardaron correctamente.",
+      });
+
+      router.back();
     } catch (error) {
-      alert("Error al guardar");
+      console.error("Error al guardar perfil:", error);
+      Toast.show({
+        type: "error",
+        text1: "Error al guardar",
+        text2: "No se pudieron guardar los datos.",
+      });
     }
   };
 
-  const loadMeasures = async () => {
-    const data = await getMeasures();
-    setAge(data[0]?.edad || 0);
-    setHeight(data[0]?.altura || 0);
-    setWeight(data[0]?.peso || 0);
-    setSex(data[0]?.sexo || "Masculino");
+  const loadProfileAndMeasures = async () => {
+    const profile = await getUserProfile();
+    if (profile.name) setName(profile.name);
+    setPhotoUri(profile.photoUri);
+
+    const latest = await getLatestSanitizedMeasure();
+    if (latest) {
+      setAge(latest.edad || 18);
+      setHeight(latest.altura || 170);
+      setWeight(latest.peso || 65);
+      setSex(latest.sexo || "Masculino");
+    }
   };
 
   useFocusEffect(
     useCallback(() => {
-      loadMeasures();
-    }, []),
+      loadProfileAndMeasures();
+    }, [])
   );
 
   const intervalRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -108,24 +223,105 @@ const PersonalData = () => {
 
   return (
     <ScrollView style={globalStyles.container}>
-      <View style={globalStyles.header}>
-        <Text style={globalStyles.title}>Datos Personales</Text>
+      <View
+        style={[
+          globalStyles.header,
+          { marginBottom: 10, alignItems: "center" },
+        ]}
+      >
+        <Ionicons
+          onPress={() => router.back()}
+          name="arrow-back"
+          size={24}
+          color={colors.text}
+        />
+        <Text style={globalStyles.title}>Editar Perfil</Text>
+        <View style={{ width: 24 }} />
       </View>
+
+      {/* Foto de Perfil con Badge de Cámara */}
       <View
         style={{
           alignItems: "center",
-          borderRadius: 100,
-          marginTop: 20,
+          marginTop: 15,
           marginBottom: 20,
         }}
       >
-        <Image
-          source={require("@/assets/images/profile.jpeg")}
-          style={{ width: 100, height: 100 }}
+        <TouchableOpacity
+          onPress={handlePickImage}
+          activeOpacity={0.8}
+          style={{ position: "relative" }}
+        >
+          <Image
+            source={
+              photoUri
+                ? { uri: photoUri }
+                : require("@/assets/images/profile.jpeg")
+            }
+            style={{
+              width: 110,
+              height: 110,
+              borderRadius: 55,
+              borderWidth: 3,
+              borderColor: colors.primary,
+            }}
+          />
+          <View
+            style={{
+              position: "absolute",
+              bottom: 0,
+              right: 0,
+              backgroundColor: colors.primary,
+              width: 36,
+              height: 36,
+              borderRadius: 18,
+              alignItems: "center",
+              justifyContent: "center",
+              borderWidth: 2,
+              borderColor: colors.background,
+            }}
+          >
+            <Ionicons name="camera" size={18} color={colors.background} />
+          </View>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={handlePickImage} style={{ marginTop: 8 }}>
+          <Text
+            style={{
+              color: colors.primary,
+              fontWeight: "bold",
+              fontSize: 14,
+            }}
+          >
+            {photoUri ? "Cambiar Foto de Perfil" : "Añadir Foto de Perfil"}
+          </Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* Nombre del Usuario */}
+      <View style={{ marginBottom: 15 }}>
+        <Text style={globalStyles.cardText}>Nombre</Text>
+        <TextInput
+          value={name}
+          onChangeText={setName}
+          placeholder="Tu nombre o apodo"
+          placeholderTextColor={colors.textSecondary}
+          style={[
+            globalStyles.input,
+            {
+              marginTop: 6,
+              fontSize: 16,
+              fontWeight: "600",
+              borderWidth: 1,
+              borderColor: colors.surface,
+            },
+          ]}
         />
       </View>
+
+      {/* Peso Actual */}
       <View>
-        <Text style={globalStyles.cardText}> Peso Actual</Text>
+        <Text style={globalStyles.cardText}>Peso Actual</Text>
         <View
           style={[
             globalStyles.card,
@@ -134,7 +330,7 @@ const PersonalData = () => {
               alignItems: "center",
               justifyContent: "space-between",
               paddingHorizontal: 20,
-              marginTop: 10,
+              marginTop: 6,
             },
           ]}
         >
@@ -175,6 +371,7 @@ const PersonalData = () => {
         </View>
       </View>
 
+      {/* Edad */}
       <View>
         <Text style={globalStyles.cardText}>Edad</Text>
         <View
@@ -185,7 +382,7 @@ const PersonalData = () => {
               alignItems: "center",
               justifyContent: "space-between",
               paddingHorizontal: 20,
-              marginTop: 10,
+              marginTop: 6,
             },
           ]}
         >
@@ -199,7 +396,7 @@ const PersonalData = () => {
             >
               {age}
             </Text>
-            <Text style={{ color: colors.text, fontSize: 16 }}>Años</Text>
+            <Text style={{ color: colors.text, fontSize: 16 }}>Años</Text>
           </View>
           <View style={{ flexDirection: "row", gap: 10 }}>
             <TouchableOpacity
@@ -232,6 +429,7 @@ const PersonalData = () => {
         </View>
       </View>
 
+      {/* Altura Actual */}
       <View>
         <Text style={globalStyles.cardText}>Altura Actual</Text>
         <View
@@ -242,7 +440,7 @@ const PersonalData = () => {
               alignItems: "center",
               justifyContent: "space-between",
               paddingHorizontal: 20,
-              marginTop: 10,
+              marginTop: 6,
             },
           ]}
         >
@@ -286,8 +484,9 @@ const PersonalData = () => {
         </View>
       </View>
 
+      {/* Género */}
       <View>
-        <Text style={globalStyles.cardText}>Genero</Text>
+        <Text style={globalStyles.cardText}>Género</Text>
         <View style={{ flexDirection: "row", gap: 10 }}>
           <TouchableOpacity
             onPress={() => setSex("Masculino")}
@@ -296,10 +495,13 @@ const PersonalData = () => {
               {
                 alignItems: "center",
                 justifyContent: "space-between",
-                marginTop: 10,
+                marginTop: 6,
                 flex: 1,
                 backgroundColor:
-                  sex === "Masculino" ? colors.primary + 33 : colors.surface,
+                  sex === "Masculino" ? colors.primary + "33" : colors.surface,
+                borderWidth: sex === "Masculino" ? 1.5 : 1,
+                borderColor:
+                  sex === "Masculino" ? colors.primary : "transparent",
               },
             ]}
           >
@@ -313,7 +515,7 @@ const PersonalData = () => {
             <Text
               style={
                 sex === "Masculino"
-                  ? { ...globalStyles.cardText, color: colors.primary }
+                  ? { ...globalStyles.cardText, color: colors.primary, fontWeight: "bold" }
                   : globalStyles.cardText
               }
             >
@@ -327,10 +529,13 @@ const PersonalData = () => {
               {
                 alignItems: "center",
                 justifyContent: "space-between",
-                marginTop: 10,
+                marginTop: 6,
                 flex: 1,
                 backgroundColor:
-                  sex === "Femenino" ? colors.primary + 33 : colors.surface,
+                  sex === "Femenino" ? colors.primary + "33" : colors.surface,
+                borderWidth: sex === "Femenino" ? 1.5 : 1,
+                borderColor:
+                  sex === "Femenino" ? colors.primary : "transparent",
               },
             ]}
           >
@@ -342,7 +547,7 @@ const PersonalData = () => {
             <Text
               style={
                 sex === "Femenino"
-                  ? { ...globalStyles.cardText, color: colors.primary }
+                  ? { ...globalStyles.cardText, color: colors.primary, fontWeight: "bold" }
                   : globalStyles.cardText
               }
             >
@@ -354,7 +559,7 @@ const PersonalData = () => {
 
       <TouchableOpacity
         onPress={handleSave}
-        style={[globalStyles.button, { marginBottom: 100 }]}
+        style={[globalStyles.button, { marginTop: 30, marginBottom: 100 }]}
       >
         <Text style={globalStyles.buttonText}>Guardar Datos Personales</Text>
       </TouchableOpacity>
@@ -363,3 +568,4 @@ const PersonalData = () => {
 };
 
 export default PersonalData;
+

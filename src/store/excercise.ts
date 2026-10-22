@@ -21,6 +21,67 @@ export type ExerciseCatalogItem = {
   descripcion?: string;
   urlimage?: string;
   isCustom?: boolean;
+  category?: string;
+};
+
+export const EXERCISE_CATEGORIES = ["Gym", "Cardio", "Peso corporal"] as const;
+export type ExerciseCategory = (typeof EXERCISE_CATEGORIES)[number];
+
+export const getExerciseCategory = (
+  exercise?: ExerciseCatalogItem | null
+): ExerciseCategory => {
+  if (!exercise) return "Gym";
+
+  const cat = (exercise.category || "").trim().toLowerCase();
+  if (cat === "cardio") return "Cardio";
+  if (
+    cat === "peso corporal" ||
+    cat === "peso_corporal" ||
+    cat === "calistenia" ||
+    cat === "peso_corp"
+  )
+    return "Peso corporal";
+  if (cat === "gym" || cat === "gymn") return "Gym";
+
+  const obj = (exercise.objetivo || "").trim().toLowerCase();
+  if (obj === "cardio" || obj === "resistencia cardiovascular") return "Cardio";
+  if (obj === "peso corporal" || obj === "peso_corporal") return "Peso corporal";
+  if (obj === "gym" || obj === "gymn") return "Gym";
+
+  const eq = (exercise.equipamiento || "").trim().toLowerCase();
+  if (eq === "peso corporal" || eq === "peso_corporal") return "Peso corporal";
+
+  const m = (exercise.musculo || "").trim().toLowerCase();
+  if (m === "cardio") return "Cardio";
+
+  const name = (exercise.nombre || "").toLowerCase();
+  if (
+    name.includes("cinta") ||
+    name.includes("treadmill") ||
+    name.includes("bicicleta estática") ||
+    name.includes("elíptica") ||
+    name.includes("eliptica") ||
+    name.includes("escaladora") ||
+    name.includes("stairmaster") ||
+    name.includes("remoergómetro") ||
+    name.includes("salto de cuerda")
+  ) {
+    return "Cardio";
+  }
+
+  return "Gym";
+};
+
+export const isCardioExercise = (exercise?: ExerciseCatalogItem | null): boolean => {
+  return getExerciseCategory(exercise) === "Cardio";
+};
+
+export const isBodyweightExercise = (exercise?: ExerciseCatalogItem | null): boolean => {
+  return getExerciseCategory(exercise) === "Peso corporal";
+};
+
+export const isGymExercise = (exercise?: ExerciseCatalogItem | null): boolean => {
+  return getExerciseCategory(exercise) === "Gym";
 };
 
 const EXCERCISES_KEY = "Excercises";

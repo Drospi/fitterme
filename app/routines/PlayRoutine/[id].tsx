@@ -1,26 +1,41 @@
 import ExerciseItem from "@/components/ExcerciseItem";
+import InlineRestTimer from "@/components/InlineRestTimer";
+import { useActiveWorkout } from "@/context/ActiveWorkoutContext";
 import { useTheme } from "@/context/ThemeContext";
+import { cancelAllRestTimerNotifications } from "@/store/notificationsConfig";
 import {
+  convertWeightToggle,
   formatWeightText,
   getSettings,
   toDisplayWeight,
   toStoredKg,
   UserSettings,
+  WeightUnit,
 } from "@/store/conf";
-import { getExerciseIdByExerciseName } from "@/store/excercise";
+import {
+  getExerciseIdByExerciseName,
+  getExerciseCategory,
+  isBodyweightExercise,
+  isCardioExercise,
+} from "@/store/excercise";
 import {
   addExerciseLog,
+  ExerciseHistory,
   ExerciseSet,
+  getHistoryByExerciseId,
   getPersonalBest,
+  isBetterSet,
 } from "@/store/historyExcercise";
 import { addRoutineSession } from "@/store/historyRoutine";
+import ThemeConfirmModal from "@/components/ThemeConfirmModal";
+import CoachRIRModal from "@/components/CoachRIRModal";
+import { calculateRIRPrescription } from "@/utils/rirCoachCalculator";
 import { getRoutineById } from "@/store/routines";
 import { getGlobalStyles } from "@/styles/global";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import * as Haptics from "expo-haptics";
-import { useFocusEffect, useLocalSearchParams } from "expo-router";
-import React, { useCallback, useEffect, useState } from "react";
-import Toast from "react-native-toast-message";
+import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   KeyboardAvoidingView,
   Platform,
@@ -30,13 +45,53 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import Toast from "react-native-toast-message";
 import ExcerciseCompleted from "./ExcerciseCompleted";
 import RoutineCompleted from "./RoutineCompleted";
 
+const MOTIVATIONAL_MESSAGES = [
+  "«El dolor que sientes hoy es la fuerza que sentirás mañana. ¡Cada repetición te acerca a tu mejor versión!» 💪",
+  "«Los resultados no vienen de lo que haces de vez en cuando, sino de lo que haces con constancia. ¡Tú puedes dar una serie más!» 🔥",
+  "«La disciplina es el puente entre tus metas y tus logros. ¡No bajes los brazos ahora!» ⚡",
+  "«El único entrenamiento fallido es el que se abandona. ¡Demuéstrate de qué estás hecho!» 🦁",
+];
+
 const PlayRoutineScreen = () => {
+  const router = useRouter();
   const { colors } = useTheme();
   const globalStyles = getGlobalStyles(colors);
   const { id } = useLocalSearchParams<{ id: string }>();
+  const { activeWorkout, startActiveWorkout, finishActiveWorkout } = useActiveWorkout();
+
+  const startTimeRef = useRef<number>(activeWorkout?.startTime || Date.now());
+
+  const [showGiveUpModal, setShowGiveUpModal] = useState<boolean>(false);
+  const [motivationalMessage, setMotivationalMessage] = useState<string>(MOTIVATIONAL_MESSAGES[0]);
+
+  const handlePromptGiveUp = () => {
+    const randomMsg =
+      MOTIVATIONAL_MESSAGES[Math.floor(Math.random() * MOTIVATIONAL_MESSAGES.length)];
+    setMotivationalMessage(randomMsg);
+    setShowGiveUpModal(true);
+  };
+
+  const handleConfirmGiveUp = async () => {
+    setShowGiveUpModal(false);
+    finishActiveWorkout();
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
+
+    if (totalSeries === 0) {
+      Toast.show({
+        type: "info",
+        text1: "Entrenamiento cancelado",
+        text2: "No se guardó nada ya que no completaste series. ¡A por la próxima!",
+      });
+      router.replace("/(tabs)" as any);
+    } else {
+      await handleFinishRoutine();
+      setIsRoutineCompleted(true);
+    }
+  };
 
   const [userSettings, setUserSettings] = useState<UserSettings>({
     unit: "kg",
@@ -65,6 +120,16 @@ const PlayRoutineScreen = () => {
   const [personalBest, setPersonalBest] = useState<{
     peso: number;
     reps: number;
+    timeMinutes?: number;
+    intensity?: string;
+  } | null>(null);
+  const [lastSession, setLastSession] = useState<ExerciseHistory | null>(null);
+  const [showCoachModal, setShowCoachModal] = useState<boolean>(false);
+
+  const [inputUnit, setInputUnit] = useState<WeightUnit>("kg");
+  const [activeRestTimer, setActiveRestTimer] = useState<{
+    duration: number;
+    startTime: number;
   } | null>(null);
 
   const [serieActual, setSerieActual] = useState(0);
@@ -80,71 +145,176 @@ const PlayRoutineScreen = () => {
   const [totalTonelaje, setTotalTonelaje] = useState(0);
   const [totalSeries, setTotalSeries] = useState(0);
 
-  const [timer, setTimer] = useState(1);
-  const [isActiveTimer, setIsActiveTimer] = useState(true);
+  const [timer, setTimer] = useState(0);
   const [isRoutineCompleted, setIsRoutineCompleted] = useState(false);
 
   const [repActual, setRepActual] = useState(0);
   const [pesoActual, setPesoActual] = useState(0);
+  const [bodyweightMode, setBodyweightMode] = useState<"solo" | "lastre" | "ayuda">("solo");
 
   const loadRoutine = async () => {
     const data = await getRoutineById(id);
     setRoutineData(data);
+    if (data && data.name) {
+      startActiveWorkout({
+        routineId: String(data.id),
+        routineName: data.name,
+        workoutType: "predefined",
+        routePath: `/routines/PlayRoutine/${id}`,
+        startTime: activeWorkout?.startTime || startTimeRef.current,
+      });
+    }
   };
 
   useFocusEffect(
     useCallback(() => {
-      getSettings().then((s) => setUserSettings(s));
+      getSettings().then((s) => {
+        setUserSettings(s);
+        setInputUnit(s.unit);
+      });
       loadRoutine();
     }, [id])
   );
 
+  // Temporizador basado en la hora del teléfono (Date.now()) continuo sin reinicio
   useEffect(() => {
-    let interval: any = null;
-
-    if (isActiveTimer && timer > 0) {
-      interval = setInterval(() => {
-        setTimer((prev) => prev + 1);
-      }, 1000);
-    } else if (timer === 0) {
-      clearInterval(interval);
-      setIsActiveTimer(false);
-    }
+    const startMs = activeWorkout?.startTime || startTimeRef.current;
+    const interval = setInterval(() => {
+      const elapsed = Math.floor((Date.now() - startMs) / 1000);
+      setTimer(elapsed);
+    }, 1000);
 
     return () => clearInterval(interval);
-  }, [isActiveTimer, timer]);
+  }, [activeWorkout?.startTime]);
+
+  const inputUnitRef = useRef(inputUnit);
+  inputUnitRef.current = inputUnit;
+
+  const handleApplyCoachOption = (
+    optionType: "A" | "topSet" | "backOff" | "cardio" | "sameWeight",
+    appliedUnit?: WeightUnit
+  ) => {
+    const ejercicio = routineData?.exercises?.[ejercicioActual];
+    if (!ejercicio) return;
+
+    // Si la medida está en kg o lb y el selector está en la otra unidad,
+    // cambiamos primero el selector a esa unidad
+    const unitToApply: WeightUnit = appliedUnit || inputUnit;
+    if (unitToApply !== inputUnit) {
+      setInputUnit(unitToApply);
+    }
+
+    const presc = calculateRIRPrescription(
+      ejercicio,
+      lastSession,
+      personalBest,
+      unitToApply
+    );
+
+    const isBodyweight = getExerciseCategory(ejercicio) === "Peso corporal";
+    let targetWeight = 0;
+    let targetReps = 10;
+
+    if (optionType === "A") {
+      targetWeight = presc.optionA.targetWeightDisplay;
+      targetReps = presc.optionA.targetReps;
+    } else if (optionType === "sameWeight" && presc.sameWeightOption) {
+      targetWeight = presc.sameWeightOption.targetWeightDisplay;
+      targetReps = presc.sameWeightOption.targetReps;
+    } else if (optionType === "topSet" && presc.optionB.topSet) {
+      targetWeight = presc.optionB.topSet.weightDisplay;
+      targetReps = presc.optionB.topSet.reps;
+    } else if (optionType === "backOff" && presc.optionB.backOffSet) {
+      targetWeight = presc.optionB.backOffSet.weightDisplay;
+      targetReps = presc.optionB.backOffSet.reps;
+    }
+
+    setPesoActual(targetWeight);
+    setRepActual(targetReps);
+
+    if (isBodyweight) {
+      if (targetWeight > 0) setBodyweightMode("lastre");
+      else if (targetWeight < 0) setBodyweightMode("ayuda");
+      else setBodyweightMode("solo");
+    }
+  };
 
   useEffect(() => {
     const loadPR = async () => {
-      const ejercicio = routineData.exercises[ejercicioActual];
+      const ejercicio = routineData?.exercises?.[ejercicioActual];
       if (ejercicio) {
-        setRepActual(ejercicio.reps ?? 10);
-        const initialWeightKg = ejercicio.peso ?? 10;
-        setPesoActual(toDisplayWeight(initialWeightKg, userSettings.unit));
-
-        const pb = await getPersonalBest(ejercicio.id);
+        const [pb, history] = await Promise.all([
+          getPersonalBest(ejercicio.id),
+          getHistoryByExerciseId(ejercicio.id),
+        ]);
         setPersonalBest(pb);
+        const latestHistory = history && history.length > 0 ? history[0] : null;
+        setLastSession(latestHistory);
+
+        const isBodyweight = getExerciseCategory(ejercicio) === "Peso corporal";
+        const unit = inputUnitRef.current;
+        const presc = calculateRIRPrescription(ejercicio, latestHistory, pb, unit);
+
+        if (isBodyweight) {
+          setRepActual(pb?.reps || ejercicio.reps || 10);
+          if (pb && pb.peso < 0) {
+            setBodyweightMode("ayuda");
+            setPesoActual(
+              unit === "lb"
+                ? convertWeightToggle(pb.peso, "lb")
+                : toDisplayWeight(pb.peso, unit)
+            );
+          } else if (pb && pb.peso > 0) {
+            setBodyweightMode("lastre");
+            setPesoActual(
+              unit === "lb"
+                ? convertWeightToggle(pb.peso, "lb")
+                : toDisplayWeight(pb.peso, unit)
+            );
+          } else {
+            setBodyweightMode("solo");
+            setPesoActual(0);
+          }
+        } else if (presc.category === "Gym" && presc.optionA.targetWeightDisplay > 0) {
+          // Pre-llenar con la sugerencia inteligente del Coach RIR
+          setRepActual(presc.optionA.targetReps);
+          setPesoActual(presc.optionA.targetWeightDisplay);
+        } else if (pb && pb.peso > 0) {
+          setRepActual(pb.reps || 10);
+          setPesoActual(
+            unit === "lb"
+              ? convertWeightToggle(pb.peso, "lb")
+              : toDisplayWeight(pb.peso, unit)
+          );
+        } else {
+          setRepActual(ejercicio.reps ?? 10);
+          const initialWeightKg = ejercicio.peso ?? 10;
+          setPesoActual(
+            unit === "lb"
+              ? convertWeightToggle(initialWeightKg, "lb")
+              : toDisplayWeight(initialWeightKg, unit)
+          );
+        }
       }
     };
 
     loadPR();
-  }, [routineData, ejercicioActual, userSettings.unit]);
+  }, [routineData, ejercicioActual]);
 
   const [newRecordsCount, setNewRecordsCount] = useState(0);
 
   const handleNextExercise = async () => {
+    cancelAllRestTimerNotifications();
+    setActiveRestTimer(null);
     if (seriesCompletadas.length > 0) {
       const currentExerciseName = routineData.exercises[ejercicioActual].nombre;
       const currentExerciseId =
         await getExerciseIdByExerciseName(currentExerciseName);
       if (currentExerciseId !== null) {
-        // Verificar si se logro un nuevo récord en este ejercicio
+        // Verificar si se logro un nuevo récord en este ejercicio con lógica 1RM
         const isNewPR = seriesCompletadas.some((set) => {
           if (!personalBest) return true;
-          return (
-            set.peso > personalBest.peso ||
-            (set.peso === personalBest.peso && set.reps > personalBest.reps)
-          );
+          return isBetterSet(set, personalBest);
         });
 
         if (isNewPR) {
@@ -163,13 +333,14 @@ const PlayRoutineScreen = () => {
       setMejorRepEjercicio(0);
       setMejorPesoEjercicio(0);
     } else {
-      setIsActiveTimer(false);
       setIsRoutineCompleted(true);
       handleFinishRoutine();
     }
   };
 
   const handleFinishRoutine = async () => {
+    cancelAllRestTimerNotifications();
+    setActiveRestTimer(null);
     const sessionData = {
       name: routineData.name,
       duration: timer,
@@ -179,13 +350,30 @@ const PlayRoutineScreen = () => {
         sets: performedSets[ex.id] || [],
       })),
     };
-
+    finishActiveWorkout();
     await addRoutineSession(sessionData);
   };
 
-  const handleCompleteSerie = () => {
-    // Convertir peso ingresado a KG para almacenamiento consistente
-    const weightInKg = toStoredKg(pesoActual, userSettings.unit);
+  const handleCompleteSerie = async () => {
+    const isCurrentBodyweight = routineData.exercises[ejercicioActual]
+      ? isBodyweightExercise(routineData.exercises[ejercicioActual])
+      : false;
+
+    let weightInKg = 0;
+    if (isCurrentBodyweight) {
+      if (bodyweightMode === "solo") {
+        weightInKg = 0;
+      } else if (bodyweightMode === "lastre") {
+        const absP = Math.abs(pesoActual);
+        weightInKg = inputUnit === "lb" ? toStoredKg(absP, "lb") : absP;
+      } else {
+        const absP = Math.abs(pesoActual) || (inputUnit === "lb" ? 10 : 5);
+        const stored = inputUnit === "lb" ? toStoredKg(absP, "lb") : absP;
+        weightInKg = -stored;
+      }
+    } else {
+      weightInKg = inputUnit === "lb" ? toStoredKg(pesoActual, "lb") : pesoActual;
+    }
 
     setSeriesCompletadas((prev) => [
       ...prev,
@@ -198,20 +386,39 @@ const PlayRoutineScreen = () => {
       [currentExercise.id]: [...(prev[currentExercise.id] || []), newSet],
     }));
     setSerieActual((prev) => prev + 1);
-    setTotalTonelaje((prev) => prev + weightInKg * repActual);
+    setTotalTonelaje((prev) => prev + (weightInKg > 0 ? weightInKg * repActual : 0));
     setTotalSeries((prev) => prev + 1);
 
-    if (
-      weightInKg > mejorPesoEjercicio ||
-      (weightInKg === mejorPesoEjercicio && repActual > mejorRepEjercicio)
-    ) {
+    const currentBest = { peso: mejorPesoEjercicio, reps: mejorRepEjercicio };
+    if (isBetterSet({ peso: weightInKg, reps: repActual }, currentBest)) {
       setMejorPesoEjercicio(weightInKg);
       setMejorRepEjercicio(repActual);
     }
+
+    cancelAllRestTimerNotifications();
+
+    const isCurrentCardio = routineData.exercises[ejercicioActual]
+      ? isCardioExercise(routineData.exercises[ejercicioActual])
+      : false;
+
+    if (!isCurrentCardio && serieActual + 1 < routineData.exercises[ejercicioActual].series) {
+      const freshSettings = await getSettings();
+      setUserSettings(freshSettings);
+      const restDuration = freshSettings.defaultRestTimer || userSettings.defaultRestTimer || 90;
+      setActiveRestTimer({
+        duration: restDuration,
+        startTime: Date.now(),
+      });
+    } else {
+      setActiveRestTimer(null);
+    }
+
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
   };
 
   const handleSkipSerie = () => {
+    cancelAllRestTimerNotifications();
+    setActiveRestTimer(null);
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     setSerieActual((prev) => prev + 1);
     Toast.show({
@@ -222,6 +429,8 @@ const PlayRoutineScreen = () => {
   };
 
   const handleSkipExercise = () => {
+    cancelAllRestTimerNotifications();
+    setActiveRestTimer(null);
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     const skippedName = routineData.exercises[ejercicioActual]?.nombre || "Ejercicio";
 
@@ -238,7 +447,6 @@ const PlayRoutineScreen = () => {
         text2: `${skippedName} fue omitido.`,
       });
     } else {
-      setIsActiveTimer(false);
       setIsRoutineCompleted(true);
       handleFinishRoutine();
     }
@@ -325,10 +533,10 @@ const PlayRoutineScreen = () => {
         contentContainerStyle={{ paddingBottom: 150 }}
       >
         <View style={globalStyles.header}>
-          <View>
+          <View style={{ flex: 1, marginRight: 8 }}>
             <Text
               style={{
-                fontSize: 14,
+                fontSize: 13,
                 fontWeight: "bold",
                 color: colors.primary,
                 letterSpacing: 1,
@@ -336,28 +544,50 @@ const PlayRoutineScreen = () => {
             >
               ENTRENAMIENTO ACTIVO
             </Text>
-            <Text style={globalStyles.title}>
-              {routineData.name.length > 18
-                ? routineData.name.slice(0, 18) + "..."
-                : routineData.name}
+            <Text style={globalStyles.title} numberOfLines={1}>
+              {routineData.name}
             </Text>
           </View>
-          <View
-            style={[
-              globalStyles.card,
-              {
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+            <View
+              style={[
+                globalStyles.card,
+                {
+                  alignItems: "center",
+                  borderRadius: 30,
+                  justifyContent: "center",
+                  paddingHorizontal: 12,
+                  paddingVertical: 6,
+                },
+              ]}
+            >
+              <Ionicons name="timer-outline" size={18} color={colors.primary} />
+              <Text style={[globalStyles.title, { fontSize: 13, alignSelf: "center", marginTop: 2 }]}>
+                {formatTime(timer)}
+              </Text>
+            </View>
+
+            {/* Botón pequeño para finalizar en el Header */}
+            <TouchableOpacity
+              onPress={handlePromptGiveUp}
+              style={{
+                backgroundColor: colors.delete + "18",
+                borderColor: colors.delete + "35",
+                borderWidth: 1,
+                paddingHorizontal: 10,
+                paddingVertical: 7,
+                borderRadius: 20,
+                flexDirection: "row",
                 alignItems: "center",
-                borderRadius: 30,
-                justifyContent: "center",
-                paddingHorizontal: 16,
-                paddingVertical: 8,
-              },
-            ]}
-          >
-            <Ionicons name="timer-outline" size={22} color={colors.primary} />
-            <Text style={[globalStyles.title, { fontSize: 15, alignSelf: "center", marginTop: 2 }]}>
-              {formatTime(timer)}
-            </Text>
+                gap: 4,
+              }}
+              activeOpacity={0.7}
+            >
+              <Ionicons name="flag-outline" size={13} color={colors.delete} />
+              <Text style={{ fontSize: 11, fontWeight: "bold", color: colors.delete }}>
+                Finalizar
+              </Text>
+            </TouchableOpacity>
           </View>
         </View>
 
@@ -428,127 +658,613 @@ const PlayRoutineScreen = () => {
           </View>
 
           {/* Input Controls */}
-          <View style={{ gap: 15, marginVertical: 10 }}>
-            {/* Control Peso */}
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "space-between",
-              }}
-            >
-              <Text style={globalStyles.cardText}>
-                PESO ({userSettings.unit.toUpperCase()})
-              </Text>
+          {(() => {
+            const isCurrentBodyweight = routineData.exercises[ejercicioActual]
+              ? isBodyweightExercise(routineData.exercises[ejercicioActual])
+              : false;
 
-              <View style={{ flexDirection: "row", gap: 10, alignItems: "center" }}>
-                <TouchableOpacity
-                  onPress={() =>
-                    setPesoActual(
-                      Math.max(0, Math.round((pesoActual - userSettings.weightIncrement) * 10) / 10)
-                    )
-                  }
-                >
-                  <Ionicons name="remove-circle" size={34} color={colors.primary} />
-                </TouchableOpacity>
+            return (
+              <View style={{ gap: 14, marginVertical: 10 }}>
+                {/* SI ES PESO CORPORAL: Selector de Modo y Carga en línea separada ("enter") */}
+                {isCurrentBodyweight ? (
+                  <View style={{ gap: 10 }}>
+                    {/* Fila Superior: Título y Segmented Control de Modo */}
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        flexWrap: "wrap",
+                        gap: 8,
+                      }}
+                    >
+                      <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
+                        <Ionicons name="body" size={15} color={colors.primary} />
+                        <Text style={{ fontSize: 12, color: colors.textSecondary, fontWeight: "bold", letterSpacing: 0.5 }}>
+                          PESO CORPORAL
+                        </Text>
+                      </View>
 
-                <TextInput
-                  placeholder="0"
-                  placeholderTextColor={colors.textSecondary}
-                  keyboardType="numeric"
-                  selectTextOnFocus={true}
-                  value={pesoActual.toString()}
-                  style={[
-                    globalStyles.input,
-                    {
-                      backgroundColor: colors.background,
-                      textAlign: "center",
-                      fontSize: 22,
-                      fontWeight: "bold",
-                      marginBottom: 0,
-                      height: 48,
-                      width: 110,
-                    },
-                  ]}
-                  onChangeText={(text) => {
-                    if (text === "") {
-                      setPesoActual(0);
-                    } else {
-                      const parsed = parseFloat(text);
-                      if (!isNaN(parsed)) setPesoActual(parsed);
-                    }
+                      {/* Modos: Solo cuerpo / + Lastre / - Con Ayuda */}
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          backgroundColor: colors.background,
+                          borderRadius: 10,
+                          padding: 2,
+                          borderWidth: 1,
+                          borderColor: colors.primary + "25",
+                        }}
+                      >
+                        <TouchableOpacity
+                          onPress={() => {
+                            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                            setBodyweightMode("solo");
+                            setPesoActual(0);
+                          }}
+                          style={{
+                            paddingHorizontal: 8,
+                            paddingVertical: 5,
+                            borderRadius: 8,
+                            backgroundColor: bodyweightMode === "solo" ? colors.primary : "transparent",
+                          }}
+                        >
+                          <Text
+                            style={{
+                              fontSize: 11,
+                              fontWeight: "bold",
+                              color: bodyweightMode === "solo" ? colors.background : colors.textSecondary,
+                            }}
+                          >
+                            Solo cuerpo
+                          </Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                          onPress={() => {
+                            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                            setBodyweightMode("lastre");
+                            if (pesoActual <= 0) setPesoActual(inputUnit === "lb" ? 10 : 2.5);
+                          }}
+                          style={{
+                            paddingHorizontal: 8,
+                            paddingVertical: 5,
+                            borderRadius: 8,
+                            backgroundColor: bodyweightMode === "lastre" ? colors.primary : "transparent",
+                          }}
+                        >
+                          <Text
+                            style={{
+                              fontSize: 11,
+                              fontWeight: "bold",
+                              color: bodyweightMode === "lastre" ? colors.background : colors.textSecondary,
+                            }}
+                          >
+                            + Lastre
+                          </Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                          onPress={() => {
+                            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                            setBodyweightMode("ayuda");
+                            if (pesoActual >= 0) setPesoActual(inputUnit === "lb" ? -10 : -5);
+                          }}
+                          style={{
+                            paddingHorizontal: 8,
+                            paddingVertical: 5,
+                            borderRadius: 8,
+                            backgroundColor: bodyweightMode === "ayuda" ? colors.primary : "transparent",
+                          }}
+                        >
+                          <Text
+                            style={{
+                              fontSize: 11,
+                              fontWeight: "bold",
+                              color: bodyweightMode === "ayuda" ? colors.background : colors.textSecondary,
+                            }}
+                          >
+                            - Con Ayuda
+                          </Text>
+                        </TouchableOpacity>
+                      </View>
+                    </View>
+
+                    {/* Fila Inferior ("abajo / enter"): Control de peso según el modo */}
+                    {bodyweightMode === "solo" ? (
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                          backgroundColor: colors.background,
+                          paddingVertical: 10,
+                          paddingHorizontal: 14,
+                          borderRadius: 12,
+                          borderWidth: 1,
+                          borderColor: colors.primary + "20",
+                        }}
+                      >
+                        <Text style={{ fontSize: 13, color: colors.textSecondary, fontWeight: "600" }}>
+                          Solo peso corporal (sin peso adicional ni asistencia)
+                        </Text>
+                        <Text style={{ fontSize: 14, fontWeight: "bold", color: colors.primary }}>
+                          0 {inputUnit.toUpperCase()}
+                        </Text>
+                      </View>
+                    ) : (
+                      <View style={{ gap: 8 }}>
+                        <View
+                          style={{
+                            flexDirection: "row",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                          }}
+                        >
+                          {/* Label del modo y selector KG / LB */}
+                          <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+                            <Text style={{ fontSize: 12, color: colors.textSecondary, fontWeight: "bold" }}>
+                              {bodyweightMode === "lastre" ? "CARGA ADICIONAL" : "PESO DE ASISTENCIA"}
+                            </Text>
+
+                            <View
+                              style={{
+                                flexDirection: "row",
+                                backgroundColor: colors.background,
+                                borderRadius: 8,
+                                padding: 2,
+                                borderWidth: 1,
+                                borderColor: colors.primary + "30",
+                              }}
+                            >
+                              <TouchableOpacity
+                                onPress={() => {
+                                  if (inputUnit === "kg") return;
+                                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                                  const converted = convertWeightToggle(pesoActual, "kg");
+                                  setInputUnit("kg");
+                                  setPesoActual(converted);
+                                }}
+                                style={{
+                                  paddingHorizontal: 8,
+                                  paddingVertical: 3,
+                                  borderRadius: 6,
+                                  backgroundColor: inputUnit === "kg" ? colors.primary : "transparent",
+                                }}
+                              >
+                                <Text
+                                  style={{
+                                    fontSize: 11,
+                                    fontWeight: "bold",
+                                    color: inputUnit === "kg" ? colors.background : colors.textSecondary,
+                                  }}
+                                >
+                                  KG
+                                </Text>
+                              </TouchableOpacity>
+
+                              <TouchableOpacity
+                                onPress={() => {
+                                  if (inputUnit === "lb") return;
+                                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                                  const converted = convertWeightToggle(pesoActual, "lb");
+                                  setInputUnit("lb");
+                                  setPesoActual(converted);
+                                }}
+                                style={{
+                                  paddingHorizontal: 8,
+                                  paddingVertical: 3,
+                                  borderRadius: 6,
+                                  backgroundColor: inputUnit === "lb" ? colors.primary : "transparent",
+                                }}
+                              >
+                                <Text
+                                  style={{
+                                    fontSize: 11,
+                                    fontWeight: "bold",
+                                    color: inputUnit === "lb" ? colors.background : colors.textSecondary,
+                                  }}
+                                >
+                                  LB
+                                </Text>
+                              </TouchableOpacity>
+                            </View>
+                          </View>
+
+                          {/* Stepper Peso para Lastre o Ayuda */}
+                          <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+                            <TouchableOpacity
+                              onPress={() => {
+                                const step = inputUnit === "lb" ? 5 : userSettings.weightIncrement;
+                                if (bodyweightMode === "lastre") {
+                                  setPesoActual(Math.max(0, Math.round((Math.abs(pesoActual) - step) * 10) / 10));
+                                } else {
+                                  const cur = Math.abs(pesoActual);
+                                  const nextVal = Math.max(0, Math.round((cur - step) * 10) / 10);
+                                  setPesoActual(-nextVal);
+                                }
+                              }}
+                            >
+                              <Ionicons name="remove-circle" size={30} color={colors.primary} />
+                            </TouchableOpacity>
+
+                            <TextInput
+                              editable={false}
+                              value={
+                                bodyweightMode === "lastre"
+                                  ? `+${Math.abs(pesoActual)}`
+                                  : `-${Math.abs(pesoActual)}`
+                              }
+                              style={[
+                                globalStyles.input,
+                                {
+                                  marginTop: 0,
+                                  marginBottom: 0,
+                                  minHeight: 42,
+                                  width: 85,
+                                  paddingHorizontal: 5,
+                                  textAlign: "center",
+                                  fontSize: 17,
+                                  fontWeight: "bold",
+                                  color: colors.text,
+                                  backgroundColor: colors.background,
+                                },
+                              ]}
+                            />
+
+                            <TouchableOpacity
+                              onPress={() => {
+                                const step = inputUnit === "lb" ? 5 : userSettings.weightIncrement;
+                                if (bodyweightMode === "lastre") {
+                                  setPesoActual(Math.round((Math.abs(pesoActual) + step) * 10) / 10);
+                                } else {
+                                  const cur = Math.abs(pesoActual);
+                                  const nextVal = Math.round((cur + step) * 10) / 10;
+                                  setPesoActual(-nextVal);
+                                }
+                              }}
+                            >
+                              <Ionicons name="add-circle" size={30} color={colors.primary} />
+                            </TouchableOpacity>
+                          </View>
+                        </View>
+
+                        {/* Presets rápidos */}
+                        <View style={{ flexDirection: "row", gap: 6, flexWrap: "wrap" }}>
+                          {(bodyweightMode === "lastre"
+                            ? [
+                                { label: "+2.5", val: 2.5 },
+                                { label: "+5", val: 5 },
+                                { label: "+10", val: 10 },
+                                { label: "+15", val: 15 },
+                              ]
+                            : [
+                                { label: "5 kg ayuda", val: -5 },
+                                { label: "10 kg ayuda", val: -10 },
+                                { label: "15 kg ayuda", val: -15 },
+                                { label: "20 kg ayuda", val: -20 },
+                              ]
+                          ).map((chip) => {
+                            const isChipActive = pesoActual === chip.val;
+                            return (
+                              <TouchableOpacity
+                                key={chip.label}
+                                onPress={() => {
+                                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                                  setPesoActual(chip.val);
+                                }}
+                                style={{
+                                  paddingHorizontal: 10,
+                                  paddingVertical: 5,
+                                  borderRadius: 10,
+                                  backgroundColor: isChipActive ? colors.primary : colors.surface,
+                                  borderWidth: 1,
+                                  borderColor: colors.primary + "30",
+                                }}
+                              >
+                                <Text
+                                  style={{
+                                    fontSize: 11,
+                                    fontWeight: "bold",
+                                    color: isChipActive ? colors.background : colors.text,
+                                  }}
+                                >
+                                  {chip.label}
+                                </Text>
+                              </TouchableOpacity>
+                            );
+                          })}
+                        </View>
+                      </View>
+                    )}
+                  </View>
+                ) : (
+                  /* EJERCICIO GYM / FUERZA CONVENCIONAL */
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+                      <Text style={{ fontSize: 12, color: colors.textSecondary, fontWeight: "bold" }}>
+                        PESO
+                      </Text>
+                      {/* Selector de Unidad KG / LB */}
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          backgroundColor: colors.background,
+                          borderRadius: 8,
+                          padding: 2,
+                          borderWidth: 1,
+                          borderColor: colors.primary + "30",
+                        }}
+                      >
+                        <TouchableOpacity
+                          onPress={() => {
+                            if (inputUnit === "kg") return;
+                            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                            const converted = convertWeightToggle(pesoActual, "kg");
+                            setInputUnit("kg");
+                            setPesoActual(converted);
+                          }}
+                          style={{
+                            paddingHorizontal: 8,
+                            paddingVertical: 3,
+                            borderRadius: 6,
+                            backgroundColor: inputUnit === "kg" ? colors.primary : "transparent",
+                          }}
+                        >
+                          <Text
+                            style={{
+                              fontSize: 11,
+                              fontWeight: "bold",
+                              color: inputUnit === "kg" ? colors.background : colors.textSecondary,
+                            }}
+                          >
+                            KG
+                          </Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                          onPress={() => {
+                            if (inputUnit === "lb") return;
+                            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                            const converted = convertWeightToggle(pesoActual, "lb");
+                            setInputUnit("lb");
+                            setPesoActual(converted);
+                          }}
+                          style={{
+                            paddingHorizontal: 8,
+                            paddingVertical: 3,
+                            borderRadius: 6,
+                            backgroundColor: inputUnit === "lb" ? colors.primary : "transparent",
+                          }}
+                        >
+                          <Text
+                            style={{
+                              fontSize: 11,
+                              fontWeight: "bold",
+                              color: inputUnit === "lb" ? colors.background : colors.textSecondary,
+                            }}
+                          >
+                            LB
+                          </Text>
+                        </TouchableOpacity>
+                      </View>
+                    </View>
+
+                    <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+                      <TouchableOpacity
+                        onPress={() => {
+                          const step = inputUnit === "lb" ? 5 : userSettings.weightIncrement;
+                          setPesoActual(
+                            Math.max(0, Math.round((pesoActual - step) * 10) / 10)
+                          );
+                        }}
+                      >
+                        <Ionicons name="remove-circle" size={30} color={colors.primary} />
+                      </TouchableOpacity>
+
+                      <TextInput
+                        editable={false}
+                        value={pesoActual.toString()}
+                        style={[
+                          globalStyles.input,
+                          {
+                            marginTop: 0,
+                            marginBottom: 0,
+                            minHeight: 42,
+                            width: 85,
+                            paddingHorizontal: 5,
+                            textAlign: "center",
+                            fontSize: 18,
+                            fontWeight: "bold",
+                            color: colors.text,
+                            backgroundColor: colors.background,
+                          },
+                        ]}
+                      />
+
+                      <TouchableOpacity
+                        onPress={() => {
+                          const step = inputUnit === "lb" ? 5 : userSettings.weightIncrement;
+                          setPesoActual(
+                            Math.round((pesoActual + step) * 10) / 10
+                          );
+                        }}
+                      >
+                        <Ionicons name="add-circle" size={30} color={colors.primary} />
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                )}
+
+                {/* Control Reps Común para todos */}
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    marginTop: 2,
                   }}
-                />
-
-                <TouchableOpacity
-                  onPress={() =>
-                    setPesoActual(
-                      Math.round((pesoActual + userSettings.weightIncrement) * 10) / 10
-                    )
-                  }
                 >
-                  <Ionicons name="add-circle" size={34} color={colors.primary} />
-                </TouchableOpacity>
+                  <Text style={{ fontSize: 12, color: colors.textSecondary, fontWeight: "bold" }}>
+                    REPETICIONES
+                  </Text>
+                  <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+                    <TouchableOpacity
+                      onPress={() => setRepActual(Math.max(1, repActual - 1))}
+                    >
+                      <Ionicons name="remove-circle" size={30} color={colors.primary} />
+                    </TouchableOpacity>
+
+                    <TextInput
+                      editable={false}
+                      value={repActual ? repActual.toString() : "0"}
+                      style={[
+                        globalStyles.input,
+                        {
+                          marginTop: 0,
+                          marginBottom: 0,
+                          minHeight: 42,
+                          width: 85,
+                          paddingHorizontal: 8,
+                          textAlign: "center",
+                          fontSize: 18,
+                          fontWeight: "bold",
+                          color: colors.text,
+                          backgroundColor: colors.background,
+                        },
+                      ]}
+                    />
+
+                    <TouchableOpacity onPress={() => setRepActual(repActual + 1)}>
+                      <Ionicons name="add-circle" size={30} color={colors.primary} />
+                    </TouchableOpacity>
+                  </View>
+                </View>
               </View>
-            </View>
+            );
+          })()}
 
-            {/* Control Reps */}
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "space-between",
-              }}
-            >
-              <Text style={globalStyles.cardText}>REPETICIONES</Text>
-              <View style={{ flexDirection: "row", gap: 10, alignItems: "center" }}>
-                <TouchableOpacity
-                  onPress={() => setRepActual(Math.max(1, repActual - 1))}
-                >
-                  <Ionicons name="remove-circle" size={34} color={colors.primary} />
-                </TouchableOpacity>
+          {/* Sugerencia Coach RIR & Autorregulación (Reemplaza Mejor Serie) */}
+          {(() => {
+            const ejercicio = routineData?.exercises?.[ejercicioActual];
+            if (!ejercicio) return null;
+            const prescription = calculateRIRPrescription(
+              ejercicio,
+              lastSession,
+              personalBest,
+              inputUnit
+            );
 
-                <TextInput
-                  placeholder="10"
-                  placeholderTextColor={colors.textSecondary}
-                  keyboardType="numeric"
-                  selectTextOnFocus={true}
-                  value={repActual ? repActual.toString() : ""}
-                  style={[
-                    globalStyles.input,
-                    {
-                      backgroundColor: colors.background,
-                      textAlign: "center",
-                      fontSize: 22,
-                      fontWeight: "bold",
-                      marginBottom: 0,
-                      height: 48,
-                      width: 110,
-                    },
-                  ]}
-                  onChangeText={(text) => {
-                    if (text === "") {
-                      setRepActual(0);
-                    } else {
-                      const parsed = parseInt(text, 10);
-                      if (!isNaN(parsed)) setRepActual(parsed);
-                    }
+            return (
+              <TouchableOpacity
+                activeOpacity={0.7}
+                onPress={() => {
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  setShowCoachModal(true);
+                }}
+                style={{
+                  marginTop: 12,
+                  marginBottom: 6,
+                  backgroundColor: colors.background,
+                  borderRadius: 12,
+                  paddingVertical: 8,
+                  paddingHorizontal: 10,
+                  borderWidth: 1,
+                  borderColor: prescription.hasNeuralFatigue
+                    ? "rgba(239, 68, 68, 0.4)"
+                    : colors.primary + "30",
+                }}
+              >
+                <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+                  <View style={{ flexDirection: "row", alignItems: "center", gap: 5, flex: 1 }}>
+                    <Ionicons
+                      name={prescription.hasNeuralFatigue ? "alert-circle" : "sparkles"}
+                      size={13}
+                      color={prescription.hasNeuralFatigue ? "#ef4444" : colors.primary}
+                    />
+                    <Text
+                      style={{
+                        fontSize: 10,
+                        fontWeight: "800",
+                        color: prescription.hasNeuralFatigue ? "#ef4444" : colors.primary,
+                        letterSpacing: 0.5,
+                      }}
+                    >
+                      COACH RIR
+                    </Text>
+                    <View
+                      style={{
+                        backgroundColor: colors.surface,
+                        paddingHorizontal: 5,
+                        paddingVertical: 1,
+                        borderRadius: 4,
+                        borderWidth: 0.5,
+                        borderColor: colors.cardBorder || (colors.primary + "30"),
+                      }}
+                    >
+                      <Text style={{ fontSize: 9, fontWeight: "700", color: colors.secondary || colors.primary }}>
+                        {prescription.optionA.targetRIR}
+                      </Text>
+                    </View>
+                  </View>
+
+                  <View style={{ flexDirection: "row", alignItems: "center", gap: 2 }}>
+                    <Text style={{ fontSize: 10, fontWeight: "700", color: colors.primary }}>
+                      Ver plan
+                    </Text>
+                    <Ionicons name="chevron-forward" size={11} color={colors.primary} />
+                  </View>
+                </View>
+
+                <Text
+                  style={{
+                    fontSize: 12,
+                    fontWeight: "700",
+                    color: colors.text,
+                    marginTop: 3,
                   }}
-                />
+                  numberOfLines={1}
+                >
+                  {prescription.shortSummary}
+                </Text>
 
-                <TouchableOpacity onPress={() => setRepActual(repActual + 1)}>
-                  <Ionicons name="add-circle" size={34} color={colors.primary} />
-                </TouchableOpacity>
-              </View>
-            </View>
-          </View>
+                <Text style={{ fontSize: 10, color: colors.textSecondary, marginTop: 2 }}>
+                  {personalBest
+                    ? personalBest.peso > 0
+                      ? `Último récord: +${formatWeightText(personalBest.peso, inputUnit)} x ${personalBest.reps} reps`
+                      : personalBest.peso < 0
+                        ? `Último récord: ${personalBest.reps} reps (Ayuda: ${formatWeightText(Math.abs(personalBest.peso), inputUnit)})`
+                        : `Último récord: ${personalBest.reps} reps (Solo cuerpo)`
+                    : "Sin récord previo registrado"}
+                </Text>
+              </TouchableOpacity>
+            );
+          })()}
 
-          <Text style={[globalStyles.cardText, { marginTop: 10, color: colors.secondary, fontWeight: "600" }]}>
-            🏆 Mejor serie:{" "}
-            {personalBest
-              ? formatWeightText(personalBest.peso, userSettings.unit) + ` x ${personalBest.reps} reps`
-              : "Sin registro previo"}
-          </Text>
+          {/* Temporizador de Recuperación Inline si está activo */}
+          {activeRestTimer && !isCardioExercise(routineData.exercises[ejercicioActual]) && (
+            <InlineRestTimer
+              duration={activeRestTimer.duration}
+              startTime={activeRestTimer.startTime}
+              exerciseName={routineData.exercises[ejercicioActual]?.nombre}
+              routePath={`/routines/PlayRoutine/${id}`}
+              onAddSeconds={(secs) => {
+                setActiveRestTimer((prev) =>
+                  prev ? { ...prev, duration: prev.duration + secs } : null
+                );
+              }}
+              onSkip={() => {
+                cancelAllRestTimerNotifications();
+                setActiveRestTimer(null);
+              }}
+            />
+          )}
 
           <TouchableOpacity
             style={[globalStyles.button, { marginTop: 15 }]}
@@ -601,6 +1317,30 @@ const PlayRoutineScreen = () => {
               </Text>
             </TouchableOpacity>
           </View>
+
+          {/* Botón pequeño para finalizar entrenamiento con confirmación motivacional */}
+          <TouchableOpacity
+            onPress={handlePromptGiveUp}
+            style={{
+              alignSelf: "center",
+              marginTop: 14,
+              paddingVertical: 7,
+              paddingHorizontal: 14,
+              borderRadius: 8,
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 6,
+              backgroundColor: colors.delete + "12",
+              borderWidth: 1,
+              borderColor: colors.delete + "30",
+            }}
+            activeOpacity={0.7}
+          >
+            <Ionicons name="flag-outline" size={14} color={colors.delete} />
+            <Text style={{ fontSize: 12, fontWeight: "600", color: colors.delete }}>
+              Finalizar entrenamiento
+            </Text>
+          </TouchableOpacity>
         </View>
 
         {/* Próximos Ejercicios Reordenables */}
@@ -627,7 +1367,7 @@ const PlayRoutineScreen = () => {
                   <View style={{ flex: 1 }}>
                     <ExerciseItem
                       excerciseInfo={ex}
-                      onCheck={() => {}}
+                      onCheck={() => { }}
                       isCheckedFather={false}
                     />
                   </View>
@@ -670,6 +1410,41 @@ const PlayRoutineScreen = () => {
           </View>
         )}
       </ScrollView>
+
+      {/* Modal no nativo para confirmar abandono/finalización con mensaje motivacional */}
+      <ThemeConfirmModal
+        visible={showGiveUpModal}
+        title="¿Seguro que quieres rendirte ahora?"
+        message={`${motivationalMessage}\n\n${
+          totalSeries > 0
+            ? "Si finalizas ahora, se guardará el progreso de las series que ya completaste."
+            : "Aún no has completado ninguna serie, por lo que no se guardará ningún registro."
+        }`}
+        confirmText="Sí, finalizar"
+        cancelText="¡Seguir entrenando!"
+        isDestructive={true}
+        onConfirm={handleConfirmGiveUp}
+        onCancel={() => setShowGiveUpModal(false)}
+      />
+
+      {/* Modal Prescripción Coach RIR */}
+      {showCoachModal && routineData?.exercises?.[ejercicioActual] && (
+        <CoachRIRModal
+          visible={showCoachModal}
+          onClose={() => setShowCoachModal(false)}
+          exercise={routineData.exercises[ejercicioActual]}
+          lastSession={lastSession}
+          personalBest={personalBest}
+          prescription={calculateRIRPrescription(
+            routineData.exercises[ejercicioActual],
+            lastSession,
+            personalBest,
+            inputUnit
+          )}
+          onApplyOption={handleApplyCoachOption}
+          userUnit={inputUnit}
+        />
+      )}
     </KeyboardAvoidingView>
   );
 };

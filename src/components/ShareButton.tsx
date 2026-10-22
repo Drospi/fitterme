@@ -1,33 +1,29 @@
 import { useTheme } from "@/context/ThemeContext";
-import { Meal } from "@/store/meals";
 import { Ionicons } from "@expo/vector-icons";
 import { Share, TouchableOpacity } from "react-native";
+import * as Haptics from "expo-haptics";
 
 type ShareButtonProps = {
-  meals: Meal[];
+  text: string;
 };
 
-export default function ShareButton({ meals }: ShareButtonProps) {
+export default function ShareButton({ text }: ShareButtonProps) {
   const { colors } = useTheme();
-  const handleShare = async () => {
-    const totals = meals.reduce(
-      (acc, meal) => ({
-        calories: acc.calories + meal.calories,
-        protein: acc.protein + meal.protein,
-        carbs: acc.carbs + meal.carbs,
-        fat: acc.fat + meal.fat,
-      }),
-      { calories: 0, protein: 0, carbs: 0, fat: 0 },
-    );
 
-    await Share.share({
-      message: `MacroZone Daily Summary\n\nCalories: ${totals.calories}\nProtein: ${totals.protein}g\nCarbs: ${totals.carbs}g\nFat: ${totals.fat}g\n\nMeals: ${meals.length} logged today`,
-    });
+  const handleShare = async () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    try {
+      await Share.share({
+        message: text,
+      });
+    } catch (error) {
+      console.log("Error sharing:", error);
+    }
   };
 
   return (
-    <TouchableOpacity onPress={handleShare}>
-      <Ionicons name="share-outline" size={24} color={colors.primary} />
+    <TouchableOpacity onPress={handleShare} activeOpacity={0.7} style={{ padding: 5 }}>
+      <Ionicons name="share-outline" size={26} color={colors.primary} />
     </TouchableOpacity>
   );
 }
