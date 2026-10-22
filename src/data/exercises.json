@@ -5,7 +5,8 @@
     "musculo": "hombros",
     "objetivo": "Hipertrofia",
     "equipamiento": "Mancuernas",
-    "descripcion": "Siéntate en un banco con respaldo inclinado a 90°. Sostén las mancuernas a la altura de los hombros con las palmas mirando al frente. Empuja el peso de forma vertical hasta extender los brazos sin bloquear codos. Controla la bajada despacio."
+    "descripcion": "Siéntate en un banco con respaldo inclinado a 90°. Sostén las mancuernas a la altura de los hombros con las palmas mirando al frente. Empuja el peso de forma vertical hasta extender los brazos sin bloquear codos. Controla la bajada despacio.",
+    "category": "Gym"
   },
   {
     "id": 2,
@@ -13,7 +14,8 @@
     "musculo": "hombros",
     "objetivo": "Hipertrofia",
     "equipamiento": "Mancuernas",
-    "descripcion": "De pie con las mancuernas a los lados y rodillas levemente flexionadas. Eleva los brazos hacia los lados manteniendo una ligera flexión de codos hasta alcanzar la altura de los hombros. Pausa un segundo arriba y baja bajo control."
+    "descripcion": "De pie con las mancuernas a los lados y rodillas levemente flexionadas. Eleva los brazos hacia los lados manteniendo una ligera flexión de codos hasta alcanzar la altura de los hombros. Pausa un segundo arriba y baja bajo control.",
+    "category": "Gym"
   },
   {
     "id": 3,
@@ -21,7 +23,8 @@
     "musculo": "pecho",
     "objetivo": "Hipertrofia",
     "equipamiento": "Barra",
-    "descripcion": "Acuéstate sobre un banco plano sosteniendo la barra con agarre más ancho que tus hombros. Desciende la barra con control hasta la parte media del pecho, manteniendo los escápulas retráctiles, y empuja con fuerza hacia arriba."
+    "descripcion": "Acuéstate sobre un banco plano sosteniendo la barra con agarre más ancho que tus hombros. Desciende la barra con control hasta la parte media del pecho, manteniendo los escápulas retráctiles, y empuja con fuerza hacia arriba.",
+    "category": "Gym"
   },
   {
     "id": 4,
@@ -29,7 +32,8 @@
     "musculo": "pecho",
     "objetivo": "Hipertrofia",
     "equipamiento": "Mancuernas",
-    "descripcion": "Acostado en banco plano con las mancuernas sobre el pecho y codos semi-flexionados. Abre los brazos lateralmente en arco hasta sentir un buen estiramiento pectoral. Contrae los pectorales para volver al punto inicial."
+    "descripcion": "Acostado en banco plano con las mancuernas sobre el pecho y codos semi-flexionados. Abre los brazos lateralmente en arco hasta sentir un buen estiramiento pectoral. Contrae los pectorales para volver al punto inicial.",
+    "category": "Gym"
   },
   {
     "id": 5,
@@ -37,7 +41,8 @@
     "musculo": "biceps",
     "objetivo": "Hipertrofia",
     "equipamiento": "Barra",
-    "descripcion": "De pie con la espalda recta y agarre supino (palmas hacia arriba). Flexiona los codos manteniendo los brazos pegados al torso para elevar la barra hacia el pecho. Aprieta los bíceps arriba y desciende despacio."
+    "descripcion": "De pie con la espalda recta y agarre supino (palmas hacia arriba). Flexiona los codos manteniendo los brazos pegados al torso para elevar la barra hacia el pecho. Aprieta los bíceps arriba y desciende despacio.",
+    "category": "Gym"
   },
   {
     "id": 6,
@@ -45,7 +50,8 @@
     "musculo": "biceps",
     "objetivo": "Hipertrofia",
     "equipamiento": "Mancuernas",
-    "descripcion": "Sostén las mancuernas con agarre neutro (palmas enfrentadas). Flexiona los codos elevando las mancuernas de forma coordinada manteniendo los codos inmóviles pegados al cuerpo."
+    "descripcion": "Sostén las mancuernas con agarre neutro (palmas enfrentadas). Flexiona los codos elevando las mancuernas de forma coordinada manteniendo los codos inmóviles pegados al cuerpo.",
+    "category": "Gym"
   },
   {
     "id": 7,
@@ -53,7 +59,8 @@
     "musculo": "triceps",
     "objetivo": "Hipertrofia",
     "equipamiento": "Mancuernas",
-    "descripcion": "Acostado boca arriba con los brazos extendidos arriba. Flexiona únicamente los codos bajando las mancuernas hacia los lados de la cabeza. Extiende con fuerza el tríceps para retornar a la posición vertical."
+    "descripcion": "Acostado boca arriba con los brazos extendidos arriba. Flexiona únicamente los codos bajando las mancuernas hacia los lados de la cabeza. Extiende con fuerza el tríceps para retornar a la posición vertical.",
+    "category": "Gym"
   },
   {
     "id": 8,
@@ -61,7 +68,8 @@
     "musculo": "triceps",
     "objetivo": "Hipertrofia",
     "equipamiento": "Polea",
-    "descripcion": "De pie frente a la polea alta sostenida con cuerda o barra recta. Mantén los codos pegados a los costados y empuja la carga hacia abajo hasta extender por completo los brazos. Aprieta el tríceps abajo."
+    "descripcion": "De pie frente a la polea alta sostenida con cuerda o barra recta. Mantén los codos pegados a los costados y empuja la carga hacia abajo hasta extender por completo los brazos. Aprieta el tríceps abajo.",
+    "category": "Gym"
   },
   {
     "id": 9,
@@ -69,7 +77,8 @@
     "musculo": "espalda",
     "objetivo": "Fuerza",
     "equipamiento": "Peso corporal",
-    "descripcion": "Cuélgate de la barra con agarre amplio y palmas al frente. Activa el dorsal tirando del cuerpo hacia arriba hasta que la barbilla supere la barra. Desciende con soltura controlada."
+    "descripcion": "Cuélgate de la barra con agarre amplio y palmas al frente. Activa el dorsal tirando del cuerpo hacia arriba hasta que la barbilla supere la barra. Desciende con soltura controlada.",
+    "category": "Peso corporal"
   },
   {
     "id": 10,
@@ -77,7 +86,8 @@
     "musculo": "espalda",
     "objetivo": "Fuerza",
     "equipamiento": "Barra",
-    "descripcion": "Inclina el torso a 45° sosteniendo la barra. Tracciona la barra dirigiendo los codos hacia atrás hasta tocar la zona abdominal baja. Mantén la columna neutra durante todo el trayecto."
+    "descripcion": "Inclina el torso a 45° sosteniendo la barra. Tracciona la barra dirigiendo los codos hacia atrás hasta tocar la zona abdominal baja. Mantén la columna neutra durante todo el trayecto.",
+    "category": "Gym"
   },
   {
     "id": 11,
@@ -85,7 +95,8 @@
     "musculo": "cuadriceps",
     "objetivo": "Fuerza",
     "equipamiento": "Barra",
-    "descripcion": "Apoya la barra sobre los trapecios de forma estable. Con los pies al ancho de hombros, desciende flexionando cadera y rodillas hasta que los muslos queden paralelos al suelo. Empuja fuerte con los talones."
+    "descripcion": "Apoya la barra sobre los trapecios de forma estable. Con los pies al ancho de hombros, desciende flexionando cadera y rodillas hasta que los muslos queden paralelos al suelo. Empuja fuerte con los talones.",
+    "category": "Gym"
   },
   {
     "id": 12,
@@ -93,7 +104,8 @@
     "musculo": "cuadriceps",
     "objetivo": "Hipertrofia",
     "equipamiento": "Máquina",
-    "descripcion": "Coloca los pies a la anchura de hombros sobre la plataforma. Quita los seguros y flexiona las rodillas a 90° sin descolgar la pelvis del respaldo. Empuja con firmeza sin bloquear rodillas arriba."
+    "descripcion": "Coloca los pies a la anchura de hombros sobre la plataforma. Quita los seguros y flexiona las rodillas a 90° sin descolgar la pelvis del respaldo. Empuja con firmeza sin bloquear rodillas arriba.",
+    "category": "Gym"
   },
   {
     "id": 13,
@@ -101,7 +113,8 @@
     "musculo": "gluteos",
     "objetivo": "Hipertrofia",
     "equipamiento": "Barra",
-    "descripcion": "Sostén la barra al frente con piernas ligeramente flexionadas. Lleva la cadera hacia atrás descendiendo la barra pegada a las espinillas hasta sentir máximo estiramiento isquiotibial. Regresa apretando glúteos."
+    "descripcion": "Sostén la barra al frente con piernas ligeramente flexionadas. Lleva la cadera hacia atrás descendiendo la barra pegada a las espinillas hasta sentir máximo estiramiento isquiotibial. Regresa apretando glúteos.",
+    "category": "Gym"
   },
   {
     "id": 14,
@@ -109,7 +122,8 @@
     "musculo": "gluteos",
     "objetivo": "Hipertrofia",
     "equipamiento": "Mancuernas",
-    "descripcion": "Con una mancuerna en cada mano, da un paso amplio hacia adelante. Baja la rodilla trasera casi rozando el suelo formando ángulo recto con la delantera. Empuja y vuelve arriba."
+    "descripcion": "Con una mancuerna en cada mano, da un paso amplio hacia adelante. Baja la rodilla trasera casi rozando el suelo formando ángulo recto con la delantera. Empuja y vuelve arriba.",
+    "category": "Gym"
   },
   {
     "id": 15,
@@ -117,7 +131,8 @@
     "musculo": "gemelos",
     "objetivo": "Hipertrofia",
     "equipamiento": "Máquina",
-    "descripcion": "Apoya los metatarsos sobre el borde del escalón. Eleva los talones lo más alto posible contrayendo los gemelos durante un segundo y desciende estirando completamente el sóleo."
+    "descripcion": "Apoya los metatarsos sobre el borde del escalón. Eleva los talones lo más alto posible contrayendo los gemelos durante un segundo y desciende estirando completamente el sóleo.",
+    "category": "Gym"
   },
   {
     "id": 16,
@@ -125,7 +140,8 @@
     "musculo": "abdomen",
     "objetivo": "Resistencia",
     "equipamiento": "Peso corporal",
-    "descripcion": "Tumbado boca arriba con rodillas flexionadas. Exhala flexionando la columna elevando únicamente las escápulas del suelo contrayendo el abdomen con fuerza. Inhala al bajar."
+    "descripcion": "Tumbado boca arriba con rodillas flexionadas. Exhala flexionando la columna elevando únicamente las escápulas del suelo contrayendo el abdomen con fuerza. Inhala al bajar.",
+    "category": "Peso corporal"
   },
   {
     "id": 17,
@@ -133,7 +149,8 @@
     "musculo": "abdomen",
     "objetivo": "Resistencia",
     "equipamiento": "Peso corporal",
-    "descripcion": "Apoya antebrazos y puntas de pie formando una línea recta con el cuerpo. Contrae abdomen, glúteos y cuádriceps de forma estática manteniendo respiración fluida."
+    "descripcion": "Apoya antebrazos y puntas de pie formando una línea recta con el cuerpo. Contrae abdomen, glúteos y cuádriceps de forma estática manteniendo respiración fluida.",
+    "category": "Peso corporal"
   },
   {
     "id": 18,
@@ -141,7 +158,8 @@
     "musculo": "pecho",
     "objetivo": "Hipertrofia",
     "equipamiento": "Mancuernas",
-    "descripcion": "Banco inclinado entre 30° y 45°. Empuja las mancuernas hacia arriba convergiendo al centro sobre el pecho alto. Desciende sintiendo apertura pectoral."
+    "descripcion": "Banco inclinado entre 30° y 45°. Empuja las mancuernas hacia arriba convergiendo al centro sobre el pecho alto. Desciende sintiendo apertura pectoral.",
+    "category": "Gym"
   },
   {
     "id": 19,
@@ -149,7 +167,8 @@
     "musculo": "pecho",
     "objetivo": "Hipertrofia",
     "equipamiento": "Peso corporal",
-    "descripcion": "Suéltate en las barras paralelas inclinando ligeramente el torso hacia adelante. Desciende flexionando codos a 90° y empuja fuerte activando pectorales y tríceps."
+    "descripcion": "Suéltate en las barras paralelas inclinando ligeramente el torso hacia adelante. Desciende flexionando codos a 90° y empuja fuerte activando pectorales y tríceps.",
+    "category": "Peso corporal"
   },
   {
     "id": 20,
@@ -157,7 +176,8 @@
     "musculo": "espalda",
     "objetivo": "Hipertrofia",
     "equipamiento": "Mancuernas",
-    "descripcion": "Apoya rodilla y mano contrarias sobre banco plano. Tira de la mancuerna hacia la cadera llevando el codo bien pegado atrás. Siente la tracción del dorsal."
+    "descripcion": "Apoya rodilla y mano contrarias sobre banco plano. Tira de la mancuerna hacia la cadera llevando el codo bien pegado atrás. Siente la tracción del dorsal.",
+    "category": "Gym"
   },
   {
     "id": 21,
@@ -165,7 +185,8 @@
     "musculo": "espalda",
     "objetivo": "Hipertrofia",
     "equipamiento": "Polea",
-    "descripcion": "Agarre amplio mirando al frente. Tracciona la barra hacia la clavícula sacando pecho y juntando las escápulas. Extiende brazos arriba sin soltar la tensión."
+    "descripcion": "Agarre amplio mirando al frente. Tracciona la barra hacia la clavícula sacando pecho y juntando las escápulas. Extiende brazos arriba sin soltar la tensión.",
+    "category": "Gym"
   },
   {
     "id": 22,
@@ -173,7 +194,8 @@
     "musculo": "hombros",
     "objetivo": "Hipertrofia",
     "equipamiento": "Mancuernas",
-    "descripcion": "Inicia con mancuernas al frente de los hombros y palmas hacia ti. Al empujar verticalmente, rota las muñecas 180° terminando arriba con palmas al frente."
+    "descripcion": "Inicia con mancuernas al frente de los hombros y palmas hacia ti. Al empujar verticalmente, rota las muñecas 180° terminando arriba con palmas al frente.",
+    "category": "Gym"
   },
   {
     "id": 23,
@@ -181,7 +203,8 @@
     "musculo": "hombros",
     "objetivo": "Hipertrofia",
     "equipamiento": "Mancuernas",
-    "descripcion": "Inclinado hacia adelante con el torso casi paralelo al suelo. Eleva las mancuernas hacia los lados contrayendo los deltoides posteriores. Controla la bajada."
+    "descripcion": "Inclinado hacia adelante con el torso casi paralelo al suelo. Eleva las mancuernas hacia los lados contrayendo los deltoides posteriores. Controla la bajada.",
+    "category": "Gym"
   },
   {
     "id": 24,
@@ -189,7 +212,8 @@
     "musculo": "biceps",
     "objetivo": "Hipertrofia",
     "equipamiento": "Barra",
-    "descripcion": "Apoya tríceps sobre el banco predicador. Realiza flexión de codo aislada subiendo la barra Z y controlando la bajada sin bloquear codos de golpe."
+    "descripcion": "Apoya tríceps sobre el banco predicador. Realiza flexión de codo aislada subiendo la barra Z y controlando la bajada sin bloquear codos de golpe.",
+    "category": "Gym"
   },
   {
     "id": 25,
@@ -197,7 +221,8 @@
     "musculo": "biceps",
     "objetivo": "Hipertrofia",
     "equipamiento": "Mancuernas",
-    "descripcion": "Sentado con codo apoyado en la cara interna del muslo. Flexiona el antebrazo enfocando la contracción pura del pico del bíceps."
+    "descripcion": "Sentado con codo apoyado en la cara interna del muslo. Flexiona el antebrazo enfocando la contracción pura del pico del bíceps.",
+    "category": "Gym"
   },
   {
     "id": 26,
@@ -205,7 +230,8 @@
     "musculo": "triceps",
     "objetivo": "Hipertrofia",
     "equipamiento": "Barra",
-    "descripcion": "Tumbado en banco plano, flexiona los codos llevando la barra Z hacia la frente. Extiende brazos con fuerza activando las tres cabezas del tríceps."
+    "descripcion": "Tumbado en banco plano, flexiona los codos llevando la barra Z hacia la frente. Extiende brazos con fuerza activando las tres cabezas del tríceps.",
+    "category": "Gym"
   },
   {
     "id": 27,
@@ -213,7 +239,8 @@
     "musculo": "triceps",
     "objetivo": "Hipertrofia",
     "equipamiento": "Mancuernas",
-    "descripcion": "Torso inclinado al frente con el brazo paralelo al suelo. Extiende el codo hacia atrás completamente y aprieta el tríceps antes de retornar."
+    "descripcion": "Torso inclinado al frente con el brazo paralelo al suelo. Extiende el codo hacia atrás completamente y aprieta el tríceps antes de retornar.",
+    "category": "Gym"
   },
   {
     "id": 28,
@@ -221,7 +248,8 @@
     "musculo": "gluteos",
     "objetivo": "Hipertrofia",
     "equipamiento": "Mancuernas",
-    "descripcion": "Apoya el empeine trasero en un banco elevado. Baja verticalmente flexionando la pierna delantera cargando el peso sobre el glúteo activo."
+    "descripcion": "Apoya el empeine trasero en un banco elevado. Baja verticalmente flexionando la pierna delantera cargando el peso sobre el glúteo activo.",
+    "category": "Gym"
   },
   {
     "id": 29,
@@ -229,7 +257,8 @@
     "musculo": "gluteos",
     "objetivo": "Fuerza",
     "equipamiento": "Barra",
-    "descripcion": "Apoya escápulas en banco y barra sobre la cadera con almohadilla. Empuja la cadera hacia arriba contrayendo glúteos al máximo en alineación horizontal."
+    "descripcion": "Apoya escápulas en banco y barra sobre la cadera con almohadilla. Empuja la cadera hacia arriba contrayendo glúteos al máximo en alineación horizontal.",
+    "category": "Gym"
   },
   {
     "id": 30,
@@ -237,7 +266,8 @@
     "musculo": "cuadriceps",
     "objetivo": "Hipertrofia",
     "equipamiento": "Máquina",
-    "descripcion": "Sentado en la máquina con rodillas alineadas al eje. Extiende las piernas arriba hasta lograr contracción completa de cuádriceps y baja despacio."
+    "descripcion": "Sentado en la máquina con rodillas alineadas al eje. Extiende las piernas arriba hasta lograr contracción completa de cuádriceps y baja despacio.",
+    "category": "Gym"
   },
   {
     "id": 31,
@@ -245,7 +275,8 @@
     "musculo": "gluteos",
     "objetivo": "Hipertrofia",
     "equipamiento": "Máquina",
-    "descripcion": "Boca abajo con rodillo sobre talones. Flexiona las piernas llevando los talones hacia los glúteos activando la musculatura isquiotibial."
+    "descripcion": "Boca abajo con rodillo sobre talones. Flexiona las piernas llevando los talones hacia los glúteos activando la musculatura isquiotibial.",
+    "category": "Gym"
   },
   {
     "id": 32,
@@ -253,7 +284,8 @@
     "musculo": "gemelos",
     "objetivo": "Hipertrofia",
     "equipamiento": "Máquina",
-    "descripcion": "Sentado con almohadillas sobre los muslos bajos. Eleva talones enfocando el esfuerzo en el músculo sóleo con parada de 1s en la cima."
+    "descripcion": "Sentado con almohadillas sobre los muslos bajos. Eleva talones enfocando el esfuerzo en el músculo sóleo con parada de 1s en la cima.",
+    "category": "Gym"
   },
   {
     "id": 33,
@@ -261,7 +293,8 @@
     "musculo": "abdomen",
     "objetivo": "Hipertrofia",
     "equipamiento": "Peso corporal",
-    "descripcion": "Sujeto a barra fija, eleva las piernas extendidas o flexionadas rodando la pelvis hacia arriba para enfocar el recto abdominal inferior."
+    "descripcion": "Sujeto a barra fija, eleva las piernas extendidas o flexionadas rodando la pelvis hacia arriba para enfocar el recto abdominal inferior.",
+    "category": "Peso corporal"
   },
   {
     "id": 34,
@@ -269,7 +302,8 @@
     "musculo": "abdomen",
     "objetivo": "Fuerza",
     "equipamiento": "Peso corporal",
-    "descripcion": "Rodillas en suelo apoyando la rueda al frente. Rueda hacia adelante manteniendo la espalda fuerte sin arquear la zona lumbar y regresa tirando del core."
+    "descripcion": "Rodillas en suelo apoyando la rueda al frente. Rueda hacia adelante manteniendo la espalda fuerte sin arquear la zona lumbar y regresa tirando del core.",
+    "category": "Peso corporal"
   },
   {
     "id": 35,
@@ -277,7 +311,8 @@
     "musculo": "pecho",
     "objetivo": "Hipertrofia",
     "equipamiento": "Polea",
-    "descripcion": "De pie en el centro de las poleas altas. Cruza las manos al frente a la altura de la cadera apretando la parte inferior y media del pecho."
+    "descripcion": "De pie en el centro de las poleas altas. Cruza las manos al frente a la altura de la cadera apretando la parte inferior y media del pecho.",
+    "category": "Gym"
   },
   {
     "id": 36,
@@ -285,7 +320,8 @@
     "musculo": "espalda",
     "objetivo": "Hipertrofia",
     "equipamiento": "Mancuernas",
-    "descripcion": "Apoya la parte alta de la espalda en banco perpendicular. Desciende la mancuerna por detrás de la cabeza estirando caja torácica y dorsales."
+    "descripcion": "Apoya la parte alta de la espalda en banco perpendicular. Desciende la mancuerna por detrás de la cabeza estirando caja torácica y dorsales.",
+    "category": "Gym"
   },
   {
     "id": 37,
@@ -293,7 +329,8 @@
     "musculo": "espalda",
     "objetivo": "Hipertrofia",
     "equipamiento": "Barra",
-    "descripcion": "Sostén la barra al frente y eleva los hombros verticalmente hacia las orejas contrayendo el trapecio alto sin rotar los hombros."
+    "descripcion": "Sostén la barra al frente y eleva los hombros verticalmente hacia las orejas contrayendo el trapecio alto sin rotar los hombros.",
+    "category": "Gym"
   },
   {
     "id": 38,
@@ -301,7 +338,8 @@
     "musculo": "espalda",
     "objetivo": "Hipertrofia",
     "equipamiento": "Polea",
-    "descripcion": "Sentado con pies apoyados y espalda erguida. Tracciona el agarre estrecho al abdomen medio juntando las escápulas y sacando pecho."
+    "descripcion": "Sentado con pies apoyados y espalda erguida. Tracciona el agarre estrecho al abdomen medio juntando las escápulas y sacando pecho.",
+    "category": "Gym"
   },
   {
     "id": 39,
@@ -309,7 +347,8 @@
     "musculo": "pecho",
     "objetivo": "Fuerza",
     "equipamiento": "Barra",
-    "descripcion": "Banco a 30°. Baja la barra rozando la parte alta del pectoral y empuja firmemente arriba aislando el haz clavicular del pecho."
+    "descripcion": "Banco a 30°. Baja la barra rozando la parte alta del pectoral y empuja firmemente arriba aislando el haz clavicular del pecho.",
+    "category": "Gym"
   },
   {
     "id": 40,
@@ -317,7 +356,8 @@
     "musculo": "hombros",
     "objetivo": "Hipertrofia",
     "equipamiento": "Polea",
-    "descripcion": "Tracciona la cuerda alta hacia la cara/frente abriendo los codos y realizando rotación externa de hombro para salud articular y deltoides posterior."
+    "descripcion": "Tracciona la cuerda alta hacia la cara/frente abriendo los codos y realizando rotación externa de hombro para salud articular y deltoides posterior.",
+    "category": "Gym"
   },
   {
     "id": 41,
@@ -325,7 +365,8 @@
     "musculo": "biceps",
     "objetivo": "Hipertrofia",
     "equipamiento": "Mancuernas",
-    "descripcion": "Sentado en banco inclinado a 60° con brazos colgando. Eleva las mancuernas con estiramiento máximo de la cabeza larga del bíceps."
+    "descripcion": "Sentado en banco inclinado a 60° con brazos colgando. Eleva las mancuernas con estiramiento máximo de la cabeza larga del bíceps.",
+    "category": "Gym"
   },
   {
     "id": 42,
@@ -333,7 +374,8 @@
     "musculo": "triceps",
     "objetivo": "Hipertrofia",
     "equipamiento": "Peso corporal",
-    "descripcion": "Manos apoyadas en banco trasero y pies delante. Desciende doblando codos a 90° y empuja con potencia con la fuerza del tríceps."
+    "descripcion": "Manos apoyadas en banco trasero y pies delante. Desciende doblando codos a 90° y empuja con potencia con la fuerza del tríceps.",
+    "category": "Peso corporal"
   },
   {
     "id": 43,
@@ -341,7 +383,8 @@
     "musculo": "cuadriceps",
     "objetivo": "Hipertrofia",
     "equipamiento": "Máquina",
-    "descripcion": "Espalda firme contra el respaldo en la máquina Hack. Baja en flexión profunda de rodillas y empuja enfocando todo el esfuerzo en los cuádriceps."
+    "descripcion": "Espalda firme contra el respaldo en la máquina Hack. Baja en flexión profunda de rodillas y empuja enfocando todo el esfuerzo en los cuádriceps.",
+    "category": "Gym"
   },
   {
     "id": 44,
@@ -349,7 +392,8 @@
     "musculo": "cuadriceps",
     "objetivo": "Hipertrofia",
     "equipamiento": "Mancuernas",
-    "descripcion": "Pie trasero apoyado sobre banco. Baja verticalmente enfatizando el trabajo unilateral en cuadríceps y glúteos."
+    "descripcion": "Pie trasero apoyado sobre banco. Baja verticalmente enfatizando el trabajo unilateral en cuadríceps y glúteos.",
+    "category": "Gym"
   },
   {
     "id": 45,
@@ -357,7 +401,8 @@
     "musculo": "espalda",
     "objetivo": "Fuerza",
     "equipamiento": "Barra",
-    "descripcion": "Pies bajo la barra a anchura de caderas. Agarra la barra, bloquea la espalda y empuja el suelo extendiendo cadera y rodillas simultáneamente."
+    "descripcion": "Pies bajo la barra a anchura de caderas. Agarra la barra, bloquea la espalda y empuja el suelo extendiendo cadera y rodillas simultáneamente.",
+    "category": "Gym"
   },
   {
     "id": 46,
@@ -365,7 +410,8 @@
     "musculo": "gluteos",
     "objetivo": "Hipertrofia",
     "equipamiento": "Máquina",
-    "descripcion": "Sentado abriendo las piernas contra la resistencia de las almohadillas externas para estimular el glúteo medio."
+    "descripcion": "Sentado abriendo las piernas contra la resistencia de las almohadillas externas para estimular el glúteo medio.",
+    "category": "Gym"
   },
   {
     "id": 47,
@@ -373,7 +419,8 @@
     "musculo": "cuadriceps",
     "objetivo": "Hipertrofia",
     "equipamiento": "Máquina",
-    "descripcion": "Junta las piernas contrayendo la cara interna de los muslos (aductores) de forma pausada."
+    "descripcion": "Junta las piernas contrayendo la cara interna de los muslos (aductores) de forma pausada.",
+    "category": "Gym"
   },
   {
     "id": 48,
@@ -381,7 +428,8 @@
     "musculo": "pecho",
     "objetivo": "Hipertrofia",
     "equipamiento": "Peso corporal",
-    "descripcion": "Cuerpo recto apoyado en manos y puntas de pie. Baja el pecho cerca del suelo manteniendo codos a 45° y empuja fuerte."
+    "descripcion": "Cuerpo recto apoyado en manos y puntas de pie. Baja el pecho cerca del suelo manteniendo codos a 45° y empuja fuerte.",
+    "category": "Peso corporal"
   },
   {
     "id": 49,
@@ -389,7 +437,8 @@
     "musculo": "espalda",
     "objetivo": "Fuerza",
     "equipamiento": "Barra",
-    "descripcion": "Sostén la barra T o landmine con agarre estrecho. Tracciona al pecho bajo activando la densidad de la espalda media."
+    "descripcion": "Sostén la barra T o landmine con agarre estrecho. Tracciona al pecho bajo activando la densidad de la espalda media.",
+    "category": "Gym"
   },
   {
     "id": 50,
@@ -397,7 +446,8 @@
     "musculo": "hombros",
     "objetivo": "Hipertrofia",
     "equipamiento": "Mancuernas",
-    "descripcion": "De pie elevando una a una las mancuernas al frente a la altura de los ojos enfatizando el deltoides anterior."
+    "descripcion": "De pie elevando una a una las mancuernas al frente a la altura de los ojos enfatizando el deltoides anterior.",
+    "category": "Gym"
   },
   {
     "id": 51,
@@ -405,7 +455,8 @@
     "musculo": "pecho",
     "objetivo": "Hipertrofia",
     "equipamiento": "Barra",
-    "descripcion": "Banco declinado. Empuja la barra aislando las fibras inferiores del pectoral con menor tensión en el hombro."
+    "descripcion": "Banco declinado. Empuja la barra aislando las fibras inferiores del pectoral con menor tensión en el hombro.",
+    "category": "Gym"
   },
   {
     "id": 52,
@@ -413,7 +464,8 @@
     "musculo": "antebrazo",
     "objetivo": "Hipertrofia",
     "equipamiento": "Barra",
-    "descripcion": "Antebrazos apoyados en los muslos con palmas abajo. Extiende la muñeca elevando la barra para desarrollar extensores de antebrazo."
+    "descripcion": "Antebrazos apoyados en los muslos con palmas abajo. Extiende la muñeca elevando la barra para desarrollar extensores de antebrazo.",
+    "category": "Gym"
   },
   {
     "id": 53,
@@ -421,7 +473,8 @@
     "musculo": "antebrazo",
     "objetivo": "Hipertrofia",
     "equipamiento": "Barra",
-    "descripcion": "Antebrazos apoyados con palmas arriba. Flexiona la muñeca subiendo la barra contrayendo flexores de antebrazo."
+    "descripcion": "Antebrazos apoyados con palmas arriba. Flexiona la muñeca subiendo la barra contrayendo flexores de antebrazo.",
+    "category": "Gym"
   },
   {
     "id": 54,
@@ -429,7 +482,8 @@
     "musculo": "hombros",
     "objetivo": "Hipertrofia",
     "equipamiento": "Máquina",
-    "descripcion": "Sentado con la espalda bien firme en el respaldo. Empuja las agarraderas guiadas por encima de la cabeza y baja despacio."
+    "descripcion": "Sentado con la espalda bien firme en el respaldo. Empuja las agarraderas guiadas por encima de la cabeza y baja despacio.",
+    "category": "Gym"
   },
   {
     "id": 55,
@@ -437,7 +491,8 @@
     "musculo": "pecho",
     "objetivo": "Hipertrofia",
     "equipamiento": "Máquina",
-    "descripcion": "Sentado juntando los brazos al frente en la máquina Pec-Deck focalizando la tensión continua en la zona central del pectoral."
+    "descripcion": "Sentado juntando los brazos al frente en la máquina Pec-Deck focalizando la tensión continua en la zona central del pectoral.",
+    "category": "Gym"
   },
   {
     "id": 56,
@@ -445,7 +500,8 @@
     "musculo": "hombros",
     "objetivo": "Fuerza",
     "equipamiento": "Barra",
-    "descripcion": "De pie empujando la barra desde las clavículas de forma estricta por encima de la cabeza usando el core para estabilidad."
+    "descripcion": "De pie empujando la barra desde las clavículas de forma estricta por encima de la cabeza usando el core para estabilidad.",
+    "category": "Gym"
   },
   {
     "id": 57,
@@ -453,7 +509,8 @@
     "musculo": "pecho",
     "objetivo": "Fuerza",
     "equipamiento": "Barra",
-    "descripcion": "Press inclinado enfocado en bajas repeticiones con cargas pesadas para máxima fuerza en haz clavicular."
+    "descripcion": "Press inclinado enfocado en bajas repeticiones con cargas pesadas para máxima fuerza en haz clavicular.",
+    "category": "Gym"
   },
   {
     "id": 58,
@@ -461,7 +518,8 @@
     "musculo": "pecho",
     "objetivo": "Fuerza",
     "equipamiento": "Mancuernas",
-    "descripcion": "Trabajo de empuje pesado en banco plano con mancuernas para mayor rango articular de movimiento."
+    "descripcion": "Trabajo de empuje pesado en banco plano con mancuernas para mayor rango articular de movimiento.",
+    "category": "Gym"
   },
   {
     "id": 59,
@@ -469,7 +527,8 @@
     "musculo": "pecho",
     "objetivo": "Hipertrofia",
     "equipamiento": "Barra",
-    "descripcion": "Variante de press de banca llevando la barra hacia el cuello/clavícula con codos abiertos a 90° para aislamiento pectoral."
+    "descripcion": "Variante de press de banca llevando la barra hacia el cuello/clavícula con codos abiertos a 90° para aislamiento pectoral.",
+    "category": "Gym"
   },
   {
     "id": 60,
@@ -477,7 +536,8 @@
     "musculo": "pecho",
     "objetivo": "Hipertrofia",
     "equipamiento": "Máquina",
-    "descripcion": "Press inclinado en barra guiada para máxima estabilidad y aislamiento sin preocuparse por el equilibrio."
+    "descripcion": "Press inclinado en barra guiada para máxima estabilidad y aislamiento sin preocuparse por el equilibrio.",
+    "category": "Gym"
   },
   {
     "id": 61,
@@ -485,7 +545,8 @@
     "musculo": "pecho",
     "objetivo": "Hipertrofia",
     "equipamiento": "Mancuernas",
-    "descripcion": "Empuje declinado con mancuernas para focalizar la zona baja del pecho."
+    "descripcion": "Empuje declinado con mancuernas para focalizar la zona baja del pecho.",
+    "category": "Gym"
   },
   {
     "id": 62,
@@ -493,7 +554,8 @@
     "musculo": "pecho",
     "objetivo": "Hipertrofia",
     "equipamiento": "Polea",
-    "descripcion": "Tira de las poleas desde abajo hacia arriba y al centro juntando las manos para trabajar el pecho superior."
+    "descripcion": "Tira de las poleas desde abajo hacia arriba y al centro juntando las manos para trabajar el pecho superior.",
+    "category": "Gym"
   },
   {
     "id": 63,
@@ -501,7 +563,8 @@
     "musculo": "pecho",
     "objetivo": "Hipertrofia",
     "equipamiento": "Polea",
-    "descripcion": "Cruce horizontal a la altura del esternón para bombeo pectoral continuo."
+    "descripcion": "Cruce horizontal a la altura del esternón para bombeo pectoral continuo.",
+    "category": "Gym"
   },
   {
     "id": 64,
@@ -509,7 +572,8 @@
     "musculo": "pecho",
     "objetivo": "Hipertrofia",
     "equipamiento": "Máquina",
-    "descripcion": "Empuje guiado sentado ideal para llegar al fallo de forma segura."
+    "descripcion": "Empuje guiado sentado ideal para llegar al fallo de forma segura.",
+    "category": "Gym"
   },
   {
     "id": 65,
@@ -517,7 +581,8 @@
     "musculo": "espalda",
     "objetivo": "Hipertrofia",
     "equipamiento": "Barra",
-    "descripcion": "Remo con agarre supino involucrando mayor trabajo de dorsal inferior y bíceps."
+    "descripcion": "Remo con agarre supino involucrando mayor trabajo de dorsal inferior y bíceps.",
+    "category": "Gym"
   },
   {
     "id": 66,
@@ -525,7 +590,8 @@
     "musculo": "espalda",
     "objetivo": "Hipertrofia",
     "equipamiento": "Máquina",
-    "descripcion": "Remo articulado con soporte en el pecho para aislar la espalda sin sobrecargar la zona lumbar."
+    "descripcion": "Remo articulado con soporte en el pecho para aislar la espalda sin sobrecargar la zona lumbar.",
+    "category": "Gym"
   },
   {
     "id": 67,
@@ -533,7 +599,8 @@
     "musculo": "espalda",
     "objetivo": "Hipertrofia",
     "equipamiento": "Polea",
-    "descripcion": "Jalón vertical usando agarre V o estrecho para máximo estiramiento y tracción de los dorsales."
+    "descripcion": "Jalón vertical usando agarre V o estrecho para máximo estiramiento y tracción de los dorsales.",
+    "category": "Gym"
   },
   {
     "id": 68,
@@ -541,7 +608,8 @@
     "musculo": "espalda",
     "objetivo": "Hipertrofia",
     "equipamiento": "Polea",
-    "descripcion": "Jalón usando agarres independientes permitiendo rotación natural del hombro."
+    "descripcion": "Jalón usando agarres independientes permitiendo rotación natural del hombro.",
+    "category": "Gym"
   },
   {
     "id": 69,
@@ -549,7 +617,8 @@
     "musculo": "espalda",
     "objetivo": "Hipertrofia",
     "equipamiento": "Polea",
-    "descripcion": "De pie tirando de la cuerda alta hacia los muslos manteniendo brazos casi extendidos."
+    "descripcion": "De pie tirando de la cuerda alta hacia los muslos manteniendo brazos casi extendidos.",
+    "category": "Gym"
   },
   {
     "id": 70,
@@ -557,7 +626,8 @@
     "musculo": "espalda",
     "objetivo": "Fuerza",
     "equipamiento": "Peso corporal",
-    "descripcion": "Dominadas con palmas hacia ti activando fuertemente dorsales y bíceps."
+    "descripcion": "Dominadas con palmas hacia ti activando fuertemente dorsales y bíceps.",
+    "category": "Peso corporal"
   },
   {
     "id": 71,
@@ -565,7 +635,8 @@
     "musculo": "hombros",
     "objetivo": "Hipertrofia",
     "equipamiento": "Barra",
-    "descripcion": "Empuje militar vertical con agarre anatómico en barra Z."
+    "descripcion": "Empuje militar vertical con agarre anatómico en barra Z.",
+    "category": "Gym"
   },
   {
     "id": 72,
@@ -573,7 +644,8 @@
     "musculo": "hombros",
     "objetivo": "Hipertrofia",
     "equipamiento": "Polea",
-    "descripcion": "Elevación lateral a una mano con polea baja para tensión constante en todo el rango de movimiento."
+    "descripcion": "Elevación lateral a una mano con polea baja para tensión constante en todo el rango de movimiento.",
+    "category": "Gym"
   },
   {
     "id": 73,
@@ -581,7 +653,8 @@
     "musculo": "hombros",
     "objetivo": "Hipertrofia",
     "equipamiento": "Máquina",
-    "descripcion": "Sentado de frente a la máquina abriendo los brazos hacia atrás para aislar el deltoides posterior."
+    "descripcion": "Sentado de frente a la máquina abriendo los brazos hacia atrás para aislar el deltoides posterior.",
+    "category": "Gym"
   },
   {
     "id": 74,
@@ -589,7 +662,8 @@
     "musculo": "hombros",
     "objetivo": "Hipertrofia",
     "equipamiento": "Peso corporal",
-    "descripcion": "Eleva un disco de pesas sujetándolo por los bordes hasta la altura de los ojos."
+    "descripcion": "Eleva un disco de pesas sujetándolo por los bordes hasta la altura de los ojos.",
+    "category": "Peso corporal"
   },
   {
     "id": 75,
@@ -597,7 +671,8 @@
     "musculo": "hombros",
     "objetivo": "Hipertrofia",
     "equipamiento": "Barra",
-    "descripcion": "Tracciona la barra Z pegada al torso elevando codos por encima de los hombros."
+    "descripcion": "Tracciona la barra Z pegada al torso elevando codos por encima de los hombros.",
+    "category": "Gym"
   },
   {
     "id": 76,
@@ -605,7 +680,8 @@
     "musculo": "biceps",
     "objetivo": "Hipertrofia",
     "equipamiento": "Barra",
-    "descripcion": "Subes la barra arrastrándola pegada al cuerpo llevando los codos hacia atrás para eliminar impulso del hombro."
+    "descripcion": "Subes la barra arrastrándola pegada al cuerpo llevando los codos hacia atrás para eliminar impulso del hombro.",
+    "category": "Gym"
   },
   {
     "id": 77,
@@ -613,7 +689,8 @@
     "musculo": "biceps",
     "objetivo": "Hipertrofia",
     "equipamiento": "Polea",
-    "descripcion": "Curl neutro con cuerda manteniendo tensión continua en la parte braquial del brazo."
+    "descripcion": "Curl neutro con cuerda manteniendo tensión continua en la parte braquial del brazo.",
+    "category": "Gym"
   },
   {
     "id": 78,
@@ -621,7 +698,8 @@
     "musculo": "biceps",
     "objetivo": "Hipertrofia",
     "equipamiento": "Barra",
-    "descripcion": "Tumbado boca abajo en banco inclinado realizando flexión de bíceps aislada en la vertical."
+    "descripcion": "Tumbado boca abajo en banco inclinado realizando flexión de bíceps aislada en la vertical.",
+    "category": "Gym"
   },
   {
     "id": 79,
@@ -629,7 +707,8 @@
     "musculo": "biceps",
     "objetivo": "Hipertrofia",
     "equipamiento": "Mancuernas",
-    "descripcion": "Subes la mancuerna en agarre supino y rotas la muñeca arriba para bajar en pronación trabajando antebrazo."
+    "descripcion": "Subes la mancuerna en agarre supino y rotas la muñeca arriba para bajar en pronación trabajando antebrazo.",
+    "category": "Gym"
   },
   {
     "id": 80,
@@ -637,7 +716,8 @@
     "musculo": "triceps",
     "objetivo": "Hipertrofia",
     "equipamiento": "Mancuernas",
-    "descripcion": "Sentado sosteniendo una mancuerna pesada con ambas manos por detrás de la cabeza y extendiendo arriba."
+    "descripcion": "Sentado sosteniendo una mancuerna pesada con ambas manos por detrás de la cabeza y extendiendo arriba.",
+    "category": "Gym"
   },
   {
     "id": 81,
@@ -645,7 +725,8 @@
     "musculo": "triceps",
     "objetivo": "Fuerza",
     "equipamiento": "Barra",
-    "descripcion": "Press de banca con manos a la anchura de hombros para derivar el máximo esfuerzo al tríceps."
+    "descripcion": "Press de banca con manos a la anchura de hombros para derivar el máximo esfuerzo al tríceps.",
+    "category": "Gym"
   },
   {
     "id": 82,
@@ -653,7 +734,8 @@
     "musculo": "triceps",
     "objetivo": "Hipertrofia",
     "equipamiento": "Polea",
-    "descripcion": "De espalda a la polea alta extendiendo la cuerda hacia adelante sobre la cabeza para máximo estiramiento de la cabeza larga."
+    "descripcion": "De espalda a la polea alta extendiendo la cuerda hacia adelante sobre la cabeza para máximo estiramiento de la cabeza larga.",
+    "category": "Gym"
   },
   {
     "id": 83,
@@ -661,7 +743,8 @@
     "musculo": "cuadriceps",
     "objetivo": "Fuerza",
     "equipamiento": "Barra",
-    "descripcion": "Barra apoyada sobre los deltoides anteriores al frente con codos altos. Mayor énfasis en cuádriceps y postura erguida."
+    "descripcion": "Barra apoyada sobre los deltoides anteriores al frente con codos altos. Mayor énfasis en cuádriceps y postura erguida.",
+    "category": "Gym"
   },
   {
     "id": 84,
@@ -669,7 +752,8 @@
     "musculo": "cuadriceps",
     "objetivo": "Hipertrofia",
     "equipamiento": "Máquina",
-    "descripcion": "Empuje de piernas en plano horizontal con control en la fase concéntrica y excéntrica."
+    "descripcion": "Empuje de piernas en plano horizontal con control en la fase concéntrica y excéntrica.",
+    "category": "Gym"
   },
   {
     "id": 85,
@@ -677,7 +761,8 @@
     "musculo": "gluteos",
     "objetivo": "Hipertrofia",
     "equipamiento": "Mancuernas",
-    "descripcion": "Avanza dando pasos largos y profundos manteniendo el equilibrio y tensión en glúteos y muslos."
+    "descripcion": "Avanza dando pasos largos y profundos manteniendo el equilibrio y tensión en glúteos y muslos.",
+    "category": "Gym"
   },
   {
     "id": 86,
@@ -685,7 +770,8 @@
     "musculo": "cuadriceps",
     "objetivo": "Hipertrofia",
     "equipamiento": "Peso corporal",
-    "descripcion": "Inclina el torso atrás doblando rodillas al frente para lograr un estiramiento extremo del recto femoral."
+    "descripcion": "Inclina el torso atrás doblando rodillas al frente para lograr un estiramiento extremo del recto femoral.",
+    "category": "Peso corporal"
   },
   {
     "id": 87,
@@ -693,7 +779,8 @@
     "musculo": "gluteos",
     "objetivo": "Fuerza",
     "equipamiento": "Barra",
-    "descripcion": "Postura muy abierta de pies con manos por dentro de las piernas. Mayor trabajo de aductores y glúteos."
+    "descripcion": "Postura muy abierta de pies con manos por dentro de las piernas. Mayor trabajo de aductores y glúteos.",
+    "category": "Gym"
   },
   {
     "id": 88,
@@ -701,7 +788,8 @@
     "musculo": "gluteos",
     "objetivo": "Hipertrofia",
     "equipamiento": "Máquina",
-    "descripcion": "Sentado flexionando las piernas hacia abajo para aislar los isquiotibiales en rango acortado."
+    "descripcion": "Sentado flexionando las piernas hacia abajo para aislar los isquiotibiales en rango acortado.",
+    "category": "Gym"
   },
   {
     "id": 89,
@@ -709,7 +797,8 @@
     "musculo": "gluteos",
     "objetivo": "Hipertrofia",
     "equipamiento": "Polea",
-    "descripcion": "Sujeta la correa al tobillo y empuja la pierna hacia atrás contrayendo el glúteo mayor."
+    "descripcion": "Sujeta la correa al tobillo y empuja la pierna hacia atrás contrayendo el glúteo mayor.",
+    "category": "Gym"
   },
   {
     "id": 90,
@@ -717,7 +806,8 @@
     "musculo": "gluteos",
     "objetivo": "Hipertrofia",
     "equipamiento": "Mancuernas",
-    "descripcion": "Tumbado boca arriba elevando la cadera con mancuerna sobre la pelvis."
+    "descripcion": "Tumbado boca arriba elevando la cadera con mancuerna sobre la pelvis.",
+    "category": "Gym"
   },
   {
     "id": 91,
@@ -725,7 +815,8 @@
     "musculo": "gemelos",
     "objetivo": "Hipertrofia",
     "equipamiento": "Máquina",
-    "descripcion": "Coloca las puntas de los pies en el borde de la prensa y realiza flexión plantar."
+    "descripcion": "Coloca las puntas de los pies en el borde de la prensa y realiza flexión plantar.",
+    "category": "Gym"
   },
   {
     "id": 92,
@@ -733,7 +824,8 @@
     "musculo": "abdomen",
     "objetivo": "Hipertrofia",
     "equipamiento": "Polea",
-    "descripcion": "De rodillas sujetando la cuerda alta y flexionando la columna hacia el suelo contrayendo el abdomen."
+    "descripcion": "De rodillas sujetando la cuerda alta y flexionando la columna hacia el suelo contrayendo el abdomen.",
+    "category": "Gym"
   },
   {
     "id": 93,
@@ -741,7 +833,8 @@
     "musculo": "abdomen",
     "objetivo": "Hipertrofia",
     "equipamiento": "Peso corporal",
-    "descripcion": "Apoya antebrazos en las almohadillas y sube las rodillas al Pecho flexibilizando la pelvis."
+    "descripcion": "Apoya antebrazos en las almohadillas y sube las rodillas al Pecho flexibilizando la pelvis.",
+    "category": "Peso corporal"
   },
   {
     "id": 94,
@@ -749,7 +842,8 @@
     "musculo": "abdomen",
     "objetivo": "Resistencia",
     "equipamiento": "Peso corporal",
-    "descripcion": "Sentado con pies elevados rotando el torso de lado a lado sujetando un disco para oblicuos."
+    "descripcion": "Sentado con pies elevados rotando el torso de lado a lado sujetando un disco para oblicuos.",
+    "category": "Peso corporal"
   },
   {
     "id": 95,
@@ -757,7 +851,8 @@
     "musculo": "espalda",
     "objetivo": "Hipertrofia",
     "equipamiento": "Mancuernas",
-    "descripcion": "Elevación de hombros pura sujetando mancuernas a los lados."
+    "descripcion": "Elevación de hombros pura sujetando mancuernas a los lados.",
+    "category": "Gym"
   },
   {
     "id": 96,
@@ -765,7 +860,8 @@
     "musculo": "espalda",
     "objetivo": "Fuerza",
     "equipamiento": "Barra",
-    "descripcion": "Remo con barra apoyando el peso en el suelo en cada repetición partiendo de postura 90° estricta."
+    "descripcion": "Remo con barra apoyando el peso en el suelo en cada repetición partiendo de postura 90° estricta.",
+    "category": "Gym"
   },
   {
     "id": 97,
@@ -773,7 +869,8 @@
     "musculo": "pecho",
     "objetivo": "Hipertrofia",
     "equipamiento": "Polea",
-    "descripcion": "Empuje en banco inclinado utilizando poleas bajas para tensión continua."
+    "descripcion": "Empuje en banco inclinado utilizando poleas bajas para tensión continua.",
+    "category": "Gym"
   },
   {
     "id": 98,
@@ -781,7 +878,8 @@
     "musculo": "pecho",
     "objetivo": "Hipertrofia",
     "equipamiento": "Peso corporal",
-    "descripcion": "Pies elevados en banco haciendo flexiones para enfatizar el pecho superior."
+    "descripcion": "Pies elevados en banco haciendo flexiones para enfatizar el pecho superior.",
+    "category": "Peso corporal"
   },
   {
     "id": 99,
@@ -789,7 +887,8 @@
     "musculo": "espalda",
     "objetivo": "Fuerza",
     "equipamiento": "Peso corporal",
-    "descripcion": "Dominadas con palmas enfrentadas, la posición más cómoda y fuerte para el hombro."
+    "descripcion": "Dominadas con palmas enfrentadas, la posición más cómoda y fuerte para el hombro.",
+    "category": "Peso corporal"
   },
   {
     "id": 100,
@@ -797,7 +896,8 @@
     "musculo": "cuadriceps",
     "objetivo": "Hipertrofia",
     "equipamiento": "Máquina",
-    "descripcion": "Empuje de prensa trabajando una pierna a la vez para corregir desbalances de fuerza."
+    "descripcion": "Empuje de prensa trabajando una pierna a la vez para corregir desbalances de fuerza.",
+    "category": "Gym"
   },
   {
     "id": 101,
@@ -805,7 +905,8 @@
     "musculo": "pecho",
     "objetivo": "Fuerza",
     "descripcion": "Press plano con barra enfocado en rangos de fuerza pura (3 a 5 repeticiones). Mantén el arco lumbar natural y apoya pies con firmeza.",
-    "equipamiento": "Barra"
+    "equipamiento": "Barra",
+    "category": "Gym"
   },
   {
     "id": 102,
@@ -813,7 +914,8 @@
     "musculo": "pecho",
     "objetivo": "Fuerza",
     "descripcion": "Trabajo de empuje pesado en banco a 30° para maximizar fuerza en la zona superior pectoral y tríceps.",
-    "equipamiento": "Barra"
+    "equipamiento": "Barra",
+    "category": "Gym"
   },
   {
     "id": 103,
@@ -821,7 +923,8 @@
     "musculo": "pecho",
     "objetivo": "Hipertrofia",
     "descripcion": "Movimiento de aislamiento que junta las manos arriba al centro con tensión constante durante toda la trayectoria.",
-    "equipamiento": "Polea"
+    "equipamiento": "Polea",
+    "category": "Gym"
   },
   {
     "id": 104,
@@ -829,7 +932,8 @@
     "musculo": "pecho",
     "objetivo": "Hipertrofia",
     "descripcion": "Cruza las cuerdas al frente contrayendo activamente los pectorales con máximo bombeo al final de la rutina.",
-    "equipamiento": "Polea"
+    "equipamiento": "Polea",
+    "category": "Gym"
   },
   {
     "id": 105,
@@ -837,7 +941,8 @@
     "musculo": "espalda",
     "objetivo": "Fuerza",
     "descripcion": "Jalón con barra ancha traccionando fuerte al esternón para ensanchar el dorsal ancho.",
-    "equipamiento": "Polea"
+    "equipamiento": "Polea",
+    "category": "Gym"
   },
   {
     "id": 106,
@@ -845,7 +950,8 @@
     "musculo": "espalda",
     "objetivo": "Hipertrofia",
     "descripcion": "Tracción a una mano en polea permitiendo mayor recorrido y contracción del dorsal unilateral.",
-    "equipamiento": "Polea"
+    "equipamiento": "Polea",
+    "category": "Gym"
   },
   {
     "id": 107,
@@ -853,7 +959,8 @@
     "musculo": "espalda",
     "objetivo": "Hipertrofia",
     "descripcion": "Remo guiado en máquina con agarre prono ancho para estimular trapecios medios y deltoides posterior.",
-    "equipamiento": "Máquina"
+    "equipamiento": "Máquina",
+    "category": "Gym"
   },
   {
     "id": 108,
@@ -861,7 +968,8 @@
     "musculo": "espalda",
     "objetivo": "Hipertrofia",
     "descripcion": "Remo con inclinación de torso apoyado en la barra guiada Smith para tensión constante.",
-    "equipamiento": "Máquina"
+    "equipamiento": "Máquina",
+    "category": "Gym"
   },
   {
     "id": 109,
@@ -869,7 +977,8 @@
     "musculo": "hombros",
     "objetivo": "Fuerza",
     "descripcion": "Press de hombros estricto de pie con barra olímpica pesada para desarrollo masivo de la cintura escapular.",
-    "equipamiento": "Barra"
+    "equipamiento": "Barra",
+    "category": "Gym"
   },
   {
     "id": 110,
@@ -877,7 +986,8 @@
     "musculo": "hombros",
     "objetivo": "Hipertrofia",
     "descripcion": "Empuje a una mano de pie obligando al core a estabilizar el cuerpo mientras trabaja el deltoides.",
-    "equipamiento": "Mancuernas"
+    "equipamiento": "Mancuernas",
+    "category": "Gym"
   },
   {
     "id": 111,
@@ -885,7 +995,8 @@
     "musculo": "hombros",
     "objetivo": "Hipertrofia",
     "descripcion": "Tracción vertical con barra corta en polea baja elevando codos hacia afuera.",
-    "equipamiento": "Polea"
+    "equipamiento": "Polea",
+    "category": "Gym"
   },
   {
     "id": 112,
@@ -893,7 +1004,8 @@
     "musculo": "hombros",
     "objetivo": "Hipertrofia",
     "descripcion": "Cruza los cables frente a ti y abre los brazos a los lados para aislar la cabeza posterior del hombro.",
-    "equipamiento": "Polea"
+    "equipamiento": "Polea",
+    "category": "Gym"
   },
   {
     "id": 113,
@@ -901,7 +1013,8 @@
     "musculo": "biceps",
     "objetivo": "Hipertrofia",
     "descripcion": "Flexión de codos constante con polea baja evitando los puntos muertos de tensión de las mancuernas.",
-    "equipamiento": "Polea"
+    "equipamiento": "Polea",
+    "category": "Gym"
   },
   {
     "id": 114,
@@ -909,7 +1022,8 @@
     "musculo": "biceps",
     "objetivo": "Hipertrofia",
     "descripcion": "Máquina de bicep Scott guiada para mantener tensión estricta sin trampas.",
-    "equipamiento": "Máquina"
+    "equipamiento": "Máquina",
+    "category": "Gym"
   },
   {
     "id": 115,
@@ -917,7 +1031,8 @@
     "musculo": "triceps",
     "objetivo": "Hipertrofia",
     "descripcion": "Extensiones de tríceps en polea con maneral en V para mayor comodidad en muñecas.",
-    "equipamiento": "Polea"
+    "equipamiento": "Polea",
+    "category": "Gym"
   },
   {
     "id": 116,
@@ -925,7 +1040,8 @@
     "musculo": "triceps",
     "objetivo": "Hipertrofia",
     "descripcion": "Extensión a una mano con cable alto sin agarre para aislamiento puro.",
-    "equipamiento": "Polea"
+    "equipamiento": "Polea",
+    "category": "Gym"
   },
   {
     "id": 117,
@@ -933,7 +1049,8 @@
     "musculo": "cuadriceps",
     "objetivo": "Fuerza",
     "descripcion": "Sentadilla asistida en máquina Hack cargada con peso para desarrollo de cuadríceps en rango seguro.",
-    "equipamiento": "Máquina"
+    "equipamiento": "Máquina",
+    "category": "Gym"
   },
   {
     "id": 118,
@@ -941,7 +1058,8 @@
     "musculo": "cuadriceps",
     "objetivo": "Fuerza",
     "descripcion": "Carga máxima en prensa 45° trabajando con series pesadas de fuerza.",
-    "equipamiento": "Máquina"
+    "equipamiento": "Máquina",
+    "category": "Gym"
   },
   {
     "id": 119,
@@ -949,7 +1067,8 @@
     "musculo": "gluteos",
     "objetivo": "Hipertrofia",
     "descripcion": "Bisagra de cadera profunda sosteniendo dos mancuernas grandes sintiendo gran estiramiento isquiotibial.",
-    "equipamiento": "Mancuernas"
+    "equipamiento": "Mancuernas",
+    "category": "Gym"
   },
   {
     "id": 120,
@@ -957,6 +1076,70 @@
     "musculo": "gluteos",
     "objetivo": "Fuerza",
     "descripcion": "Extensión de cadera máxima con soporte guiado en máquina de Hip Thrust para máxima hipertrofia de glúteos.",
-    "equipamiento": "Máquina"
+    "equipamiento": "Máquina",
+    "category": "Gym"
+  },
+  {
+    "id": 121,
+    "nombre": "Cinta de Correr (Treadmill)",
+    "musculo": "cardio",
+    "objetivo": "Resistencia",
+    "equipamiento": "Máquina",
+    "category": "Cardio",
+    "descripcion": "Caminata inclinada, trote o carrera continua a ritmo controlado para optimizar resistencia cardiovascular y quema calórica."
+  },
+  {
+    "id": 122,
+    "nombre": "Bicicleta Estática",
+    "musculo": "cardio",
+    "objetivo": "Resistencia",
+    "equipamiento": "Máquina",
+    "category": "Cardio",
+    "descripcion": "Pedaleo continuo o por intervalos ajustando la resistencia magnética y cadencia constante."
+  },
+  {
+    "id": 123,
+    "nombre": "Máquina Elíptica",
+    "musculo": "cardio",
+    "objetivo": "Resistencia",
+    "equipamiento": "Máquina",
+    "category": "Cardio",
+    "descripcion": "Cardio de bajo impacto articular trabajando coordinadamente tren superior e inferior."
+  },
+  {
+    "id": 124,
+    "nombre": "Escaladora (Stairmaster)",
+    "musculo": "cardio",
+    "objetivo": "Resistencia",
+    "equipamiento": "Máquina",
+    "category": "Cardio",
+    "descripcion": "Subida continua de escalones manteniendo cadencia constante para quemar calorías y activar glúteos y piernas."
+  },
+  {
+    "id": 125,
+    "nombre": "Máquina de Remo (Remoergómetro)",
+    "musculo": "cardio",
+    "objetivo": "Resistencia",
+    "equipamiento": "Máquina",
+    "category": "Cardio",
+    "descripcion": "Remo cardiovascular completo activando piernas, espalda y capacidad pulmonar en cada brazada."
+  },
+  {
+    "id": 126,
+    "nombre": "Salto de Cuerda",
+    "musculo": "cardio",
+    "objetivo": "Resistencia",
+    "equipamiento": "Peso corporal",
+    "category": "Cardio",
+    "descripcion": "Saltos continuos con cuerda manteniendo ligereza en las puntas de los pies y respiración rítmica."
+  },
+  {
+    "id": 127,
+    "nombre": "HIIT Sprints / Trote",
+    "musculo": "cardio",
+    "objetivo": "Resistencia",
+    "equipamiento": "Peso corporal",
+    "category": "Cardio",
+    "descripcion": "Intervalos de alta intensidad alternando sprints explosivos con descansos activos a paso ligero."
   }
 ]
