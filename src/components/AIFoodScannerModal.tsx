@@ -15,6 +15,7 @@ import {
   Modal,
   ScrollView,
   StyleSheet,
+  Switch,
   Text,
   TextInput,
   TouchableOpacity,
@@ -32,6 +33,7 @@ type Props = {
     carbs: number;
     fat: number;
     icon: string;
+    saveToCatalog: boolean;
   }) => void;
 };
 
@@ -49,6 +51,17 @@ export default function AIFoodScannerModal({
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysisResult, setAnalysisResult] = useState<AIFoodAnalysisResult | null>(null);
 
+  // Valores base originales reconocidos por la IA para cálculo de multiplicador
+  const [baseMetrics, setBaseMetrics] = useState<{
+    calories: number;
+    protein: number;
+    carbs: number;
+    fat: number;
+    weight: number;
+  }>({ calories: 0, protein: 0, carbs: 0, fat: 0, weight: 0 });
+
+  const [portionMultiplier, setPortionMultiplier] = useState<number>(1.0);
+
   // Campos editables tras el análisis de IA
   const [editedName, setEditedName] = useState("");
   const [editedCategory, setEditedCategory] = useState<MealCategory>("Almuerzo");
@@ -56,17 +69,21 @@ export default function AIFoodScannerModal({
   const [editedProtein, setEditedProtein] = useState("");
   const [editedCarbs, setEditedCarbs] = useState("");
   const [editedFat, setEditedFat] = useState("");
+  const [saveToCatalog, setSaveToCatalog] = useState(false);
 
   const resetState = () => {
     setImageUri(null);
     setIsAnalyzing(false);
     setAnalysisResult(null);
+    setBaseMetrics({ calories: 0, protein: 0, carbs: 0, fat: 0, weight: 0 });
+    setPortionMultiplier(1.0);
     setEditedName("");
     setEditedCategory("Almuerzo");
     setEditedCalories("");
     setEditedProtein("");
     setEditedCarbs("");
     setEditedFat("");
+    setSaveToCatalog(false);
   };
 
   const handleClose = () => {
@@ -88,12 +105,31 @@ export default function AIFoodScannerModal({
       setEditedProtein(result.protein.toString());
       setEditedCarbs(result.carbs.toString());
       setEditedFat(result.fat.toString());
+
+      setBaseMetrics({
+        calories: result.calories,
+        protein: result.protein,
+        carbs: result.carbs,
+        fat: result.fat,
+        weight: result.estimatedWeightGrams || 350,
+      });
+      setPortionMultiplier(1.0);
+
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     } catch (error) {
       alert("Error al analizar la imagen. Inténtalo de nuevo.");
     } finally {
       setIsAnalyzing(false);
     }
+  };
+
+  const applyMultiplier = (mult: number) => {
+    setPortionMultiplier(mult);
+    Haptics.selectionAsync();
+    setEditedCalories(Math.round(baseMetrics.calories * mult).toString());
+    setEditedProtein(Math.round(baseMetrics.protein * mult).toString());
+    setEditedCarbs(Math.round(baseMetrics.carbs * mult).toString());
+    setEditedFat(Math.round(baseMetrics.fat * mult).toString());
   };
 
   const handlePickFromCamera = async () => {
@@ -150,6 +186,7 @@ export default function AIFoodScannerModal({
       carbs: parseInt(editedCarbs) || 0,
       fat: parseInt(editedFat) || 0,
       icon: analysisResult?.icon || "restaurant",
+      saveToCatalog,
     });
 
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
@@ -198,7 +235,7 @@ export default function AIFoodScannerModal({
                   Escanea tu plato con Inteligencia Artificial
                 </Text>
                 <Text style={{ fontSize: 13, color: colors.textSecondary, textAlign: "center", paddingHorizontal: 20, marginBottom: 24 }}>
-                  Toma una foto a tu comida y la IA estimará automáticamente sus calorías y macronutrientes.
+                  La IA analiza el tamaño de la porción y las proporciones reales del plato para calcular calorías y macronutrientes precisos.
                 </Text>
 
                 <View style={{ width: "100%", gap: 12 }}>
@@ -230,10 +267,10 @@ export default function AIFoodScannerModal({
                 <Image source={{ uri: imageUri }} style={styles.previewImage} />
                 <ActivityIndicator size="large" color={colors.primary} style={{ marginTop: 20 }} />
                 <Text style={{ marginTop: 12, fontWeight: "bold", color: colors.primary, fontSize: 16 }}>
-                  🤖 Analizando alimento con IA...
+                  🤖 Dimensionando porción e ingredientes...
                 </Text>
                 <Text style={{ fontSize: 13, color: colors.textSecondary, marginTop: 4, textAlign: "center" }}>
-                  Estimando nombre, calorías y macronutrientes...
+                  Estimando dimensiones del plato, peso en gramos y macronutrientes proporcionales...
                 </Text>
               </View>
             )}
@@ -241,14 +278,24 @@ export default function AIFoodScannerModal({
             {/* Paso 3: Resultados detectados para revisión y confirmación */}
             {imageUri && !isAnalyzing && analysisResult && (
               <View style={{ gap: 16, paddingVertical: 10 }}>
+                {/* Cabecera del Alimento Reconocido */}
                 <View style={{ flexDirection: "row", gap: 12, alignItems: "center" }}>
                   <Image source={{ uri: imageUri }} style={styles.thumbnailImage} />
                   <View style={{ flex: 1 }}>
-                    <Text style={{ fontSize: 12, color: colors.primary, fontWeight: "bold" }}>
-                      ✨ DETECTADO POR IA
-                    </Text>
+                    <View style={{ flexDirection: "row", alignItems: "center", gap: 6, marginBottom: 2 }}>
+                      <Text style={{ fontSize: 12, color: colors.primary, fontWeight: "bold" }}>
+                        ✨ DETECTADO POR IA
+                      </Text>
+                      {analysisResult.portionSize && (
+                        <View style={{ backgroundColor: colors.primary + "20", paddingHorizontal: 6, paddingVertical: 2, borderRadius: 6 }}>
+                          <Text style={{ fontSize: 10, fontWeight: "bold", color: colors.primary, textTransform: "capitalize" }}>
+                            Porción {analysisResult.portionSize} (~{Math.round(baseMetrics.weight * portionMultiplier)}g)
+                          </Text>
+                        </View>
+                      )}
+                    </View>
                     <TextInput
-                      style={[globalStyles.input, { marginTop: 4, fontWeight: "bold", fontSize: 16 }]}
+                      style={[globalStyles.input, { marginTop: 2, fontWeight: "bold", fontSize: 15 }]}
                       value={editedName}
                       onChangeText={setEditedName}
                       placeholder="Nombre del alimento"
@@ -256,9 +303,68 @@ export default function AIFoodScannerModal({
                   </View>
                 </View>
 
+                {/* Desglose visual de ingredientes */}
+                {analysisResult.portionBreakdown && (
+                  <View style={{ backgroundColor: colors.surface, padding: 10, borderRadius: 10, borderWidth: 1, borderColor: colors.cardBorder || "rgba(255,255,255,0.06)" }}>
+                    <View style={{ flexDirection: "row", alignItems: "center", gap: 6, marginBottom: 4 }}>
+                      <Ionicons name="scale-outline" size={15} color={colors.primary} />
+                      <Text style={{ fontSize: 12, fontWeight: "bold", color: colors.text }}>
+                        Estimación de peso e ingredientes:
+                      </Text>
+                    </View>
+                    <Text style={{ fontSize: 12, color: colors.textSecondary, lineHeight: 16 }}>
+                      {analysisResult.portionBreakdown}
+                    </Text>
+                  </View>
+                )}
+
+                {/* Ajuste rápido de escala de porción */}
+                <View>
+                  <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+                    <Text style={{ fontSize: 12, color: colors.textSecondary, fontWeight: "600" }}>
+                      ¿El tamaño no coincide con lo que comiste? Ajusta la porción:
+                    </Text>
+                  </View>
+                  <View style={{ flexDirection: "row", gap: 6 }}>
+                    {[
+                      { label: "0.7x (Chica)", mult: 0.7 },
+                      { label: "1.0x (Normal)", mult: 1.0 },
+                      { label: "1.3x (Grande)", mult: 1.3 },
+                      { label: "1.5x (Extra)", mult: 1.5 },
+                    ].map((item) => {
+                      const isSelected = portionMultiplier === item.mult;
+                      return (
+                        <TouchableOpacity
+                          key={item.label}
+                          onPress={() => applyMultiplier(item.mult)}
+                          style={{
+                            flex: 1,
+                            paddingVertical: 7,
+                            borderRadius: 10,
+                            alignItems: "center",
+                            backgroundColor: isSelected ? colors.primary : colors.surface,
+                            borderWidth: 1,
+                            borderColor: isSelected ? colors.primary : colors.cardBorder || "rgba(255,255,255,0.06)",
+                          }}
+                        >
+                          <Text
+                            style={{
+                              fontSize: 11,
+                              fontWeight: "bold",
+                              color: isSelected ? colors.background : colors.text,
+                            }}
+                          >
+                            {item.label}
+                          </Text>
+                        </TouchableOpacity>
+                      );
+                    })}
+                  </View>
+                </View>
+
                 {/* Selección de Categoría */}
                 <View>
-                  <Text style={{ fontSize: 13, color: colors.textSecondary, marginBottom: 8 }}>Categoría de Comida</Text>
+                  <Text style={{ fontSize: 12, color: colors.textSecondary, marginBottom: 6, fontWeight: "600" }}>Categoría de Comida</Text>
                   <View style={{ flexDirection: "row", gap: 8 }}>
                     {CATEGORIES.map((cat) => {
                       const isSelected = editedCategory === cat;
@@ -269,7 +375,7 @@ export default function AIFoodScannerModal({
                           style={{
                             flex: 1,
                             paddingVertical: 8,
-                            borderRadius: 16,
+                            borderRadius: 14,
                             alignItems: "center",
                             backgroundColor: isSelected ? colors.primary : colors.surface,
                           }}
@@ -290,11 +396,11 @@ export default function AIFoodScannerModal({
                 </View>
 
                 {/* Métricas Nutricionales Estimadas (Editables) */}
-                <View style={{ gap: 10 }}>
-                  <Text style={{ fontSize: 13, color: colors.textSecondary }}>Nutrición Estimada (Revisa o Edita)</Text>
+                <View style={{ gap: 8 }}>
+                  <Text style={{ fontSize: 12, color: colors.textSecondary, fontWeight: "600" }}>Nutrición Calculada (Revisa o Edita)</Text>
 
                   {/* Calorías */}
-                  <View style={[globalStyles.card, { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginVertical: 0 }]}>
+                  <View style={[globalStyles.card, { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginVertical: 0, padding: 12 }]}>
                     <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
                       <Ionicons name="flame" size={24} color={colors.primary} />
                       <Text style={{ fontWeight: "bold", color: colors.text, fontSize: 15 }}>Calorías Estimadas</Text>
@@ -306,7 +412,7 @@ export default function AIFoodScannerModal({
                           fontWeight: "bold",
                           color: colors.primary,
                           textAlign: "right",
-                          minWidth: 50,
+                          minWidth: 55,
                         }}
                         keyboardType="numeric"
                         value={editedCalories}
@@ -362,20 +468,57 @@ export default function AIFoodScannerModal({
                   </View>
                 </View>
 
-                {/* Banner de Privacidad e Información */}
-                <View style={{ backgroundColor: colors.surface, padding: 12, borderRadius: 10, flexDirection: "row", gap: 10, alignItems: "center" }}>
-                  <Ionicons name="lock-closed-outline" size={20} color={colors.primary} />
-                  <Text style={{ fontSize: 11, color: colors.textSecondary, flex: 1, lineHeight: 15 }}>
-                    La foto <Text style={{ fontWeight: "bold", color: colors.text }}>NO se guardará</Text> ni creará un elemento permanente en tu catálogo. Solo se registrará este consumo en tu total de hoy.
+                {/* Opción de Guardado Permanente en Catálogo */}
+                <View
+                  style={{
+                    backgroundColor: colors.surface,
+                    padding: 12,
+                    borderRadius: 12,
+                    borderWidth: 1,
+                    borderColor: saveToCatalog ? colors.primary : colors.cardBorder || "rgba(255,255,255,0.06)",
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}
+                >
+                  <View style={{ flex: 1, paddingRight: 10 }}>
+                    <View style={{ flexDirection: "row", alignItems: "center", gap: 6, marginBottom: 2 }}>
+                      <Ionicons name="bookmark-outline" size={16} color={colors.primary} />
+                      <Text style={{ fontSize: 13, fontWeight: "bold", color: colors.text }}>
+                        Guardar en mi Catálogo de Comidas
+                      </Text>
+                    </View>
+                    <Text style={{ fontSize: 11, color: colors.textSecondary }}>
+                      Permite volver a registrar este plato en el futuro con un solo tap desde tu lista.
+                    </Text>
+                  </View>
+                  <Switch
+                    value={saveToCatalog}
+                    onValueChange={(val) => {
+                      Haptics.selectionAsync();
+                      setSaveToCatalog(val);
+                    }}
+                    trackColor={{ false: colors.background, true: colors.primary }}
+                    thumbColor={colors.background}
+                  />
+                </View>
+
+                {/* Banner de Confirmación y Registro */}
+                <View style={{ backgroundColor: colors.primary + "12", padding: 10, borderRadius: 10, flexDirection: "row", gap: 8, alignItems: "center" }}>
+                  <Ionicons name="checkmark-circle" size={18} color={colors.primary} />
+                  <Text style={{ fontSize: 11, color: colors.text, flex: 1, lineHeight: 15 }}>
+                    Al confirmar, <Text style={{ fontWeight: "bold" }}>se guardará en tu registro de hoy y en tus estadísticas nutricionales</Text>.
                   </Text>
                 </View>
 
                 {/* Botón de Confirmación */}
                 <TouchableOpacity
-                  style={[globalStyles.button, { marginTop: 10 }]}
+                  style={[globalStyles.button, { marginTop: 4 }]}
                   onPress={handleConfirm}
                 >
-                  <Text style={globalStyles.buttonText}>✅ Confirmar y Registrar Consumo</Text>
+                  <Text style={globalStyles.buttonText}>
+                    {saveToCatalog ? "💾 Guardar en Catálogo y Registrar Consumo" : "✅ Confirmar y Registrar Consumo"}
+                  </Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
@@ -405,7 +548,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 20,
     paddingBottom: 40,
-    maxHeight: "85%",
+    maxHeight: "88%",
   },
   modalHeader: {
     flexDirection: "row",
@@ -419,8 +562,8 @@ const styles = StyleSheet.create({
     borderRadius: 16,
   },
   thumbnailImage: {
-    width: 70,
-    height: 70,
+    width: 65,
+    height: 65,
     borderRadius: 12,
   },
 });

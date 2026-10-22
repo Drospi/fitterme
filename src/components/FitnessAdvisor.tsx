@@ -295,11 +295,11 @@ const FitnessAdvisor = ({ medidas }: AdvisorProps) => {
     return consejos.length > 0
       ? consejos
       : [
-          {
-            msg: "¡Vas por buen camino! Mantén la constancia.",
-            icon: "happy-outline",
-          },
-        ];
+        {
+          msg: "¡Vas por buen camino! Mantén la constancia.",
+          icon: "happy-outline",
+        },
+      ];
   };
 
   const listaConsejos = getConsejos();
@@ -308,8 +308,8 @@ const FitnessAdvisor = ({ medidas }: AdvisorProps) => {
     <View style={globalStyles.card}>
       <Text style={globalStyles.cardTitle}>Consejos de hoy</Text>
       {listaConsejos.slice(0, 3).map((item, index) => (
-        <View key={index} style={globalStyles.card}>
-          <Ionicons name={item.icon as any} size={24} color={colors.text} />
+        <View key={index} style={[{ flexDirection: "row", gap: 10, marginBottom: 20, alignItems: "center" }]}>
+          <Ionicons name={item.icon as any} size={24} color={colors.primary} />
           <Text style={globalStyles.cardText}>{item.msg}</Text>
         </View>
       ))}

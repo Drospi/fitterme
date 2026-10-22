@@ -1,4 +1,5 @@
 import exercisesData from "@/data/exercises.json";
+import { getAIConfig } from "@/store/aiConfig";
 import { getPersonalBest } from "@/store/historyExcercise";
 import { addRoutine, Routine } from "@/store/routines";
 
@@ -47,11 +48,134 @@ export const generateAIRoutine = async (
     selectedMuscles.includes(ex.musculo.toLowerCase() as TargetMuscle),
   );
 
-  // Si no hay suficientes, seleccionar por al menos un músculo
   const candidatePool =
     availableExercises.length > 0 ? availableExercises : exercisesData;
 
-  // Seleccionar de 4 a 6 ejercicios balanceados
+  // Obtener récords previos para los ejercicios candidatos
+  const candidateHistoryPromises = candidatePool.map(async (ex) => {
+    const pb = await getPersonalBest(ex.id);
+    return {
+      id: ex.id,
+      nombre: ex.nombre,
+      musculo: ex.musculo,
+      equipamiento: ex.equipamiento,
+      pb: pb ? { peso: pb.peso, reps: pb.reps } : null,
+    };
+  });
+  const candidatesWithHistory = await Promise.all(candidateHistoryPromises);
+
+  // Intentar generar con la API de Gemini si hay API Key configurada
+  const aiConfig = await getAIConfig();
+  const apiKey = aiConfig.apiKey?.trim() || process.env.EXPO_PUBLIC_GEMINI_API_KEY;
+  const isLegacyOrRetired =
+    !aiConfig.model ||
+    aiConfig.model.startsWith("gemini-1.") ||
+    aiConfig.model.startsWith("gemini-2.0") ||
+    aiConfig.model === "gemini-2.5-flash";
+  const preferredModel = isLegacyOrRetired ? "gemini-3.5-flash" : aiConfig.model;
+
+  if (apiKey) {
+    const candidateModels = Array.from(
+      new Set([preferredModel, "gemini-3.5-flash", "gemini-3.6-flash", "gemini-3.7-flash", "gemini-3.8-flash"])
+    );
+
+    for (const model of candidateModels) {
+      try {
+        const prompt = `Actúa como un entrenador personal y preparador físico de élite.
+El usuario quiere entrenar hoy enfocado en: ${goal}.
+Músculos a trabajar: ${selectedMuscles.join(", ")}.
+
+Lista de ejercicios disponibles en el catálogo de la app (con su ID y récords previos del usuario si existen):
+${JSON.stringify(candidatesWithHistory, null, 2)}
+
+Tu tarea:
+1. Selecciona de 4 a 6 de los mejores ejercicios para el entrenamiento del día, ordenados de forma biomecánica óptima (compuestos primero, aislamiento después).
+2. Asigna series, repeticiones y peso sugerido con sobrecarga progresiva según el objetivo y el récord previo del usuario.
+3. Genera una nota explicativa breve para cada ejercicio explicando por qué es el mejor ejercicio y el criterio de sobrecarga para hoy.
+
+Devuelve ÚNICAMENTE un JSON válido con este formato estricto (sin bloques de código markdown):
+{
+  "name": "Nombre de la rutina (ej. IA: Pecho y Tríceps Explosivo)",
+  "category": "${goal}",
+  "exercises": [
+    {
+      "id": id_numerico_exacto_del_catalogo,
+      "nombre": "Nombre del ejercicio",
+      "musculo": "Grupo muscular",
+      "objetivo": "${goal}",
+      "equipamiento": "Equipamiento",
+      "series": numero_de_series,
+      "reps": numero_de_reps,
+      "peso": peso_en_kg,
+      "aiSuggestionNote": "Nota breve de la IA sobre la carga o técnica para hoy"
+    }
+  ]
+}`;
+
+        const response = await fetch(
+          `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              contents: [
+                {
+                  parts: [{ text: prompt }],
+                },
+              ],
+            }),
+          },
+        );
+
+        if (response.ok) {
+          const jsonResponse = await response.json();
+          const rawText =
+            jsonResponse.candidates?.[0]?.content?.parts?.[0]?.text || "";
+          const cleanJsonText = rawText
+            .replace(/```json/g, "")
+            .replace(/```/g, "")
+            .trim();
+          const parsed = JSON.parse(cleanJsonText);
+
+          if (parsed && Array.isArray(parsed.exercises) && parsed.exercises.length > 0) {
+            const validatedExercises: AIGeneratedExercise[] = [];
+
+            for (const item of parsed.exercises) {
+              const original = candidatePool.find((c) => c.id === item.id) || candidatePool.find((c) => c.nombre.toLowerCase() === item.nombre.toLowerCase());
+              const pb = original ? await getPersonalBest(original.id) : null;
+
+              validatedExercises.push({
+                id: original ? original.id : item.id,
+                nombre: original ? original.nombre : item.nombre,
+                musculo: original ? original.musculo : item.musculo,
+                objetivo: goal,
+                equipamiento: original ? original.equipamiento : (item.equipamiento || "Gimnasio"),
+                series: typeof item.series === "number" ? Math.max(1, Math.min(6, item.series)) : 3,
+                reps: typeof item.reps === "number" ? Math.max(1, Math.min(30, item.reps)) : 10,
+                peso: typeof item.peso === "number" ? Math.max(0, item.peso) : (pb ? pb.peso : 20),
+                previousPR: pb,
+                aiSuggestionNote: item.aiSuggestionNote || "Mantén cadencia controlada y rango completo de movimiento.",
+              });
+            }
+
+            if (validatedExercises.length > 0) {
+              return {
+                name: parsed.name || `IA: ${selectedMuscles.join(" y ").toUpperCase()}`,
+                category: goal,
+                exercises: validatedExercises,
+              };
+            }
+          }
+        }
+      } catch (error) {
+        console.warn(`Error al generar rutina con modelo ${model}:`, error);
+      }
+    }
+  }
+
+  // Fallback Algorítmico Local:
   const selectedCandidates: typeof candidatePool = [];
   const muscleGroupsMap: Record<string, number> = {};
 
@@ -63,7 +187,6 @@ export const generateAIRoutine = async (
     }
   }
 
-  // Si aún faltan para completar al menos 4 ejercicios:
   for (const ex of candidatePool) {
     if (selectedCandidates.length >= 5) break;
     if (!selectedCandidates.some((item) => item.id === ex.id)) {
@@ -71,7 +194,6 @@ export const generateAIRoutine = async (
     }
   }
 
-  // Procesar cada ejercicio analizando el historial y calculando sobrecarga progresiva IA
   const aiExercises: AIGeneratedExercise[] = [];
 
   for (const ex of selectedCandidates) {
@@ -89,18 +211,15 @@ export const generateAIRoutine = async (
       targetSeries = 3;
       targetReps = 15;
     } else {
-      // Hipertrofia
       targetSeries = 3;
       targetReps = 10;
     }
 
     if (pb && pb.peso > 0) {
-      // Si existe récord previo -> Calcular Sobrecarga Progresiva con IA (+2.5% a +5% de incremento)
       const increment = pb.peso >= 50 ? 5 : 2.5;
       targetPeso = Math.round(pb.peso + increment);
       note = `Sobrecarga Progresiva IA: +${increment} kg sobre tu récord anterior (${pb.peso} kg x ${pb.reps} reps)`;
     } else {
-      // Si no existe historial -> Sugerencia de peso base inicial por tipo de equipamiento
       const equip = (ex.equipamiento || "").toLowerCase();
       if (equip.includes("barra")) {
         targetPeso = goal === "Fuerza" ? 40 : 30;
@@ -128,7 +247,6 @@ export const generateAIRoutine = async (
     });
   }
 
-  // Generar título descriptivo de la rutina
   const muscleNamesStr = selectedMuscles
     .map((m) => m.charAt(0).toUpperCase() + m.slice(1))
     .join(" & ");
