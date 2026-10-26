@@ -11,83 +11,16 @@ export type DayStatus = {
   isFuture: boolean;
 };
 
-/**
- * Formatea una fecha local a YYYY-MM-DD
- */
-export const formatLocalDate = (date: Date): string => {
-  const y = date.getFullYear();
-  const m = String(date.getMonth() + 1).padStart(2, "0");
-  const d = String(date.getDate()).padStart(2, "0");
-  return `${y}-${m}-${d}`;
-};
+import {
+  calculateTotalTrainedDays,
+  calculateStreak,
+  formatLocalDate,
+} from "@/calculos/statistics";
 
-/**
- * Calcula el número total de días en los que el usuario ha completado al menos una sesión o rutina de entrenamiento
- */
-export const calculateTotalTrainedDays = (sessions: RoutineSession[]): number => {
-  if (!sessions || sessions.length === 0) return 0;
-
-  const trainedDays = new Set<string>();
-  sessions.forEach((s) => {
-    if (s.date) {
-      try {
-        const d = new Date(s.date);
-        trainedDays.add(formatLocalDate(d));
-      } catch {
-        // Ignorar fechas inválidas
-      }
-    }
-  });
-
-  return trainedDays.size;
-};
-
-/**
- * Calcula la racha actual de días seguidos de entrenamiento (opcional para comparativas)
- */
-export const calculateStreak = (sessions: RoutineSession[]): number => {
-  if (!sessions || sessions.length === 0) return 0;
-
-  const trainedDays = new Set<string>();
-  sessions.forEach((s) => {
-    if (s.date) {
-      try {
-        const d = new Date(s.date);
-        trainedDays.add(formatLocalDate(d));
-      } catch {
-        // Ignorar fechas inválidas
-      }
-    }
-  });
-
-  const today = new Date();
-  const todayStr = formatLocalDate(today);
-
-  const yesterday = new Date(today);
-  yesterday.setDate(yesterday.getDate() - 1);
-  const yesterdayStr = formatLocalDate(yesterday);
-
-  let checkDate = new Date(today);
-  if (trainedDays.has(todayStr)) {
-    checkDate = today;
-  } else if (trainedDays.has(yesterdayStr)) {
-    checkDate = yesterday;
-  } else {
-    return 0;
-  }
-
-  let streak = 0;
-  for (let i = 0; i < 365; i++) {
-    const checkStr = formatLocalDate(checkDate);
-    if (trainedDays.has(checkStr)) {
-      streak++;
-      checkDate.setDate(checkDate.getDate() - 1);
-    } else {
-      break;
-    }
-  }
-
-  return streak;
+export {
+  calculateTotalTrainedDays,
+  calculateStreak,
+  formatLocalDate,
 };
 
 /**

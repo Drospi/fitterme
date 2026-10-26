@@ -29,7 +29,11 @@ import {
 import { addRoutineSession } from "@/store/historyRoutine";
 import ThemeConfirmModal from "@/components/ThemeConfirmModal";
 import CoachRIRModal from "@/components/CoachRIRModal";
-import { calculateRIRPrescription } from "@/utils/rirCoachCalculator";
+import WorkoutHeader from "@/components/workout/WorkoutHeader";
+import GiveUpModal from "@/components/workout/GiveUpModal";
+import ExerciseFeelingScale from "@/components/workout/ExerciseFeelingScale";
+import { calculateCoachFittoPrescription, calculateRIRPrescription } from "@/calculos/coachFitto";
+import { EffortRating, EffortAdjustmentResult } from "@/calculos/perceivedEffort";
 import { getRoutineById } from "@/store/routines";
 import { getGlobalStyles } from "@/styles/global";
 import Ionicons from "@expo/vector-icons/Ionicons";
@@ -151,6 +155,13 @@ const PlayRoutineScreen = () => {
   const [repActual, setRepActual] = useState(0);
   const [pesoActual, setPesoActual] = useState(0);
   const [bodyweightMode, setBodyweightMode] = useState<"solo" | "lastre" | "ayuda">("solo");
+
+  // Percepción subjetiva del esfuerzo de la escala 1-5 por ejercicio
+  const [exerciseFeelings, setExerciseFeelings] = useState<Record<number, EffortRating>>({});
+
+  const handleFeelingRated = (rating: EffortRating) => {
+    setExerciseFeelings((prev) => ({ ...prev, [ejercicioActual]: rating }));
+  };
 
   const loadRoutine = async () => {
     const data = await getRoutineById(id);
@@ -321,7 +332,7 @@ const PlayRoutineScreen = () => {
           setNewRecordsCount((prev) => prev + 1);
         }
 
-        await addExerciseLog(currentExerciseId, seriesCompletadas);
+        await addExerciseLog(currentExerciseId, seriesCompletadas, exerciseFeelings[ejercicioActual]);
       }
     }
 
@@ -516,6 +527,8 @@ const PlayRoutineScreen = () => {
         excercise={ejercicioActual}
         mejorRepEjercicio={mejorRepEjercicio}
         mejorPesoEjercicio={mejorPesoEjercicio}
+        selectedRating={exerciseFeelings[ejercicioActual] || null}
+        onSelectRating={handleFeelingRated}
       />
     );
   }
@@ -532,64 +545,12 @@ const PlayRoutineScreen = () => {
         keyboardShouldPersistTaps="handled"
         contentContainerStyle={{ paddingBottom: 150 }}
       >
-        <View style={globalStyles.header}>
-          <View style={{ flex: 1, marginRight: 8 }}>
-            <Text
-              style={{
-                fontSize: 13,
-                fontWeight: "bold",
-                color: colors.primary,
-                letterSpacing: 1,
-              }}
-            >
-              ENTRENAMIENTO ACTIVO
-            </Text>
-            <Text style={globalStyles.title} numberOfLines={1}>
-              {routineData.name}
-            </Text>
-          </View>
-          <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
-            <View
-              style={[
-                globalStyles.card,
-                {
-                  alignItems: "center",
-                  borderRadius: 30,
-                  justifyContent: "center",
-                  paddingHorizontal: 12,
-                  paddingVertical: 6,
-                },
-              ]}
-            >
-              <Ionicons name="timer-outline" size={18} color={colors.primary} />
-              <Text style={[globalStyles.title, { fontSize: 13, alignSelf: "center", marginTop: 2 }]}>
-                {formatTime(timer)}
-              </Text>
-            </View>
-
-            {/* Botón pequeño para finalizar en el Header */}
-            <TouchableOpacity
-              onPress={handlePromptGiveUp}
-              style={{
-                backgroundColor: colors.delete + "18",
-                borderColor: colors.delete + "35",
-                borderWidth: 1,
-                paddingHorizontal: 10,
-                paddingVertical: 7,
-                borderRadius: 20,
-                flexDirection: "row",
-                alignItems: "center",
-                gap: 4,
-              }}
-              activeOpacity={0.7}
-            >
-              <Ionicons name="flag-outline" size={13} color={colors.delete} />
-              <Text style={{ fontSize: 11, fontWeight: "bold", color: colors.delete }}>
-                Finalizar
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </View>
+        <WorkoutHeader
+          title={routineData.name}
+          categoryLabel="ENTRENAMIENTO ACTIVO"
+          elapsedSeconds={timer}
+          onFinishPress={handlePromptGiveUp}
+        />
 
         <View style={globalStyles.card}>
           <View style={{ flexDirection: "row", gap: 10 }}>
@@ -1150,16 +1111,30 @@ const PlayRoutineScreen = () => {
             );
           })()}
 
-          {/* Sugerencia Coach RIR & Autorregulación (Reemplaza Mejor Serie) */}
+          {/* Sugerencia Coach Fitto & Autorregulación */}
           {(() => {
             const ejercicio = routineData?.exercises?.[ejercicioActual];
             if (!ejercicio) return null;
-            const prescription = calculateRIRPrescription(
+            const prescription = calculateCoachFittoPrescription(
               ejercicio,
               lastSession,
               personalBest,
-              inputUnit
+              inputUnit,
+              exerciseFeelings[ejercicioActual]
             );
+
+            const verdictColor =
+              prescription.verdict === "subir"
+                ? "#10b981"
+                : prescription.verdict === "bajar"
+                  ? "#ef4444"
+                  : "#f59e0b";
+            const verdictIcon =
+              prescription.verdict === "subir"
+                ? "trending-up"
+                : prescription.verdict === "bajar"
+                  ? "arrow-down-circle"
+                  : "shield-checkmark";
 
             return (
               <TouchableOpacity
@@ -1184,34 +1159,20 @@ const PlayRoutineScreen = () => {
                 <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
                   <View style={{ flexDirection: "row", alignItems: "center", gap: 5, flex: 1 }}>
                     <Ionicons
-                      name={prescription.hasNeuralFatigue ? "alert-circle" : "sparkles"}
+                      name={verdictIcon}
                       size={13}
-                      color={prescription.hasNeuralFatigue ? "#ef4444" : colors.primary}
+                      color={verdictColor}
                     />
                     <Text
                       style={{
                         fontSize: 10,
                         fontWeight: "800",
-                        color: prescription.hasNeuralFatigue ? "#ef4444" : colors.primary,
+                        color: verdictColor,
                         letterSpacing: 0.5,
                       }}
                     >
-                      COACH RIR
+                      COACH FITTO: {prescription.coachFittoVerdictText}
                     </Text>
-                    <View
-                      style={{
-                        backgroundColor: colors.surface,
-                        paddingHorizontal: 5,
-                        paddingVertical: 1,
-                        borderRadius: 4,
-                        borderWidth: 0.5,
-                        borderColor: colors.cardBorder || (colors.primary + "30"),
-                      }}
-                    >
-                      <Text style={{ fontSize: 9, fontWeight: "700", color: colors.secondary || colors.primary }}>
-                        {prescription.optionA.targetRIR}
-                      </Text>
-                    </View>
                   </View>
 
                   <View style={{ flexDirection: "row", alignItems: "center", gap: 2 }}>
@@ -1272,6 +1233,21 @@ const PlayRoutineScreen = () => {
           >
             <Text style={globalStyles.buttonText}>Completar Serie</Text>
           </TouchableOpacity>
+
+          {/* Escala de percepción del esfuerzo subjetivo para el ejercicio */}
+          {routineData?.exercises?.[ejercicioActual] && (
+            <ExerciseFeelingScale
+              selectedRating={exerciseFeelings[ejercicioActual] || null}
+              onSelectRating={handleFeelingRated}
+              currentWeight={pesoActual}
+              currentReps={repActual}
+              unit={inputUnit}
+              weightIncrement={userSettings.weightIncrement}
+              isBodyweight={isBodyweightExercise(routineData.exercises[ejercicioActual])}
+              isCardio={isCardioExercise(routineData.exercises[ejercicioActual])}
+              exerciseName={routineData.exercises[ejercicioActual].nombre}
+            />
+          )}
 
           {/* Botones de Omitir / Saltar */}
           <View style={{ flexDirection: "row", gap: 10, marginTop: 12 }}>
@@ -1411,23 +1387,16 @@ const PlayRoutineScreen = () => {
         )}
       </ScrollView>
 
-      {/* Modal no nativo para confirmar abandono/finalización con mensaje motivacional */}
-      <ThemeConfirmModal
+      {/* Modal para confirmar abandono/finalización con mensaje motivacional */}
+      <GiveUpModal
         visible={showGiveUpModal}
-        title="¿Seguro que quieres rendirte ahora?"
-        message={`${motivationalMessage}\n\n${
-          totalSeries > 0
-            ? "Si finalizas ahora, se guardará el progreso de las series que ya completaste."
-            : "Aún no has completado ninguna serie, por lo que no se guardará ningún registro."
-        }`}
-        confirmText="Sí, finalizar"
-        cancelText="¡Seguir entrenando!"
-        isDestructive={true}
+        motivationalMessage={motivationalMessage}
+        totalSeries={totalSeries}
         onConfirm={handleConfirmGiveUp}
         onCancel={() => setShowGiveUpModal(false)}
       />
 
-      {/* Modal Prescripción Coach RIR */}
+      {/* Modal Prescripción Coach Fitto */}
       {showCoachModal && routineData?.exercises?.[ejercicioActual] && (
         <CoachRIRModal
           visible={showCoachModal}
@@ -1435,11 +1404,13 @@ const PlayRoutineScreen = () => {
           exercise={routineData.exercises[ejercicioActual]}
           lastSession={lastSession}
           personalBest={personalBest}
-          prescription={calculateRIRPrescription(
+          effortRating={exerciseFeelings[ejercicioActual]}
+          prescription={calculateCoachFittoPrescription(
             routineData.exercises[ejercicioActual],
             lastSession,
             personalBest,
-            inputUnit
+            inputUnit,
+            exerciseFeelings[ejercicioActual]
           )}
           onApplyOption={handleApplyCoachOption}
           userUnit={inputUnit}

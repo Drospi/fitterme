@@ -16,6 +16,7 @@ export type ExerciseHistory = {
   totalVolume: number;
   bestWeight: number;
   bestReps: number;
+  effortRating?: 1 | 2 | 3 | 4 | 5;
 };
 
 const HISTORY_KEY = "exercise_history";
@@ -46,16 +47,8 @@ export const getHistoryByMuscle = async (
   return history.filter((log) => exercisesIdByMuscle.includes(log.exerciseId));
 };
 
-/**
- * Calcula el 1RM estimado usando la fórmula científica de Epley.
- * Para 1 repetición, 1RM = peso.
- * Para más repeticiones: peso * (1 + reps / 30).
- */
-export const calculate1RM = (peso: number, reps: number): number => {
-  if (peso <= 0 || reps <= 0) return 0;
-  if (reps === 1) return peso;
-  return peso * (1 + reps / 30);
-};
+import { calculate1RM } from "@/calculos/oneRepMax";
+export { calculate1RM };
 
 /**
  * Compara dos series evaluando cuál representa un rendimiento superior.
@@ -122,6 +115,7 @@ export const isBetterSet = (
 export const addExerciseLog = async (
   exerciseId: number,
   sets: ExerciseSet[],
+  effortRating?: 1 | 2 | 3 | 4 | 5,
 ): Promise<ExerciseHistory> => {
   const history = await getExerciseHistory();
 
@@ -154,6 +148,7 @@ export const addExerciseLog = async (
     totalVolume: currentTotalVolume,
     bestWeight: currentBestSet.peso,
     bestReps: resolvedBestReps || 0,
+    effortRating,
   };
 
   await AsyncStorage.setItem(HISTORY_KEY, JSON.stringify([newLog, ...history]));

@@ -5,7 +5,7 @@ import {
   ExerciseItemInput,
   ProgressionRecommendation,
   selectCuratedProgressions,
-} from "@/utils/progressiveOverload";
+} from "@/calculos/progressiveOverload";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import React, { useMemo, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";

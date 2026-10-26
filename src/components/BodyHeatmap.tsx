@@ -4,7 +4,7 @@ import {
   calculateMuscleIntensity,
   calculateNavyBodyFat,
   getDevelopmentLevelInfo,
-} from "@/utils/musclePhysiology";
+} from "@/calculos/musclePhysiology";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import * as Haptics from "expo-haptics";
 import { useFocusEffect } from "expo-router";

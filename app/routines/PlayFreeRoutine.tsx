@@ -29,7 +29,10 @@ import { addRoutineSession } from "@/store/historyRoutine";
 import { cancelAllRestTimerNotifications } from "@/store/notificationsConfig";
 import { getGlobalStyles } from "@/styles/global";
 import { getExerciseImage } from "@/utils/imageMap";
-import { calculateRIRPrescription } from "@/utils/rirCoachCalculator";
+import { calculateCoachFittoPrescription, calculateRIRPrescription } from "@/calculos/coachFitto";
+import { EffortRating } from "@/calculos/perceivedEffort";
+import ExercisePickerModal from "@/components/workout/ExercisePickerModal";
+import ExerciseFeelingScale from "@/components/workout/ExerciseFeelingScale";
 import { Ionicons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
 import { useFocusEffect, useRouter } from "expo-router";
@@ -272,13 +275,19 @@ export default function PlayFreeRoutineScreen() {
     >
   >(activeWorkout?.workoutState?.inputs || {});
 
+  // Percepción subjetiva del esfuerzo de la escala 1-5 por ejercicio
+  const [exerciseFeelings, setExerciseFeelings] = useState<Record<number, EffortRating>>(
+    activeWorkout?.workoutState?.exerciseFeelings || {}
+  );
+
   // Sincronización en tiempo real
   useEffect(() => {
     updateWorkoutState({
       activeExercises,
       inputs,
+      exerciseFeelings,
     });
-  }, [activeExercises, inputs]);
+  }, [activeExercises, inputs, exerciseFeelings]);
 
   // Pantalla de resumen final
   const [isRoutineCompleted, setIsRoutineCompleted] = useState(false);
@@ -293,8 +302,6 @@ export default function PlayFreeRoutineScreen() {
 
   // Modal para agregar ejercicios
   const [isPickerVisible, setIsPickerVisible] = useState(false);
-  const [search, setSearch] = useState("");
-  const [muscleSelected, setMuscleSelected] = useState("");
 
   // Modal para la prescripción del Coach RIR
   const [selectedCoachIndex, setSelectedCoachIndex] = useState<number | null>(null);
@@ -606,7 +613,8 @@ export default function PlayFreeRoutineScreen() {
 
     const summaryExercises: ExerciseType[] = [];
 
-    for (const item of activeExercises) {
+    for (let exIndex = 0; exIndex < activeExercises.length; exIndex++) {
+      const item = activeExercises[exIndex];
       if (item.sets.length > 0) {
         totalSeries += item.sets.length;
         const isCardio = isCardioExercise(item.exerciseInfo);
@@ -631,7 +639,7 @@ export default function PlayFreeRoutineScreen() {
           newRecordsCount += 1;
         }
 
-        await addExerciseLog(item.exerciseInfo.id, item.sets);
+        await addExerciseLog(item.exerciseInfo.id, item.sets, exerciseFeelings[exIndex]);
       }
     }
 
@@ -684,32 +692,6 @@ export default function PlayFreeRoutineScreen() {
     );
   }
 
-  const filteredExercises = allCatalog
-    .filter((exercise) => {
-      if (muscleSelected === "Todos" || muscleSelected === "") return true;
-
-      const cat = getExerciseCategory(exercise);
-      if (muscleSelected === "Gym") return cat === "Gym";
-      if (muscleSelected === "Cardio") return cat === "Cardio";
-      if (muscleSelected === "Peso corporal") return cat === "Peso corporal";
-
-      const m = (exercise.musculo || "").toLowerCase();
-
-      if (muscleSelected === "Brazos")
-        return ["biceps", "triceps", "antebrazo", "hombros"].includes(m);
-
-      if (muscleSelected === "Espalda")
-        return ["espalda", "hombros"].includes(m);
-
-      if (muscleSelected === "Pierna")
-        return ["pierna", "gemelos", "gluteos", "cuadriceps"].includes(m);
-
-      if (muscleSelected === "Abdomen")
-        return ["cadera", "cintura", "abdomen"].includes(m);
-
-      return m === muscleSelected.toLowerCase();
-    })
-    .filter((e) => e.nombre.toLowerCase().includes(search.toLowerCase()));
 
   return (
     <KeyboardAvoidingView
@@ -1046,13 +1028,14 @@ export default function PlayFreeRoutineScreen() {
                     </TouchableOpacity>
                   </View>
 
-                  {/* Sugerencia Coach RIR (Reemplaza Mejor Récord Registrado) */}
+                  {/* Sugerencia Coach Fitto (Reemplaza Mejor Récord Registrado) */}
                   {(() => {
-                    const prescription = calculateRIRPrescription(
+                    const prescription = calculateCoachFittoPrescription(
                       item.exerciseInfo,
                       item.lastSession,
                       item.personalBest,
-                      currentUnit
+                      currentUnit,
+                      exerciseFeelings[exIndex]
                     );
                     const getPBMetric = () => {
                       if (!item.personalBest) return { value: "—", label: "Sin registro" };
@@ -1082,6 +1065,25 @@ export default function PlayFreeRoutineScreen() {
 
                     const pb = getPBMetric();
                     const isFatigued = prescription.hasNeuralFatigue;
+                    const verdictColor =
+                      prescription.verdict === "subir"
+                        ? "#10b981"
+                        : prescription.verdict === "bajar"
+                          ? "#ef4444"
+                          : "#f59e0b";
+                    const verdictBg =
+                      prescription.verdict === "subir"
+                        ? "rgba(16, 185, 129, 0.15)"
+                        : prescription.verdict === "bajar"
+                          ? "rgba(239, 68, 68, 0.15)"
+                          : "rgba(245, 158, 11, 0.15)";
+                    const verdictIcon =
+                      prescription.verdict === "subir"
+                        ? "trending-up"
+                        : prescription.verdict === "bajar"
+                          ? "arrow-down-circle"
+                          : "shield-checkmark";
+
                     return (
                       <TouchableOpacity
                         activeOpacity={0.8}
@@ -1099,43 +1101,40 @@ export default function PlayFreeRoutineScreen() {
                           borderColor: isFatigued ? "rgba(239, 68, 68, 0.35)" : "rgba(255, 255, 255, 0.05)",
                         }}
                       >
-                        {/* Fila Superior: Badge RIR + Target Pill + Botón circular/flecha */}
+                        {/* Fila Superior: Badge Coach Fitto + Target Pill + Botón circular/flecha */}
                         <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
                           <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
-                            {/* Icono + RIR Tag estilo pill */}
+                            {/* Icono + Coach Fitto Tag estilo pill */}
                             <View
                               style={{
                                 flexDirection: "row",
                                 alignItems: "center",
                                 gap: 5,
-                                backgroundColor: isFatigued ? "rgba(239, 68, 68, 0.15)" : "rgba(46, 213, 115, 0.12)",
+                                backgroundColor: verdictBg,
                                 paddingHorizontal: 8,
                                 paddingVertical: 4,
                                 borderRadius: 20,
                               }}
                             >
                               <Ionicons
-                                name={isFatigued ? "alert-circle" : "sparkles"}
+                                name={verdictIcon}
                                 size={12}
-                                color={isFatigued ? "#ef4444" : "#2ed573"}
+                                color={verdictColor}
                               />
                               <Text
                                 style={{
                                   fontSize: 10,
                                   fontWeight: "800",
                                   letterSpacing: 0.5,
-                                  color: isFatigued ? "#ef4444" : "#2ed573",
+                                  color: verdictColor,
                                 }}
                               >
-                                RIR {prescription.optionA.targetRIR}
+                                COACH FITTO: {prescription.coachFittoVerdictText}
                               </Text>
                             </View>
-
-                            {/* Resumen corto como subtítulo pill */}
-
                           </View>
 
-                          {/* Flecha minimalista circular (similar a los switches/botones de la referencia) */}
+                          {/* Flecha minimalista circular */}
                           <View
                             style={{
                               width: 22,
@@ -1154,13 +1153,12 @@ export default function PlayFreeRoutineScreen() {
                             fontSize: 12,
                             fontWeight: "600",
                             color: "#94a3b8",
-                            maxWidth: 160,
+                            marginTop: 4,
                           }}
+                          numberOfLines={1}
                         >
                           {prescription.shortSummary}
                         </Text>
-
-
                       </TouchableOpacity>
                     );
                   })()}
@@ -2032,6 +2030,23 @@ export default function PlayFreeRoutineScreen() {
                       </View>
                     )}
                   </View>
+
+                  {/* Escala de percepción del esfuerzo subjetivo para Coach Fitto */}
+                  <ExerciseFeelingScale
+                    selectedRating={exerciseFeelings[exIndex] || null}
+                    onSelectRating={(rating) => {
+                      setExerciseFeelings((prev) => ({ ...prev, [exIndex]: rating }));
+                    }}
+                    currentWeight={parseFloat(inputVal.peso) || 0}
+                    currentReps={parseInt(inputVal.reps, 10) || 10}
+                    unit={currentUnit}
+                    weightIncrement={userSettings.weightIncrement || 2.5}
+                    isBodyweight={isBodyweight}
+                    isCardio={isCardio}
+                    currentTimeMinutes={parseInt(inputVal.timeMinutes || "15", 10)}
+                    currentIntensity={inputVal.intensity || "Moderada"}
+                    exerciseName={item.exerciseInfo.nombre}
+                  />
                 </View>
               );
             })
@@ -2085,222 +2100,24 @@ export default function PlayFreeRoutineScreen() {
           )}
         </ScrollView>
 
-        {/* Modal Selector de Ejercicios adaptado con el UI Kit */}
-        <Modal
+        {/* Modal Selector de Ejercicios Reutilizable */}
+        <ExercisePickerModal
           visible={isPickerVisible}
-          animationType="slide"
-          transparent={false}
-          onRequestClose={() => setIsPickerVisible(false)}
-        >
-          <View style={[globalStyles.container, { backgroundColor: UI_KIT.bg, flex: 1 }]}>
-            <View style={[globalStyles.header, { marginBottom: 15 }]}>
-              <Text style={[globalStyles.title, { color: UI_KIT.textPrimary }]}>
-                Seleccionar Ejercicio
-              </Text>
-              <TouchableOpacity
-                onPress={() => setIsPickerVisible(false)}
-                style={styles.tactileCircleButton}
-              >
-                <Ionicons name="close" size={20} color={UI_KIT.textPrimary} />
-              </TouchableOpacity>
-            </View>
+          exercises={allCatalog}
+          addedExerciseIds={activeExercises.map((e) => e.exerciseInfo.id)}
+          onSelectExercise={handleAddExerciseToWorkout}
+          onClose={() => setIsPickerVisible(false)}
+          onNavigateDetail={(id: number) => {
+            setIsPickerVisible(false);
+            router.push(`/exercises/DetailsExercise/${id}` as any);
+          }}
+          onCreateCustom={() => {
+            setIsPickerVisible(false);
+            router.push("/exercises/add" as any);
+          }}
+        />
 
-            {/* Barra de Búsqueda Dark Inset */}
-            <View
-              style={{
-                flexDirection: "row",
-                gap: 10,
-                alignItems: "center",
-                marginBottom: 12,
-                paddingHorizontal: 16,
-                paddingVertical: 10,
-                backgroundColor: UI_KIT.inset,
-                borderRadius: 14,
-                borderWidth: 1,
-                borderColor: UI_KIT.insetBorder,
-              }}
-            >
-              <Ionicons name="search" size={20} color={UI_KIT.textMuted} />
-              <TextInput
-                placeholder="Buscar Ejercicios (pesas, cardio...)"
-                placeholderTextColor={UI_KIT.textMuted}
-                style={{ flex: 1, color: UI_KIT.textPrimary, fontSize: 14 }}
-                onChangeText={(text) => setSearch(text)}
-                value={search}
-              />
-            </View>
-
-            {/* Botón: Crear Ejercicio Personalizado */}
-            <TouchableOpacity
-              style={{
-                backgroundColor: UI_KIT.card,
-                borderColor: UI_KIT.cardBorder,
-                borderWidth: 1.5,
-                borderRadius: 14,
-                paddingVertical: 11,
-                paddingHorizontal: 16,
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: 8,
-                marginBottom: 12,
-              }}
-              onPress={() => {
-                setIsPickerVisible(false);
-                router.push("/exercises/add" as any);
-              }}
-            >
-              <Ionicons name="add-circle-outline" size={20} color={UI_KIT.accentOrange} />
-              <Text style={{ color: UI_KIT.textPrimary, fontWeight: "bold", fontSize: 13 }}>
-                + Crear Ejercicio Personalizado
-              </Text>
-            </TouchableOpacity>
-
-            {/* Filtros de Músculo y Cardio */}
-            <View style={{ maxHeight: 60, marginBottom: 10 }}>
-              <ScrollView
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                contentContainerStyle={{ gap: 8, alignItems: "center" }}
-              >
-                {["Todos", "Gym", "Cardio", "Peso corporal", "Pecho", "Brazos", "Espalda", "Pierna", "Abdomen"].map(
-                  (name) => {
-                    const isSelected = (muscleSelected === "" && name === "Todos") || muscleSelected === name;
-                    return (
-                      <TouchableOpacity
-                        key={name}
-                        onPress={() => setMuscleSelected(name)}
-                      >
-                        {isSelected ? (
-                          <View
-                            style={{
-                              paddingHorizontal: 16,
-                              paddingVertical: 8,
-                              borderRadius: 20,
-                              backgroundColor: UI_KIT.accentOrange,
-                            }}
-                          >
-                            <Text style={{ color: UI_KIT.onPrimary, fontWeight: "bold", fontSize: 13 }}>
-                              {name}
-                            </Text>
-                          </View>
-                        ) : (
-                          <View
-                            style={{
-                              paddingHorizontal: 16,
-                              paddingVertical: 8,
-                              borderRadius: 20,
-                              backgroundColor: UI_KIT.card,
-                              borderWidth: 1,
-                              borderColor: UI_KIT.cardBorder,
-                            }}
-                          >
-                            <Text style={{ color: UI_KIT.textSecondary, fontWeight: "600", fontSize: 13 }}>
-                              {name}
-                            </Text>
-                          </View>
-                        )}
-                      </TouchableOpacity>
-                    );
-                  }
-                )}
-              </ScrollView>
-            </View>
-
-            {/* Lista de Ejercicios */}
-            <ScrollView
-              showsVerticalScrollIndicator={false}
-              style={{ flex: 1 }}
-              contentContainerStyle={{ paddingBottom: 24 }}
-            >
-              {filteredExercises.map((exercise) => {
-                const isAlreadyAdded = activeExercises.some(
-                  (e) => e.exerciseInfo.id === exercise.id
-                );
-                const exCategory = getExerciseCategory(exercise);
-                const isCardio = exCategory === "Cardio";
-                const isBodyweight = exCategory === "Peso corporal";
-
-                return (
-                  <View
-                    key={exercise.id}
-                    style={[
-                      styles.uiCard,
-                      {
-                        flexDirection: "row",
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                        opacity: isAlreadyAdded ? 0.5 : 1,
-                        paddingVertical: 12,
-                        paddingHorizontal: 14,
-                        marginBottom: 10,
-                        borderLeftWidth: 3,
-                        borderLeftColor: isCardio
-                          ? UI_KIT.accentOrange
-                          : isBodyweight
-                            ? "#22c55e"
-                            : UI_KIT.cardBorder,
-                      },
-                    ]}
-                  >
-                    <TouchableOpacity
-                      style={{ flexDirection: "row", gap: 12, alignItems: "center", flex: 1 }}
-                      activeOpacity={0.7}
-                      onPress={() => {
-                        setIsPickerVisible(false);
-                        router.push(`/exercises/DetailsExercise/${exercise.id}` as any);
-                      }}
-                    >
-                      <Image
-                        source={getExerciseImage(exercise.id, exercise.urlimage)}
-                        style={{ width: 48, height: 48, borderRadius: 10 }}
-                      />
-                      <View style={{ flex: 1 }}>
-                        <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
-                          <Text style={{ fontSize: 15, fontWeight: "bold", color: UI_KIT.textPrimary }}>
-                            {exercise.nombre}
-                          </Text>
-                          {isCardio && (
-                            <Ionicons name="flame" size={13} color={UI_KIT.accentOrange} />
-                          )}
-                          {isBodyweight && (
-                            <Ionicons name="body" size={13} color="#22c55e" />
-                          )}
-                        </View>
-                        <Text style={{ fontSize: 12, color: UI_KIT.textMuted, marginTop: 2 }}>
-                          {isCardio
-                            ? "Cardio"
-                            : isBodyweight
-                              ? "Peso corporal"
-                              : exercise.musculo}{" "}
-                          • {exercise.equipamiento}
-                        </Text>
-                      </View>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity
-                      disabled={isAlreadyAdded}
-                      onPress={() => handleAddExerciseToWorkout(exercise)}
-                      style={{ padding: 4 }}
-                    >
-                      <Ionicons
-                        name={
-                          isAlreadyAdded
-                            ? "checkmark-circle"
-                            : "add-circle"
-                        }
-                        size={30}
-                        color={isAlreadyAdded ? UI_KIT.success : UI_KIT.accentOrange}
-                      />
-                    </TouchableOpacity>
-                  </View>
-                );
-              })}
-            </ScrollView>
-          </View>
-        </Modal>
-
-        {/* Modal Prescripción Coach RIR */}
+        {/* Modal Prescripción Coach Fitto */}
         {selectedCoachIndex !== null && activeExercises[selectedCoachIndex] && (() => {
           const targetEx = activeExercises[selectedCoachIndex];
           const activeCardUnit: WeightUnit = inputs[selectedCoachIndex]?.unit || userSettings.unit || "kg";
@@ -2311,11 +2128,13 @@ export default function PlayFreeRoutineScreen() {
               exercise={targetEx.exerciseInfo}
               lastSession={targetEx.lastSession}
               personalBest={targetEx.personalBest}
-              prescription={calculateRIRPrescription(
+              effortRating={exerciseFeelings[selectedCoachIndex]}
+              prescription={calculateCoachFittoPrescription(
                 targetEx.exerciseInfo,
                 targetEx.lastSession,
                 targetEx.personalBest,
-                activeCardUnit
+                activeCardUnit,
+                exerciseFeelings[selectedCoachIndex]
               )}
               onApplyOption={(optionType, appliedUnit) =>
                 handleApplyCoachOption(selectedCoachIndex, optionType, appliedUnit)

@@ -2,10 +2,14 @@ import { getWorkoutTheme } from "@/app/routines/PlayFreeRoutine";
 import { useTheme } from "@/context/ThemeContext";
 import { WeightUnit } from "@/store/conf";
 import {
+  calculateCoachFittoPrescription,
   calculateRIRPrescription,
+  CoachFittoPrescription,
+  getGeminiCoachFittoPrescription,
   getGeminiCoachPrescription,
   RIRCoachPrescription,
-} from "@/utils/rirCoachCalculator";
+} from "@/calculos/coachFitto";
+import { EffortRating, EFFORT_LEVELS } from "@/calculos/perceivedEffort";
 import { Ionicons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
 import React, { useEffect, useMemo, useState } from "react";
@@ -23,7 +27,7 @@ import {
 interface Props {
   visible: boolean;
   onClose: () => void;
-  prescription: RIRCoachPrescription | null;
+  prescription: CoachFittoPrescription | null;
   exercise?: any;
   lastSession?: any;
   personalBest?: any;
@@ -32,6 +36,7 @@ interface Props {
     appliedUnit: WeightUnit
   ) => void;
   userUnit?: WeightUnit;
+  effortRating?: EffortRating;
 }
 
 export default function CoachRIRModal({
@@ -43,6 +48,7 @@ export default function CoachRIRModal({
   personalBest,
   onApplyOption,
   userUnit = "kg",
+  effortRating,
 }: Props) {
   const { colors } = useTheme();
   const UI_KIT = getWorkoutTheme(colors);
@@ -59,15 +65,24 @@ export default function CoachRIRModal({
     }
   }, [prescription?.unit, userUnit, visible]);
 
-  // Recalcular dinámicamente si el usuario alterna la unidad en el modal
+  // Recalcular dinámicamente si el usuario alterna la unidad o cambia la percepción en el modal
   const activePrescription = useMemo(() => {
     if (!prescription) return null;
-    if (prescription.unit === activeUnit) return prescription;
+    const currentEffort = effortRating || prescription.effortRating;
+    if (prescription.unit === activeUnit && prescription.effortRating === currentEffort) {
+      return prescription;
+    }
     if (exercise) {
-      return calculateRIRPrescription(exercise, lastSession, personalBest, activeUnit);
+      return calculateCoachFittoPrescription(
+        exercise,
+        lastSession,
+        personalBest,
+        activeUnit,
+        currentEffort
+      );
     }
     return prescription;
-  }, [prescription, activeUnit, exercise, lastSession, personalBest]);
+  }, [prescription, activeUnit, exercise, lastSession, personalBest, effortRating]);
 
   const p = activePrescription || prescription;
 
@@ -93,32 +108,33 @@ export default function CoachRIRModal({
     setIsLoadingGemini(true);
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     try {
-      const result = await getGeminiCoachPrescription(
+      const result = await getGeminiCoachFittoPrescription(
         {
           id: p.exerciseId,
           nombre: p.exerciseName,
-          musculo: "",
-          objetivo: "",
-          equipamiento: "",
+          musculo: exercise?.musculo || "",
+          objetivo: exercise?.objetivo || "",
+          equipamiento: exercise?.equipamiento || "",
         },
         lastSession || null,
         personalBest || {
           peso: p.bestWeightKg,
           reps: p.bestReps,
         },
-        activeUnit
+        activeUnit,
+        effortRating || p.effortRating
       );
       if (result) {
         setGeminiAnalysis(result);
         Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       } else {
         setGeminiAnalysis(
-          "⚠️ Configura tu API Key en Ajustes > IA para consultas en vivo."
+          "⚠️ Configura tu API Key en Ajustes > IA para consultas con Coach Fitto en vivo."
         );
       }
     } catch {
       setGeminiAnalysis(
-        "No se pudo conectar con el servicio de IA."
+        "No se pudo conectar con el servicio de IA de Coach Fitto."
       );
     } finally {
       setIsLoadingGemini(false);
@@ -127,8 +143,10 @@ export default function CoachRIRModal({
 
   const isGym = p.category === "Gym";
   const isFatigued = p.hasNeuralFatigue;
-  const isLoadProgression = p.progressionType === "load";
+  const isLoadProgression = p.progressionType === "load" || p.verdict === "subir";
+  const isDeload = p.progressionType === "deload" || p.verdict === "bajar";
   const isRepsProgression = p.progressionType === "reps";
+  const currentEffortRating = effortRating || p.effortRating;
 
   return (
     <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose}>
@@ -146,26 +164,26 @@ export default function CoachRIRModal({
             <View style={{ flex: 1, marginRight: 8 }}>
               <View style={s.tagRow}>
                 <View style={[s.dot, { backgroundColor: UI_KIT.accentOrange }]} />
-                <Text style={[s.tag, { color: UI_KIT.accentOrange }]}>RIR COACH</Text>
+                <Text style={[s.tag, { color: UI_KIT.accentOrange }]}>COACH FITTO ⚡</Text>
 
-                {isLoadProgression && (
+                {p.verdict === "subir" && (
                   <View style={[s.badgePill, { backgroundColor: "rgba(16,185,129,0.15)" }]}>
                     <Ionicons name="trending-up" size={10} color="#10b981" />
-                    <Text style={[s.badgeText, { color: "#10b981" }]}>+Peso</Text>
+                    <Text style={[s.badgeText, { color: "#10b981" }]}>+Subir Carga</Text>
                   </View>
                 )}
 
-                {isRepsProgression && (
-                  <View style={[s.badgePill, { backgroundColor: "rgba(59,130,246,0.15)" }]}>
-                    <Ionicons name="trending-up" size={10} color="#3b82f6" />
-                    <Text style={[s.badgeText, { color: "#3b82f6" }]}>+Reps</Text>
-                  </View>
-                )}
-
-                {isFatigued && (
+                {p.verdict === "bajar" && (
                   <View style={[s.badgePill, { backgroundColor: "rgba(239,68,68,0.15)" }]}>
-                    <Ionicons name="alert-circle" size={10} color="#ef4444" />
-                    <Text style={[s.badgeText, { color: "#ef4444" }]}>Fatiga</Text>
+                    <Ionicons name="arrow-down-circle" size={10} color="#ef4444" />
+                    <Text style={[s.badgeText, { color: "#ef4444" }]}>-Bajar Carga</Text>
+                  </View>
+                )}
+
+                {p.verdict === "mantener" && (
+                  <View style={[s.badgePill, { backgroundColor: "rgba(245,158,11,0.15)" }]}>
+                    <Ionicons name="shield-checkmark" size={10} color="#f59e0b" />
+                    <Text style={[s.badgeText, { color: "#f59e0b" }]}>Consolidar</Text>
                   </View>
                 )}
               </View>
@@ -242,6 +260,92 @@ export default function CoachRIRModal({
             contentContainerStyle={s.scrollContent}
             showsVerticalScrollIndicator={false}
           >
+            {/* ── Coach Fitto Verdict Banner ── */}
+            <View
+              style={{
+                backgroundColor:
+                  p.verdict === "subir"
+                    ? "rgba(16, 185, 129, 0.12)"
+                    : p.verdict === "bajar"
+                      ? "rgba(239, 68, 68, 0.12)"
+                      : "rgba(245, 158, 11, 0.12)",
+                borderColor:
+                  p.verdict === "subir"
+                    ? "rgba(16, 185, 129, 0.3)"
+                    : p.verdict === "bajar"
+                      ? "rgba(239, 68, 68, 0.3)"
+                      : "rgba(245, 158, 11, 0.3)",
+                borderWidth: 1,
+                borderRadius: 16,
+                padding: 12,
+                marginBottom: 12,
+                gap: 6,
+              }}
+            >
+              <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+                <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
+                  <Ionicons
+                    name={
+                      p.verdict === "subir"
+                        ? "trending-up"
+                        : p.verdict === "bajar"
+                          ? "arrow-down-circle"
+                          : "shield-checkmark"
+                    }
+                    size={16}
+                    color={
+                      p.verdict === "subir"
+                        ? "#10b981"
+                        : p.verdict === "bajar"
+                          ? "#ef4444"
+                          : "#f59e0b"
+                    }
+                  />
+                  <Text
+                    style={{
+                      fontSize: 12,
+                      fontWeight: "900",
+                      letterSpacing: 0.5,
+                      color:
+                        p.verdict === "subir"
+                          ? "#10b981"
+                          : p.verdict === "bajar"
+                            ? "#ef4444"
+                            : "#f59e0b",
+                    }}
+                  >
+                    VEREDICTO PRÓXIMA RUTINA: {p.verdict.toUpperCase()}
+                  </Text>
+                </View>
+
+                {currentEffortRating && (
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      gap: 4,
+                      backgroundColor: UI_KIT.card,
+                      paddingHorizontal: 8,
+                      paddingVertical: 3,
+                      borderRadius: 12,
+                    }}
+                  >
+                    <Text style={{ fontSize: 10, fontWeight: "700", color: UI_KIT.textSecondary }}>
+                      ⚡ {EFFORT_LEVELS[currentEffortRating]?.title} ({EFFORT_LEVELS[currentEffortRating]?.shortLabel})
+                    </Text>
+                  </View>
+                )}
+              </View>
+
+              <Text style={{ fontSize: 11, color: UI_KIT.textPrimary, lineHeight: 16 }}>
+                {p.verdict === "subir"
+                  ? "Sobraron repeticiones con comodidad. En la próxima rutina subimos la carga."
+                  : p.verdict === "bajar"
+                    ? "Fallo muscular muy temprano o forzado que desgasta el músculo de más. En la próxima rutina bajamos la carga."
+                    : "Cerca del límite sin quemarte. En la próxima rutina mantenemos el peso para consolidar."}
+              </Text>
+            </View>
+
             {/* ── Quick stats row ── */}
             <View style={[s.statsRow, { backgroundColor: UI_KIT.card, borderColor: UI_KIT.cardBorder }]}>
               <View style={s.statCell}>
@@ -515,7 +619,7 @@ export default function CoachRIRModal({
                   <Ionicons name="sparkles" size={13} color={UI_KIT.accentOrange} />
                 )}
                 <Text style={[s.geminiToggleText, { color: UI_KIT.textSecondary }]}>
-                  {isLoadingGemini ? "Analizando..." : "Coach IA"}
+                  {isLoadingGemini ? "Consultando a Coach Fitto..." : "Coach Fitto IA (Gemini)"}
                 </Text>
                 {!isLoadingGemini && (
                   <Ionicons
@@ -791,3 +895,5 @@ const s = StyleSheet.create({
     lineHeight: 16,
   },
 });
+
+export const CoachFittoModal = CoachRIRModal;

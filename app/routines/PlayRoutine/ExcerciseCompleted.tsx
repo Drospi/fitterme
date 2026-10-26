@@ -1,9 +1,12 @@
+import { EffortAdjustmentResult, EffortRating } from "@/calculos/perceivedEffort";
+import ExerciseFeelingScale from "@/components/workout/ExerciseFeelingScale";
 import { useTheme } from "@/context/ThemeContext";
 import { getSettings, toDisplayWeight, UserSettings } from "@/store/conf";
+import { isBodyweightExercise, isCardioExercise } from "@/store/excercise";
 import { getGlobalStyles } from "@/styles/global";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import React, { useEffect, useState } from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 
 type ExerciseType = {
   id: number;
@@ -17,8 +20,6 @@ type ExerciseType = {
   peso?: number;
 };
 
-type ExerciseList = ExerciseType[];
-
 type Props = {
   next: () => void;
   data: {
@@ -31,10 +32,14 @@ type Props = {
   excercise: number;
   mejorRepEjercicio: number;
   mejorPesoEjercicio: number;
+  selectedRating?: EffortRating | null;
+  onSelectRating?: (rating: EffortRating, result: EffortAdjustmentResult) => void;
 };
+
 const formatTime = (timer: number) => {
   return new Date(timer * 1000).toISOString().substr(11, 8);
 };
+
 const ExcerciseCompleted = ({
   next,
   data,
@@ -44,6 +49,8 @@ const ExcerciseCompleted = ({
   excercise,
   mejorRepEjercicio,
   mejorPesoEjercicio,
+  selectedRating = null,
+  onSelectRating,
 }: Props) => {
   const { colors } = useTheme();
   const globalStyles = getGlobalStyles(colors);
@@ -54,138 +61,131 @@ const ExcerciseCompleted = ({
     defaultRestTimer: 90,
   });
 
+  const [localRating, setLocalRating] = useState<EffortRating | null>(selectedRating);
+
   useEffect(() => {
     getSettings().then((s) => setUserSettings(s));
   }, []);
+
+  const currentExercise = data.exercises[excercise];
+  const isCardio = currentExercise ? isCardioExercise(currentExercise) : false;
+  const isBw = currentExercise ? isBodyweightExercise(currentExercise) : false;
+
   return (
-    <View
-      style={[
-        globalStyles.container,
-        { flex: 1, justifyContent: "space-between" },
-      ]}
+    <ScrollView
+      style={globalStyles.container}
+      showsVerticalScrollIndicator={false}
+      contentContainerStyle={{ paddingBottom: 60 }}
     >
-      <View style={{ flexDirection: "row", alignItems: "center", gap: 20 }}>
+      {/* Header Temporizador */}
+      <View style={{ flexDirection: "row", alignItems: "center", gap: 16, marginTop: 10, marginBottom: 20 }}>
         <Ionicons name="timer" size={32} color={colors.primary} />
         <View>
-          <Text style={[globalStyles.textSecondary, { letterSpacing: 2 }]}>
+          <Text style={[globalStyles.textSecondary, { letterSpacing: 2, fontSize: 11 }]}>
             ENTRENAMIENTO ACTIVO
           </Text>
-          <Text
-            style={{ fontWeight: "bold", fontSize: 24, color: colors.primary }}
-          >
+          <Text style={{ fontWeight: "bold", fontSize: 24, color: colors.primary }}>
             {formatTime(timer)}
           </Text>
         </View>
       </View>
-      <View style={{ alignItems: "center" }}>
+
+      {/* Ícono Celebratorio */}
+      <View style={{ alignItems: "center", marginVertical: 10 }}>
         <Ionicons
           name="checkmark-circle-outline"
-          size={150}
+          size={110}
           color={colors.primary}
         />
-        <Text
-          style={{ fontWeight: "bold", fontSize: 24, color: colors.primary }}
-        >
-          EJERCICIO COMPLETADO
+        <Text style={{ fontWeight: "900", fontSize: 22, color: colors.primary, marginTop: 6 }}>
+          ¡EJERCICIO COMPLETADO!
         </Text>
-        <Text style={globalStyles.textSecondary}>
-          Haz dominado cada serie con absoulta destreza
+        <Text style={[globalStyles.textSecondary, { textAlign: "center", marginTop: 4, paddingHorizontal: 20 }]}>
+          Has dominado cada serie con absoluta destreza y disciplina.
         </Text>
       </View>
-      <View>
-        <View
-          style={[
-            globalStyles.card,
-            { alignItems: "center", gap: 10, marginTop: 20 },
-          ]}
-        >
-          <Text style={globalStyles.textSecondary}>EJERCICIO</Text>
-          <Text
-            style={[
-              globalStyles.cardTitle,
-              { fontWeight: "bold", fontSize: 24 },
-            ]}
-          >
-            {data.exercises[excercise].nombre}
+
+      {/* Resumen del Ejercicio */}
+      <View style={[globalStyles.card, { alignItems: "center", gap: 6, marginVertical: 12 }]}>
+        <Text style={[globalStyles.textSecondary, { fontSize: 11, letterSpacing: 1 }]}>
+          EJERCICIO REALIZADO
+        </Text>
+        <Text style={[globalStyles.cardTitle, { fontWeight: "bold", fontSize: 20, textAlign: "center" }]}>
+          {currentExercise?.nombre}
+        </Text>
+      </View>
+
+      {/* Métricas: Sets & Mejor Serie */}
+      <View style={{ flexDirection: "row", justifyContent: "space-between", gap: 10, marginBottom: 14 }}>
+        <View style={[globalStyles.card, { alignItems: "center", gap: 6, flex: 1 }]}>
+          <Text style={[globalStyles.textSecondary, { fontSize: 11 }]}>Series Totales</Text>
+          <Text style={{ fontWeight: "bold", fontSize: 22, color: colors.primary }}>
+            {series} / {currentExercise?.series}
           </Text>
         </View>
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            gap: 10,
+
+        <View style={[globalStyles.card, { alignItems: "center", gap: 6, flex: 1 }]}>
+          <Text style={[globalStyles.textSecondary, { fontSize: 11 }]}>Mejor Serie</Text>
+          <Text style={{ fontWeight: "bold", fontSize: 16, color: colors.secondary || colors.primary }}>
+            {mejorPesoEjercicio <= 0
+              ? `Corporal x ${mejorRepEjercicio} reps`
+              : `${toDisplayWeight(mejorPesoEjercicio, userSettings.unit)} ${userSettings.unit} x ${mejorRepEjercicio} reps`}
+          </Text>
+        </View>
+      </View>
+
+      {/* Escala Percepción del Esfuerzo Subjetivo */}
+      {currentExercise && (
+        <ExerciseFeelingScale
+          selectedRating={localRating}
+          onSelectRating={(rating, result) => {
+            setLocalRating(rating);
+            if (onSelectRating) {
+              onSelectRating(rating, result);
+            }
           }}
-        >
-          <View
-            style={[
-              globalStyles.card,
-              { alignItems: "center", gap: 10, flex: 1 },
-            ]}
-          >
-            <Text style={globalStyles.textSecondary}>Sets</Text>
-            <Text
-              style={{
-                fontWeight: "bold",
-                fontSize: 24,
-                color: colors.primary,
-              }}
-            >
-              {series} / {data.exercises[excercise].series}
-            </Text>
-          </View>
-          <View
-            style={[
-              globalStyles.card,
-              { alignItems: "center", gap: 10, flex: 1 },
-            ]}
-          >
-            <Text style={globalStyles.textSecondary}>Mejor Serie</Text>
-            <Text
-              style={{
-                fontWeight: "bold",
-                fontSize: 20,
-                color: colors.secondary,
-              }}
-            >
-              {mejorPesoEjercicio <= 0
-                ? `Corporal x ${mejorRepEjercicio} reps`
-                : `${toDisplayWeight(mejorPesoEjercicio, userSettings.unit)} ${userSettings.unit} x ${mejorRepEjercicio} reps`}
-            </Text>
-          </View>
-        </View>
-        <TouchableOpacity
-          style={[
-            globalStyles.button,
-            { flexDirection: "row", justifyContent: "center", gap: 10 },
-          ]}
-          onPress={next}
-        >
-          <Text style={globalStyles.buttonText}>
-            {excercise < data.exercises.length - 1
-              ? "Pasar al siguiente ejercicio"
-              : "Terminar Rutina"}
-          </Text>
-          <Ionicons name="arrow-forward" size={24} color={colors.neutral} />
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[
-            globalStyles.card,
-            {
-              alignItems: "center",
-              marginTop: 20,
-              flexDirection: "row",
-              gap: 10,
-              justifyContent: "center",
-              marginBottom: 30,
-            },
-          ]}
-          onPress={addSerie}
-        >
-          <Ionicons name="add" size={32} color={colors.primary} />
-          <Text style={{ color: colors.primary }}>Agregar Serie</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
+          currentWeight={mejorPesoEjercicio}
+          currentReps={mejorRepEjercicio || 10}
+          unit={userSettings.unit}
+          weightIncrement={userSettings.weightIncrement}
+          isBodyweight={isBw}
+          isCardio={isCardio}
+          exerciseName={currentExercise.nombre}
+        />
+      )}
+
+      {/* Acciones: Siguiente Ejercicio y Agregar Serie */}
+      <TouchableOpacity
+        style={[globalStyles.button, { flexDirection: "row", justifyContent: "center", gap: 10, marginTop: 14 }]}
+        onPress={next}
+      >
+        <Text style={globalStyles.buttonText}>
+          {excercise < data.exercises.length - 1
+            ? "Pasar al siguiente ejercicio"
+            : "Terminar Rutina"}
+        </Text>
+        <Ionicons name="arrow-forward" size={22} color={colors.neutral} />
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={[
+          globalStyles.card,
+          {
+            alignItems: "center",
+            marginTop: 12,
+            flexDirection: "row",
+            gap: 10,
+            justifyContent: "center",
+          },
+        ]}
+        onPress={addSerie}
+      >
+        <Ionicons name="add" size={26} color={colors.primary} />
+        <Text style={{ color: colors.primary, fontWeight: "bold", fontSize: 14 }}>
+          + Agregar Serie Adicional
+        </Text>
+      </TouchableOpacity>
+    </ScrollView>
   );
 };
 
